@@ -15,6 +15,19 @@ class MedicalCase extends Model
 
     protected $guarded = [];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            if (!empty($model->subjective_complaint) && empty($model->complaint)) {
+                $model->complaint = $model->subjective_complaint;
+            } elseif (!empty($model->complaint) && empty($model->subjective_complaint)) {
+                $model->subjective_complaint = $model->complaint;
+            }
+        });
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);

@@ -14,6 +14,9 @@
             <a href="{{ route('clients.index') }}" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-semibold rounded-xl transition text-sm">
                 Kembali
             </a>
+            <a href="{{ route('clients.edit', $client->id) }}" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-teal-400 hover:text-teal-300 font-semibold rounded-xl transition text-sm flex items-center gap-1.5">
+                ✏️ Edit Profil
+            </a>
             <a href="{{ Route::has('cases.create') ? route('cases.create', ['client_id' => $client->id]) : '#' }}" class="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-slate-900 font-semibold rounded-xl transition text-sm shadow-lg shadow-teal-500/20">
                 + Buat Kasus Baru
             </a>
@@ -24,9 +27,18 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Sidebar Detail Klien -->
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
-            <h3 class="text-base font-semibold text-white border-b border-slate-700 pb-3">Informasi Detail</h3>
+            <h3 class="text-base font-semibold text-white border-b border-slate-700 pb-3 flex items-center justify-between">
+                <span>Informasi Detail</span>
+                <a href="{{ route('clients.edit', $client->id) }}" class="text-xs text-teal-400 hover:underline font-normal">
+                    Edit
+                </a>
+            </h3>
             
             <div class="space-y-3 text-sm">
+                <div>
+                    <span class="text-xs text-slate-500 uppercase font-semibold block">NIK KTP</span>
+                    <span class="text-slate-200 font-mono">{{ $client->nik ?? '-' }}</span>
+                </div>
                 <div>
                     <span class="text-xs text-slate-500 uppercase font-semibold block">Jenis Kelamin</span>
                     <span class="text-slate-200 capitalize">{{ $client->gender ?? '-' }}</span>
@@ -39,6 +51,33 @@
                             ({{ \Carbon\Carbon::parse($client->date_of_birth)->age }} Tahun)
                         @endif
                     </span>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-500 uppercase font-semibold block">Pendidikan Terakhir</span>
+                    <span class="text-slate-200">{{ $client->last_education ?? '-' }}</span>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-500 uppercase font-semibold block">Urutan Kelahiran</span>
+                    <span class="text-slate-200">{{ $client->sibling_info }}</span>
+                </div>
+                <div>
+                    <span class="text-xs text-slate-500 uppercase font-semibold block mb-1">Status Difabel</span>
+                    @if($client->is_disabled)
+                        <div class="space-y-1">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                                ♿ Penyandang Disabilitas (Difabel)
+                            </span>
+                            @if(!empty($client->disability_description))
+                                <p class="text-xs text-amber-300/90 italic pl-1">
+                                    "{{ $client->disability_description }}"
+                                </p>
+                            @endif
+                        </div>
+                    @else
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-700 text-slate-400">
+                            Non-Difabel
+                        </span>
+                    @endif
                 </div>
                 <div>
                     <span class="text-xs text-slate-500 uppercase font-semibold block">Telepon / WhatsApp</span>

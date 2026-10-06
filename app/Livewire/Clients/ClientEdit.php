@@ -5,8 +5,10 @@ namespace App\Livewire\Clients;
 use App\Models\Client;
 use Livewire\Component;
 
-class ClientCreate extends Component
+class ClientEdit extends Component
 {
+    public Client $client;
+
     public $full_name;
     public $nickname;
     public $gender = 'female';
@@ -24,6 +26,31 @@ class ClientCreate extends Component
     public $emergency_contact_name;
     public $emergency_contact_phone;
     public $emergency_relation;
+
+    public function mount($id)
+    {
+        $this->client = Client::findOrFail($id);
+
+        $this->full_name = $this->client->full_name;
+        $this->nickname = $this->client->nickname;
+        $this->gender = $this->client->gender ?? 'female';
+        $this->date_of_birth = $this->client->date_of_birth 
+            ? \Carbon\Carbon::parse($this->client->date_of_birth)->format('Y-m-d') 
+            : null;
+        $this->phone_number = $this->client->phone_number;
+        $this->email = $this->client->email;
+        $this->address = $this->client->address;
+        $this->occupation = $this->client->occupation;
+        $this->nik = $this->client->nik ?? '';
+        $this->last_education = $this->client->last_education ?? '';
+        $this->birth_order = $this->client->birth_order;
+        $this->total_siblings = $this->client->total_siblings;
+        $this->is_disabled = (bool) $this->client->is_disabled;
+        $this->disability_description = $this->client->disability_description ?? '';
+        $this->emergency_contact_name = $this->client->emergency_contact_name;
+        $this->emergency_contact_phone = $this->client->emergency_contact_phone;
+        $this->emergency_relation = $this->client->emergency_relation;
+    }
 
     protected $rules = [
         'full_name' => 'required|string|max:255',
@@ -51,7 +78,7 @@ class ClientCreate extends Component
         if ($this->total_siblings === '') $this->total_siblings = null;
 
         $validatedData = $this->validate();
-        
+
         $validatedData['nik'] = !empty(trim((string) $this->nik)) ? trim((string) $this->nik) : null;
         $validatedData['last_education'] = !empty(trim((string) $this->last_education)) ? trim((string) $this->last_education) : null;
         $validatedData['birth_order'] = !empty($this->birth_order) ? (int) $this->birth_order : null;
@@ -60,18 +87,14 @@ class ClientCreate extends Component
             ? trim((string) $this->disability_description) 
             : null;
 
-        // Generate Client Code sederhana (contoh: CLI-202610-001)
-        $count = Client::count() + 1;
-        $validatedData['client_code'] = 'CLI-' . date('Ym') . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
+        $this->client->update($validatedData);
 
-        $client = Client::create($validatedData);
-
-        session()->flash('message', 'Klien berhasil didaftarkan!');
-        return redirect()->route('clients.show', $client->id);
+        session()->flash('message', 'Data profil klien berhasil diperbarui!');
+        return redirect()->route('clients.show', $this->client->id);
     }
 
     public function render()
     {
-        return view('livewire.clients.client-create')->layout('components.layouts.app');
+        return view('livewire.clients.client-edit')->layout('components.layouts.app');
     }
 }

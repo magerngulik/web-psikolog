@@ -45,7 +45,9 @@ class CaseManagementTest extends TestCase
         $response = $this->withSession(['pin_unlocked' => true])
             ->get(route('cases.create'));
 
-        $response->assertStatus(200);
+        $response->assertStatus(200)
+            ->assertSee('Keluhan Utama Klien')
+            ->assertSee('Pokok Masalah / Pemicu');
     }
 
     public function test_can_create_new_medical_case(): void
@@ -56,8 +58,8 @@ class CaseManagementTest extends TestCase
             ->set('client_id', $this->client->id)
             ->set('title', 'Kecemasan Menghadapi Karir Baru')
             ->set('category', 'Anxiety')
-            ->set('complaint', 'Serang kecemasan saat berbicara di depan publik')
-            ->set('goal', 'Menurunkan skala kecemasan dari 8 ke 3')
+            ->set('subjective_complaint', 'Kaki bergetar dan jantung berdebar')
+            ->set('subjective_problem', 'Cemas ketemu orang dan takut dihakimi')
             ->set('status', 'active')
             ->call('save')
             ->assertHasNoErrors();
@@ -66,6 +68,8 @@ class CaseManagementTest extends TestCase
             'client_id' => $this->client->id,
             'title' => 'Kecemasan Menghadapi Karir Baru',
             'category' => 'Anxiety',
+            'subjective_complaint' => 'Kaki bergetar dan jantung berdebar',
+            'subjective_problem' => 'Cemas ketemu orang dan takut dihakimi',
             'status' => 'active',
         ]);
     }

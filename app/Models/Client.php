@@ -14,6 +14,14 @@ class Client extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'birth_date' => 'date',
+        'birth_order' => 'integer',
+        'total_siblings' => 'integer',
+        'is_disabled' => 'boolean',
+    ];
+
     public function cases()
     {
         return $this->hasMany(MedicalCase::class, 'client_id');
@@ -40,4 +48,34 @@ class Client extends Model
         $dob = $this->attributes['date_of_birth'] ?? ($this->attributes['birth_date'] ?? null);
         return $dob ? Carbon::parse($dob)->age : 0;
     }
+
+    public function getEducationAttribute()
+    {
+        return $this->attributes['last_education'] ?? null;
+    }
+
+    public function getSiblingInfoAttribute()
+    {
+        $order = $this->attributes['birth_order'] ?? null;
+        $total = $this->attributes['total_siblings'] ?? null;
+
+        if ($order && $total) {
+            return "Anak ke-{$order} dari {$total} bersaudara";
+        } elseif ($order) {
+            return "Anak ke-{$order}";
+        }
+
+        return '-';
+    }
+
+    public function getDisabledStatusAttribute()
+    {
+        if (empty($this->attributes['is_disabled'])) {
+            return 'Tidak';
+        }
+
+        $desc = trim($this->attributes['disability_description'] ?? '');
+        return $desc ? "Ya ({$desc})" : 'Ya (Difabel)';
+    }
 }
+

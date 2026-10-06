@@ -150,7 +150,12 @@
                         <span class="flex items-center gap-2">
                             <span>🩺</span> 4. Diagnosis PPDGJ-III / ICD-10 & Diagnosis Bebas
                         </span>
-                        <span class="text-xs text-slate-400 font-normal">Katalog resmi & diagnosis kustom</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-slate-400 font-normal hidden sm:inline">Katalog resmi & diagnosis kustom</span>
+                            <a href="{{ route('settings.references') }}" target="_blank" class="text-xs text-slate-400 hover:text-teal-400 hover:underline transition flex items-center gap-1">
+                                ⚙️ Master Referensi
+                            </a>
+                        </div>
                     </h4>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
@@ -246,8 +251,16 @@
 
                 <!-- Bagian 5: Intervensi Psikologis -->
                 <div class="bg-slate-900/60 p-4 rounded-xl border border-slate-700/80 space-y-4">
-                    <h4 class="text-sm font-bold text-teal-300 border-b border-slate-700/60 pb-2 flex items-center gap-2">
-                        <span>🧩</span> 5. Intervensi Psikologis yang Diberikan
+                    <h4 class="text-sm font-bold text-teal-300 border-b border-slate-700/60 pb-2 flex items-center justify-between">
+                        <span class="flex items-center gap-2">
+                            <span>🧩</span> 5. Intervensi Psikologis yang Diberikan
+                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-slate-400 font-normal hidden sm:inline">Pilihan intervensi & kustom</span>
+                            <a href="{{ route('settings.references') }}" target="_blank" class="text-xs text-slate-400 hover:text-teal-400 hover:underline transition flex items-center gap-1">
+                                ⚙️ Master Referensi
+                            </a>
+                        </div>
                     </h4>
                     
                     <!-- Checkbox Intervensi -->
@@ -255,7 +268,7 @@
                         @foreach($availableInterventions as $id => $name)
                             <label class="inline-flex items-center text-xs p-1.5 rounded hover:bg-slate-800 transition cursor-pointer">
                                 <input type="checkbox" wire:model="selected_interventions" value="{{ $id }}" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="rounded text-teal-500 focus:ring-teal-500 bg-slate-800 border-slate-700 h-4 w-4">
-                                <span class="ml-2 text-slate-200 font-medium">{{ $id }}. {{ $name }}</span>
+                                <span class="ml-2 text-slate-200 font-medium">{{ is_numeric($id) ? $id . '. ' : ($id ? "({$id}) " : '') }}{{ $name }}</span>
                             </label>
                         @endforeach
                     </div>

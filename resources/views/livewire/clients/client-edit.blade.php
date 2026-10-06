@@ -1,18 +1,29 @@
 <div class="p-6 max-w-4xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Tambah Klien Baru</h1>
-            <p class="text-sm text-slate-400">Isi data identitas dan kontak darurat klien</p>
+            <div class="flex items-center gap-3">
+                <h1 class="text-2xl font-bold text-white">Edit Data Klien</h1>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-teal-500/10 text-teal-400 border border-teal-500/30">
+                    {{ $client->client_code }}
+                </span>
+            </div>
+            <p class="text-sm text-slate-400 mt-1">Perbarui data identitas pribadi, demografi, dan kontak darurat</p>
         </div>
-        <a href="{{ route('clients.index') }}" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-semibold rounded-xl transition text-sm">
+        <a href="{{ route('clients.show', $client->id) }}" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-semibold rounded-xl transition text-sm">
             Kembali
         </a>
     </div>
 
+    @if (session()->has('message'))
+        <div class="p-4 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-xl text-sm font-medium">
+            {{ session('message') }}
+        </div>
+    @endif
+
     <form wire:submit.prevent="save" class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-6">
         <!-- Section Data Pribadi -->
         <div>
-            <h3 class="text-lg font-semibold text-teal-400 mb-4 pb-2 border-b border-slate-700">1. Identitas Pribadi</h3>
+            <h3 class="text-lg font-semibold text-teal-400 mb-4 pb-2 border-b border-slate-700">1. Identitas Pribadi & Demografi</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Nama Lengkap *</label>
@@ -139,11 +150,13 @@
         </div>
 
         <!-- Submit Button -->
-        <div class="flex justify-end pt-4">
-            <button type="submit" class="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-semibold rounded-xl transition shadow-lg shadow-teal-500/20">
-                Simpan Data Klien
+        <div class="flex justify-end pt-4 gap-3">
+            <a href="{{ route('clients.show', $client->id) }}" class="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition text-sm">
+                Batal
+            </a>
+            <button type="submit" class="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-semibold rounded-xl transition shadow-lg shadow-teal-500/20 text-sm">
+                Simpan Perubahan
             </button>
         </div>
     </form>
 </div>
-

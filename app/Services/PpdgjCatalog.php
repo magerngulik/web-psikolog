@@ -2,12 +2,38 @@
 
 namespace App\Services;
 
+use App\Models\SystemReference;
+
 class PpdgjCatalog
 {
     /**
      * Daftar Kode & Deskripsi Diagnosis PPDGJ-III / ICD-10 untuk Praktik Psikologi & Psikiatri
      */
     public static function all(): array
+    {
+        $custom = [];
+        try {
+            $custom = SystemReference::where('group_key', 'clinical_diagnosis')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get()
+                ->map(fn ($item) => [
+                    'code' => $item->value,
+                    'name' => $item->label,
+                    'category' => 'Master Referensi / Tambahan',
+                ])
+                ->toArray();
+        } catch (\Throwable $e) {
+            $custom = [];
+        }
+
+        return array_merge($custom, self::standardCatalog());
+    }
+
+    /**
+     * Katalog Standar PPDGJ-III / ICD-10
+     */
+    public static function standardCatalog(): array
     {
         return [
             // F40-F48: Gangguan Neurotik, Gangguan Terkait Stres, & Gangguan Somatoform

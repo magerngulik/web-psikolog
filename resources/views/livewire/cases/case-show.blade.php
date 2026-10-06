@@ -49,13 +49,13 @@
                 </div>
 
                 <div>
-                    <span class="text-xs text-slate-500 uppercase font-semibold block">Keluhan Awal</span>
-                    <p class="text-sm text-slate-300 mt-1 bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">{{ $case->complaint ?: 'Tidak ada catatan keluhan awal.' }}</p>
+                    <span class="text-xs text-slate-500 uppercase font-semibold block">Keluhan Utama Klien</span>
+                    <p class="text-sm text-slate-300 mt-1 bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">{{ $case->subjective_complaint ?: ($case->complaint ?: 'Tidak ada catatan keluhan utama.') }}</p>
                 </div>
 
                 <div>
-                    <span class="text-xs text-slate-500 uppercase font-semibold block">Target Terapi (Goal)</span>
-                    <p class="text-sm text-slate-300 mt-1 bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">{{ $case->goal ?: 'Belum ditetapkan target terapi spesifik.' }}</p>
+                    <span class="text-xs text-slate-500 uppercase font-semibold block">Pokok Masalah / Pemicu</span>
+                    <p class="text-sm text-slate-300 mt-1 bg-slate-900/50 p-3 rounded-xl border border-slate-700/50">{{ $case->subjective_problem ?: ($case->goal ?: 'Tidak ada catatan pokok masalah/pemicu.') }}</p>
                 </div>
             </div>
 
@@ -100,14 +100,15 @@
                             </div>
                         </div>
 
-                        <!-- Summary Catatan Klinis Singkat -->
-                        @if($session->summary)
+                        <!-- Summary Catatan Klinis Singkat (Dinamika Psikologis) -->
+                        @php
+                            $dynamicSummary = $session->dynamic_notes ?: ($session->sessionNote?->objective ?: '');
+                        @endphp
+                        @if(!empty(trim($dynamicSummary)))
                             <div class="text-sm text-slate-300">
                                 <span class="text-xs font-semibold text-slate-500 uppercase block">Ringkasan Sesi:</span>
-                                {{ Str::limit($session->summary, 160) }}
+                                {{ Str::limit($dynamicSummary, 160) }}
                             </div>
-                        @else
-                            <p class="text-xs text-slate-500 italic">Belum ada catatan ringkasan klinis yang diisi untuk sesi ini.</p>
                         @endif
 
                         <div class="flex justify-end pt-2">

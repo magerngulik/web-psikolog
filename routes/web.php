@@ -4,6 +4,7 @@ use App\Livewire\Cases\CaseCreate;
 use App\Livewire\Cases\CaseIndex;
 use App\Livewire\Cases\CaseShow;
 use App\Livewire\Clients\ClientCreate;
+use App\Livewire\Clients\ClientEdit;
 use App\Livewire\Clients\ClientIndex;
 use App\Livewire\Clients\ClientShow;
 use App\Livewire\Dashboard;
@@ -30,6 +31,7 @@ Route::middleware(['pin.protected'])->group(function () {
     Route::get('/clients', ClientIndex::class)->name('clients.index');
     Route::get('/clients/create', ClientCreate::class)->name('clients.create');
     Route::get('/clients/{id}', ClientShow::class)->name('clients.show');
+    Route::get('/clients/{id}/edit', ClientEdit::class)->name('clients.edit');
 
     // Modul Kasus Medis (Modul 4)
     Route::get('/cases', CaseIndex::class)->name('cases.index');

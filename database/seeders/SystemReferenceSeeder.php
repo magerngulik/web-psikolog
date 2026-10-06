@@ -31,6 +31,29 @@ class SystemReferenceSeeder extends Seeder
             ['group_key' => 'payment_method', 'label' => 'Transfer Bank', 'value' => 'transfer', 'sort_order' => 1],
             ['group_key' => 'payment_method', 'label' => 'Tunai (Cash)', 'value' => 'cash', 'sort_order' => 2],
             ['group_key' => 'payment_method', 'label' => 'QRIS', 'value' => 'qris', 'sort_order' => 3],
+
+            // Psychological Intervention (1-16)
+            ['group_key' => 'psychological_intervention', 'label' => 'Psikoedukasi', 'value' => '1', 'sort_order' => 1],
+            ['group_key' => 'psychological_intervention', 'label' => 'Konseling Psikologis', 'value' => '2', 'sort_order' => 2],
+            ['group_key' => 'psychological_intervention', 'label' => 'Cognitive Behavioral Therapy (CBT)', 'value' => '3', 'sort_order' => 3],
+            ['group_key' => 'psychological_intervention', 'label' => 'Acceptance & Commitment Therapy (ACT)', 'value' => '4', 'sort_order' => 4],
+            ['group_key' => 'psychological_intervention', 'label' => 'Behavioral Activation', 'value' => '5', 'sort_order' => 5],
+            ['group_key' => 'psychological_intervention', 'label' => 'Mindfulness & Relaxation Therapy', 'value' => '6', 'sort_order' => 6],
+            ['group_key' => 'psychological_intervention', 'label' => 'Solution-Focused Brief Therapy (SFBT)', 'value' => '7', 'sort_order' => 7],
+            ['group_key' => 'psychological_intervention', 'label' => 'Client-Centered Therapy / Humanistic', 'value' => '8', 'sort_order' => 8],
+            ['group_key' => 'psychological_intervention', 'label' => 'Interpersonal Psychotherapy (IPT)', 'value' => '9', 'sort_order' => 9],
+            ['group_key' => 'psychological_intervention', 'label' => 'Psychodynamic / Psychoanalytic', 'value' => '10', 'sort_order' => 10],
+            ['group_key' => 'psychological_intervention', 'label' => 'Family / Systemic Therapy', 'value' => '11', 'sort_order' => 11],
+            ['group_key' => 'psychological_intervention', 'label' => 'Couples / Marital Therapy', 'value' => '12', 'sort_order' => 12],
+            ['group_key' => 'psychological_intervention', 'label' => 'Expressive / Art / Play Therapy', 'value' => '13', 'sort_order' => 13],
+            ['group_key' => 'psychological_intervention', 'label' => 'Crisis Intervention & Safety Planning', 'value' => '14', 'sort_order' => 14],
+            ['group_key' => 'psychological_intervention', 'label' => 'Motivational Interviewing (MI)', 'value' => '15', 'sort_order' => 15],
+            ['group_key' => 'psychological_intervention', 'label' => 'Biofeedback / Neurofeedback', 'value' => '16', 'sort_order' => 16],
+
+            // Clinical Diagnosis Tambahan
+            ['group_key' => 'clinical_diagnosis', 'label' => 'Burnout Kronis & Kelelahan Emosional Kerja', 'value' => 'Z73.0', 'sort_order' => 1],
+            ['group_key' => 'clinical_diagnosis', 'label' => 'Duka Cita & Kehilangan Mendalam (Grief & Bereavement)', 'value' => 'Z63.4', 'sort_order' => 2],
+            ['group_key' => 'clinical_diagnosis', 'label' => 'Krisis Eksistensial & Quarter-life Crisis', 'value' => 'F99.0', 'sort_order' => 3],
         ];
 
         foreach ($data as $item) {

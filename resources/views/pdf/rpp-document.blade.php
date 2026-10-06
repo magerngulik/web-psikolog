@@ -37,17 +37,41 @@
             <td width="30%">{{ $appointment->patient?->medical_record_number ?? '-' }}</td>
         </tr>
         <tr>
-            <td><strong>Tgl. Lahir / Umur</strong></td>
+            <td><strong>NIK KTP</strong></td>
             <td>:</td>
-            <td>{{ $appointment->patient?->dob ?? '-' }} ({{ $appointment->patient?->age ?? 0 }} Thn)</td>
+            <td>{{ $appointment->patient?->nik ?? '-' }}</td>
             <td><strong>Tgl. Pemeriksaan</strong></td>
             <td>:</td>
             <td>{{ \Carbon\Carbon::parse($appointment->date)->translatedFormat('d F Y') }}</td>
         </tr>
         <tr>
+            <td><strong>Tgl. Lahir / Umur</strong></td>
+            <td>:</td>
+            <td>{{ $appointment->patient?->dob ?? '-' }} ({{ $appointment->patient?->age ?? 0 }} Thn)</td>
             <td><strong>Jenis Kelamin</strong></td>
             <td>:</td>
             <td>{{ ($appointment->patient?->gender == 'L' || $appointment->patient?->gender == 'Laki-laki') ? 'Laki-laki' : 'Perempuan' }}</td>
+        </tr>
+        <tr>
+            <td><strong>Pendidikan</strong></td>
+            <td>:</td>
+            <td>{{ $appointment->patient?->last_education ?? '-' }}</td>
+            <td><strong>Urutan Lahir</strong></td>
+            <td>:</td>
+            <td>
+                @if($appointment->patient?->birth_order && $appointment->patient?->total_siblings)
+                    Anak ke-{{ $appointment->patient->birth_order }} dari {{ $appointment->patient->total_siblings }} bersaudara
+                @elseif($appointment->patient?->birth_order)
+                    Anak ke-{{ $appointment->patient->birth_order }}
+                @else
+                    -
+                @endif
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Status Difabel</strong></td>
+            <td>:</td>
+            <td>{{ $appointment->patient?->disabled_status ?? 'Tidak' }}</td>
             <td><strong>Durasi Konseling</strong></td>
             <td>:</td>
             <td>{{ $note->duration_minutes ?? 60 }} Menit</td>
@@ -158,9 +182,12 @@
             <tr>
                 @foreach($chunk as $id => $name)
                     <td width="50%" class="checkbox-cell">
-                        [{{ in_array((string)$id, array_map('strval', $activeInterventions)) || in_array($id, $activeInterventions) ? 'X' : ' ' }}] {{ $id }}. {{ $name }}
+                        [{{ in_array((string)$id, array_map('strval', $activeInterventions)) || in_array($id, $activeInterventions) ? 'X' : ' ' }}] {{ is_numeric($id) ? $id . '. ' : ($id ? "({$id}) " : '') }}{{ $name }}
                     </td>
                 @endforeach
+                @if(count($chunk) < 2)
+                    <td width="50%" class="checkbox-cell"></td>
+                @endif
             </tr>
         @endforeach
 

@@ -44,16 +44,32 @@
                 </select>
             </div>
 
-            <!-- Keluhan Utama / Symptom Awal -->
+            <!-- Keluhan Utama Klien -->
             <div class="md:col-span-2">
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Keluhan Utama (Initial Complaint)</label>
-                <textarea wire:model="complaint" rows="3" placeholder="Gambarkan keluhan awal yang disampaikan oleh klien..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500 transition"></textarea>
+                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">
+                    Keluhan Utama Klien
+                </label>
+                <textarea 
+                    wire:model="subjective_complaint" 
+                    rows="4" 
+                    placeholder="Gambarkan keluhan utama awal yang dirasakan klien saat ini, perasaan cemas, gelisah, sedih, dll..." 
+                    class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-teal-500 transition leading-relaxed"
+                ></textarea>
+                @error('subjective_complaint') <span class="text-xs text-rose-400 mt-1 block">{{ $message }}</span> @enderror
             </div>
 
-            <!-- Target Terapi / Goal -->
+            <!-- Pokok Masalah / Pemicu -->
             <div class="md:col-span-2">
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Target Terapi (Therapy Goal)</label>
-                <textarea wire:model="goal" rows="3" placeholder="Target intervensi yang ingin dicapai bersama klien..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500 transition"></textarea>
+                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">
+                    Pokok Masalah / Pemicu
+                </label>
+                <textarea 
+                    wire:model="subjective_problem" 
+                    rows="4" 
+                    placeholder="Gambarkan pokok persoalan atau pemicu masalah (misal: relasi keluarga, tekanan pekerjaan, trauma masa lalu, dll)..." 
+                    class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-teal-500 transition leading-relaxed"
+                ></textarea>
+                @error('subjective_problem') <span class="text-xs text-rose-400 mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <!-- Status Kasus -->

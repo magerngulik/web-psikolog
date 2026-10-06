@@ -4,6 +4,7 @@ namespace App\Livewire\Sessions;
 
 use App\Models\Session;
 use App\Models\SessionNote;
+use App\Models\SystemReference;
 use App\Services\PpdgjCatalog;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
@@ -41,24 +42,7 @@ class SessionShow extends Component
     public bool $show_icd_dropdown = false;
 
     // Intervensi Psikologis (Daftar Pilihan Utama & Catatan Bebas)
-    public array $availableInterventions = [
-        1 => 'Psikoedukasi',
-        2 => 'Konseling Psikologis',
-        3 => 'Cognitive Behavioral Therapy (CBT)',
-        4 => 'Acceptance & Commitment Therapy (ACT)',
-        5 => 'Behavioral Activation',
-        6 => 'Mindfulness & Relaxation Therapy',
-        7 => 'Solution-Focused Brief Therapy (SFBT)',
-        8 => 'Client-Centered Therapy / Humanistic',
-        9 => 'Interpersonal Psychotherapy (IPT)',
-        10 => 'Psychodynamic / Psychoanalytic',
-        11 => 'Family / Systemic Therapy',
-        12 => 'Couples / Marital Therapy',
-        13 => 'Expressive / Art / Play Therapy',
-        14 => 'Crisis Intervention & Safety Planning',
-        15 => 'Motivational Interviewing (MI)',
-        16 => 'Biofeedback / Neurofeedback',
-    ];
+    public array $availableInterventions = [];
     public array $selected_interventions = [];
     public $intervention_notes = '';
 
@@ -115,18 +99,72 @@ class SessionShow extends Component
                 $this->icd_search = $this->icd10_code . ($this->icd10_description ? ' - ' . $this->icd10_description : '');
             }
         } else {
-            // Pre-populate from session if available
-            $this->subjective_complaint = $this->session->subjective_complaint ?? $this->session->complaint ?? $this->session->summary ?? '';
-            $this->subjective_problem = $this->session->subjective_problem ?? '';
+            // Pre-populate from session if available, or fallback to medical case initial subjective notes
+            $this->subjective_complaint = $this->session->subjective_complaint 
+                ?? $this->session->complaint 
+                ?? $this->session->medicalCase?->subjective_complaint 
+                ?? $this->session->medicalCase?->complaint 
+                ?? '';
+            $this->subjective_problem = $this->session->subjective_problem 
+                ?? $this->session->medicalCase?->subjective_problem 
+                ?? '';
             $this->objective = $this->session->dynamic_notes ?? '';
             $this->intervention_notes = $this->session->intervention_notes ?? '';
             $this->client_message = $this->session->recommendation ?? $this->session->message ?? '';
         }
 
-        // Keep backward-compatible properties in sync
-        $this->summary = $this->subjective_complaint ?: ($this->session->summary ?? '');
+        // Ringkasan Sesi diselaraskan dengan Dinamika Psikologis (Objective). Jika awal kosong, beri string kosong.
         $this->dynamic_notes = $this->objective ?: ($this->session->dynamic_notes ?? '');
+        $this->summary = $this->dynamic_notes ?: '';
         $this->recommendation = $this->client_message ?: ($this->session->recommendation ?? '');
+
+        $this->loadInterventions();
+    }
+
+    public static function defaultInterventions(): array
+    {
+        return [
+            1 => 'Psikoedukasi',
+            2 => 'Konseling Psikologis',
+            3 => 'Cognitive Behavioral Therapy (CBT)',
+            4 => 'Acceptance & Commitment Therapy (ACT)',
+            5 => 'Behavioral Activation',
+            6 => 'Mindfulness & Relaxation Therapy',
+            7 => 'Solution-Focused Brief Therapy (SFBT)',
+            8 => 'Client-Centered Therapy / Humanistic',
+            9 => 'Interpersonal Psychotherapy (IPT)',
+            10 => 'Psychodynamic / Psychoanalytic',
+            11 => 'Family / Systemic Therapy',
+            12 => 'Couples / Marital Therapy',
+            13 => 'Expressive / Art / Play Therapy',
+            14 => 'Crisis Intervention & Safety Planning',
+            15 => 'Motivational Interviewing (MI)',
+            16 => 'Biofeedback / Neurofeedback',
+        ];
+    }
+
+    public function loadInterventions(): void
+    {
+        try {
+            $refs = SystemReference::where('group_key', 'psychological_intervention')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+
+            if ($refs->isNotEmpty()) {
+                $interventions = [];
+                foreach ($refs as $ref) {
+                    $key = is_numeric($ref->value) ? (int) $ref->value : $ref->value;
+                    $interventions[$key] = $ref->label;
+                }
+                $this->availableInterventions = $interventions;
+                return;
+            }
+        } catch (\Throwable $e) {
+            // fallback
+        }
+
+        $this->availableInterventions = self::defaultInterventions();
     }
 
     public function updatedIcdSearch()
@@ -165,11 +203,11 @@ class SessionShow extends Component
         }
 
         // Sync backward-compatible fields if modified directly
-        if (empty($this->subjective_complaint) && !empty($this->summary)) {
-            $this->subjective_complaint = $this->summary;
-        }
         if (empty($this->objective) && !empty($this->dynamic_notes)) {
             $this->objective = $this->dynamic_notes;
+        }
+        if (empty($this->objective) && !empty($this->summary)) {
+            $this->objective = $this->summary;
         }
         if (empty($this->client_message) && !empty($this->recommendation)) {
             $this->client_message = $this->recommendation;
@@ -191,15 +229,17 @@ class SessionShow extends Component
         $token = $this->sessionNote?->qr_code_token ?? Str::random(32);
 
         DB::transaction(function () use ($combinedSubjective, $token) {
-            // Update Session / PatientSession
+            // Update Session / PatientSession: summary diselaraskan dengan Dinamika Psikologis (Objective)
+            $dynamicSummary = $this->objective ?: ($this->dynamic_notes ?: '');
+
             $this->session->update([
                 'status' => $this->status,
                 'payment_status' => $this->payment_status,
                 'payment_method' => $this->payment_method,
                 'fee' => $this->fee,
                 'duration_minutes' => $this->duration_minutes,
-                'summary' => $this->subjective_complaint ?: $this->summary,
-                'dynamic_notes' => $this->objective ?: $this->dynamic_notes,
+                'summary' => $dynamicSummary,
+                'dynamic_notes' => $dynamicSummary,
                 'intervention_notes' => $this->intervention_notes,
                 'recommendation' => $this->client_message ?: $this->recommendation,
                 'subjective_complaint' => $this->subjective_complaint,
