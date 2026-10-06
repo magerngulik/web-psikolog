@@ -22,6 +22,12 @@
 <body>
 
     <div class="header">
+        @if($appointment->psychologist?->practice_name)
+            <div style="font-size: 11pt; font-weight: bold; margin-bottom: 2px; text-transform: uppercase;">{{ $appointment->psychologist->practice_name }}</div>
+            @if($appointment->psychologist->practice_address)
+                <div style="font-size: 8pt; font-weight: normal; color: #555; margin-bottom: 4px;">{{ $appointment->psychologist->practice_address }} {{ $appointment->psychologist->phone ? '• Telp: '.$appointment->psychologist->phone : '' }}</div>
+            @endif
+        @endif
         <h2>REKAM PEMERIKSAAN PSIKOLOGIS (RPP KONSELING)</h2>
         <p>RAHASIA / MEDICAL CONFIDENTIAL</p>
     </div>
@@ -233,10 +239,10 @@
             </td>
             <td width="20%"></td>
             <td width="40%" style="text-align: center; vertical-align: top;">
-                <p>Jakarta, {{ \Carbon\Carbon::parse($appointment->date)->translatedFormat('d F Y') }}</p>
+                <p>{{ $appointment->psychologist?->practice_city ?: 'Jakarta' }}, {{ \Carbon\Carbon::parse($appointment->session_date ?? $appointment->date)->translatedFormat('d F Y') }}</p>
                 <p>Psikolog Penanggung Jawab,</p>
                 <br><br>
-                <p><strong><u>{{ $appointment->psychologist?->name ?? 'Psikolog Penanggung Jawab' }}</u></strong><br>SIPA: {{ $appointment->psychologist?->sipa_number ?? '503/123-SIPA/2026' }}</p>
+                <p><strong><u>{{ $appointment->psychologist?->formatted_name ?? ($appointment->psychologist?->name ?? 'Psikolog Penanggung Jawab') }}</u></strong><br>SIPA: {{ $appointment->psychologist?->sipa_number ?? '-' }}</p>
             </td>
         </tr>
     </table>

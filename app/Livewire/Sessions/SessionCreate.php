@@ -17,6 +17,9 @@ class SessionCreate extends Component
     public $status = 'scheduled';
     public $payment_status = 'unpaid';
     public $payment_method = 'cash';
+    public $service_modality = 'individual_direct';
+    public bool $is_high_risk = false;
+    public bool $generates_report = true;
 
     public function mount()
     {
@@ -55,6 +58,9 @@ class SessionCreate extends Component
             'status' => 'required|in:scheduled,confirmed,in_progress,done,cancelled,no_show,rescheduled',
             'payment_status' => 'required|in:unpaid,paid,waived',
             'payment_method' => 'required|in:cash,transfer,qris',
+            'service_modality' => 'required|string|in:individual_direct,individual_virtual,group,phone,chat_text,legal_visum,legal_witness,legal_court_report',
+            'is_high_risk' => 'boolean',
+            'generates_report' => 'boolean',
         ];
     }
 
@@ -90,6 +96,9 @@ class SessionCreate extends Component
             'status' => $this->status,
             'payment_status' => $this->payment_status,
             'payment_method' => $this->payment_method,
+            'service_modality' => $this->service_modality,
+            'is_high_risk' => $this->is_high_risk,
+            'generates_report' => $this->generates_report,
             'is_locked' => false,
         ]);
 

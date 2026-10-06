@@ -88,6 +88,49 @@
                     <option value="confirmed">Confirmed (Dikonfirmasi Klien)</option>
                 </select>
             </div>
+
+            <!-- Moda Pelayanan & Klasifikasi SKP IPK -->
+            <div class="md:col-span-2 pt-2 border-t border-slate-700/60">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="text-teal-400 text-xs font-bold uppercase tracking-wider">Klasifikasi Logbook & SKP IPK</span>
+                    <span class="text-xs text-slate-500">• Digunakan untuk akumulasi otomatis Logbook Tahunan</span>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Moda Pelayanan / Jenis Kasus *</label>
+                        <select wire:model="service_modality" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500 transition">
+                            <option value="individual_direct">Tatap Muka Klien Individual Langsung (0.05 SKP)</option>
+                            <option value="individual_virtual">Komunikasi Virtual / Video Call Klien (0.05 SKP)</option>
+                            <option value="group">Tatap Muka Kelompok / Komunitas (0.10 SKP)</option>
+                            <option value="phone">Konsultasi Telepon Suara > 15 Menit (0.02 SKP)</option>
+                            <option value="chat_text">Konsultasi Tulisan / Chat > 100 Kata (0.02 SKP)</option>
+                            <option value="legal_visum">Tim Visum et Repertum Psikiatrikum (0.02 SKP)</option>
+                            <option value="legal_witness">Saksi Ahli di Pengadilan (0.05 SKP)</option>
+                            <option value="legal_court_report">Laporan Pemeriksaan Alat Bukti Sidang (0.01 SKP)</option>
+                        </select>
+                        @error('service_modality') <span class="text-rose-400 text-xs">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="flex flex-col justify-center space-y-3 pt-2">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input wire:model="is_high_risk" type="checkbox" class="w-5 h-5 rounded bg-slate-900 border-slate-700 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900">
+                            <div>
+                                <span class="text-sm font-medium text-slate-200">Tugas di Tempat Berisiko Tinggi</span>
+                                <p class="text-xs text-slate-400">Centang jika bertugas di daerah konflik, bencana, lapas bahaya (0.05 SKP)</p>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input wire:model="generates_report" type="checkbox" class="w-5 h-5 rounded bg-slate-900 border-slate-700 text-teal-500 focus:ring-teal-500 focus:ring-offset-slate-900">
+                            <div>
+                                <span class="text-sm font-medium text-slate-200">Menyusun Laporan Pemeriksaan Psikologis (RPP)</span>
+                                <p class="text-xs text-slate-400">Otomatis dihitung poin pembuatan laporan resmi (0.01 SKP)</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Submit Button -->

@@ -15,6 +15,12 @@ class PatientSession extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'is_locked' => 'boolean',
+        'is_high_risk' => 'boolean',
+        'generates_report' => 'boolean',
+    ];
+
     protected static function boot()
     {
         parent::boot();

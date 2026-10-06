@@ -9,10 +9,12 @@ use App\Livewire\Clients\ClientIndex;
 use App\Livewire\Clients\ClientShow;
 use App\Livewire\Dashboard;
 use App\Livewire\LockScreen;
+use App\Livewire\Reports\AnnualLogbook;
 use App\Livewire\Reports\RppVerifier;
 use App\Livewire\Sessions\SessionCreate;
 use App\Livewire\Sessions\SessionIndex;
 use App\Livewire\Sessions\SessionShow;
+use App\Livewire\Settings\ProfileSettings;
 use App\Livewire\Settings\ReferenceManager;
 use App\Livewire\Settings\SecuritySettings;
 use Illuminate\Support\Facades\Route;
@@ -48,7 +50,12 @@ Route::middleware(['pin.protected'])->group(function () {
         return redirect()->route('sessions.show', $appointmentId);
     })->name('rpp.edit');
 
+    // Modul Laporan & Logbook Tahunan SKP IPK
+    Route::get('/reports/logbook', AnnualLogbook::class)->name('reports.logbook');
+    Route::get('/reports/logbook/pdf/{year?}', [AnnualLogbook::class, 'downloadPdf'])->name('reports.logbook.pdf');
+
     // Modul Settings & Master Data (Modul 6)
+    Route::get('/settings/profile', ProfileSettings::class)->name('settings.profile');
     Route::get('/settings/references', ReferenceManager::class)->name('settings.references');
     Route::get('/settings/security', SecuritySettings::class)->name('settings.security');
 });

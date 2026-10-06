@@ -14,7 +14,7 @@
                     <span class="text-teal-400 text-2xl">🧠</span> <span>Web Psikolog</span>
                 </a>
             </div>
-            <div class="flex items-center gap-6 text-sm font-medium text-slate-300">
+            <div class="flex items-center gap-5 text-sm font-medium text-slate-300">
                 <a href="{{ route('dashboard') }}" class="hover:text-teal-400 transition flex items-center gap-1.5">
                     📊 <span>Dashboard</span>
                 </a>
@@ -22,16 +22,22 @@
                     👥 <span>Klien</span>
                 </a>
                 <a href="{{ route('cases.index') }}" class="hover:text-teal-400 transition flex items-center gap-1.5">
-                    📋 <span>Kasus Klinis</span>
+                    📋 <span>Kasus</span>
                 </a>
                 <a href="{{ route('sessions.index') }}" class="hover:text-teal-400 transition flex items-center gap-1.5">
-                    📅 <span>Sesi Konseling</span>
+                    📅 <span>Sesi</span>
+                </a>
+                <a href="{{ route('reports.logbook') }}" class="hover:text-teal-400 transition flex items-center gap-1.5 text-teal-400 font-semibold">
+                    📈 <span>Logbook SKP</span>
                 </a>
                 <a href="{{ route('settings.references') }}" class="hover:text-teal-400 transition flex items-center gap-1.5">
-                    🗂️ <span>Master Referensi</span>
+                    🗂️ <span>Referensi</span>
+                </a>
+                <a href="{{ route('settings.profile') }}" class="hover:text-teal-400 transition flex items-center gap-1.5">
+                    👤 <span>Profil</span>
                 </a>
                 <a href="{{ route('settings.security') }}" class="hover:text-teal-400 transition flex items-center gap-1.5">
-                    🔑 <span>Keamanan PIN</span>
+                    🔑 <span>PIN</span>
                 </a>
             </div>
         </nav>

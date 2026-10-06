@@ -56,6 +56,9 @@ class SessionShow extends Component
     public $payment_status;
     public $payment_method;
     public $fee;
+    public $service_modality = 'individual_direct';
+    public bool $is_high_risk = false;
+    public bool $generates_report = true;
     public $is_locked = false;
 
     // Backward-compatibility properties
@@ -72,6 +75,9 @@ class SessionShow extends Component
         $this->payment_method = $this->session->payment_method ?? 'cash';
         $this->fee = $this->session->fee ?? 0;
         $this->duration_minutes = $this->session->duration_minutes ?? 60;
+        $this->service_modality = $this->session->service_modality ?? 'individual_direct';
+        $this->is_high_risk = (bool) ($this->session->is_high_risk ?? false);
+        $this->generates_report = (bool) ($this->session->generates_report ?? true);
         $this->is_locked = (bool) $this->session->is_locked;
 
         // Load or initialize SessionNote
@@ -238,6 +244,9 @@ class SessionShow extends Component
                 'payment_method' => $this->payment_method,
                 'fee' => $this->fee,
                 'duration_minutes' => $this->duration_minutes,
+                'service_modality' => $this->service_modality,
+                'is_high_risk' => $this->is_high_risk,
+                'generates_report' => $this->generates_report,
                 'summary' => $dynamicSummary,
                 'dynamic_notes' => $dynamicSummary,
                 'intervention_notes' => $this->intervention_notes,

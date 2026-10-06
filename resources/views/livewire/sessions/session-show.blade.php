@@ -387,6 +387,54 @@
                 @endif
             </div>
 
+            <!-- Card Klasifikasi Logbook & SKP IPK -->
+            <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
+                <div class="border-b border-slate-700 pb-3 flex items-center justify-between">
+                    <h3 class="text-base font-semibold text-white flex items-center gap-2">
+                        <span>📊</span> Klasifikasi SKP & Logbook
+                    </h3>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/20 text-teal-400 border border-teal-500/30">IPK</span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Moda Pelayanan / Jenis *</label>
+                    <select wire:model="service_modality" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-teal-500 transition disabled:opacity-50">
+                        <option value="individual_direct">Tatap Muka Klien Langsung (0.05 SKP)</option>
+                        <option value="individual_virtual">Komunikasi Virtual / Video Call (0.05 SKP)</option>
+                        <option value="group">Tatap Muka Kelompok (0.10 SKP)</option>
+                        <option value="phone">Konsultasi Telepon > 15 Menit (0.02 SKP)</option>
+                        <option value="chat_text">Konsultasi Tulisan / Chat > 100 Kata (0.02 SKP)</option>
+                        <option value="legal_visum">Tim Visum et Repertum (0.02 SKP)</option>
+                        <option value="legal_witness">Saksi Ahli di Sidang (0.05 SKP)</option>
+                        <option value="legal_court_report">Laporan Bukti Pengadilan (0.01 SKP)</option>
+                    </select>
+                </div>
+
+                <div class="space-y-3 pt-2 border-t border-slate-700/60">
+                    <label class="flex items-start gap-2.5 cursor-pointer">
+                        <input wire:model="is_high_risk" type="checkbox" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="mt-0.5 rounded text-amber-500 focus:ring-amber-500 bg-slate-900 border-slate-700 h-4 w-4">
+                        <span class="text-xs text-slate-300">
+                            <strong>Tugas Tempat Berisiko Tinggi</strong>
+                            <span class="block text-[11px] text-slate-400">Daerah rawan, bencana, lapas bahaya (+0.05 SKP)</span>
+                        </span>
+                    </label>
+
+                    <label class="flex items-start gap-2.5 cursor-pointer">
+                        <input wire:model="generates_report" type="checkbox" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="mt-0.5 rounded text-teal-500 focus:ring-teal-500 bg-slate-900 border-slate-700 h-4 w-4">
+                        <span class="text-xs text-slate-300">
+                            <strong>Menyusun Laporan RPP</strong>
+                            <span class="block text-[11px] text-slate-400">Pemeriksaan psikologis resmi (+0.01 SKP)</span>
+                        </span>
+                    </label>
+                </div>
+
+                @if(!$session->is_locked && !$is_locked)
+                    <button wire:click="saveNotes" type="button" class="w-full py-2 bg-slate-700 hover:bg-slate-600 text-teal-400 font-semibold rounded-xl text-xs transition">
+                        Update Klasifikasi SKP
+                    </button>
+                @endif
+            </div>
+
             <!-- Card Dokumen Resmi & Ekspor PDF -->
             <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-4">
                 <h3 class="text-base font-semibold text-white border-b border-slate-700 pb-3 flex items-center gap-2">
