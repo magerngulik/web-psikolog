@@ -5,13 +5,13 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sqlite.org)
 [![PHP](https://img.shields.io/badge/PHP-8.5-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.new)
-[![Tests](https://img.shields.io/badge/Tests-32%20Passed-emerald?style=for-the-badge&logo=phpunit&logoColor=white)](#-pengujian--kualitas-kode)
+[![Tests](https://img.shields.io/badge/Tests-39%20Passed-emerald?style=for-the-badge&logo=phpunit&logoColor=white)](#-pengujian--kualitas-kode)
 
 ---
 
 ## 📖 Tentang Proyek
 
-**Web Psikolog** adalah aplikasi web manajemen praktik psikologi internal dan rekam medis klinis berbasis **Laravel 13** dan **Livewire 4**. Aplikasi ini dirancang khusus untuk mempermudah praktisi psikolog dalam mengelola direktori klien, kasus medis, penjadwalan sesi konseling dengan **validasi anti-overlap waktu**, pengisian catatan klinis (*clinical notes*), hingga penguncian dokumen rekam medis yang terlindungi oleh **PIN Security Key 6-Digit**.
+**Web Psikolog** adalah aplikasi web manajemen praktik psikologi internal, analitik klinis, dan rekam medis digital berbasis **Laravel 13** dan **Livewire 4**. Aplikasi ini dirancang khusus untuk mempermudah praktisi psikolog dalam mengelola direktori klien, kasus medis, penjadwalan sesi konseling dengan **validasi anti-overlap waktu**, penyusunan **Rekam Pemeriksaan Psikologis (RPP KONSELING)** lengkap dengan formulir **Keluhan & Masalah (Subjective)**, **Objective (Dinamika Psikologis)**, **Assessment (Checkbox Metode & Analisis Free Text)**, **Diagnosis PPDGJ-III / ICD-10 Searchable Dropdown & Diagnosis Bebas (Free Text)**, **Intervensi Psikologis**, ekspor PDF resmi dengan **QR Code Token Security Verification**, hingga penguncian dokumen rekam medis yang terlindungi oleh **PIN Security Key 6-Digit**.
 
 ---
 
@@ -21,49 +21,58 @@
 | :--- | :--- | :--- |
 | **Framework Backend** | Laravel 13.x (PHP 8.5) | Routing, Eloquent ORM, Middleware, Service Container |
 | **Frontend Reactive** | Livewire 4.x | Komponen SPA reaktif tanpa perlu JavaScript API terpisah |
-| **UI Styling** | Tailwind CSS 4.x | Responsive dark-mode UI design |
+| **UI Styling** | Tailwind CSS 4.x | Responsive Dark-Mode UI design dengan statistik & chart analitik |
 | **Database Engine** | SQLite | Database lokal ringan dengan UUID Primary Keys & Soft Deletes |
-| **Keamanan** | Custom PIN Middleware | Encrypted Hash PIN 6-Digit & Session Guard |
-| **Test Suite** | PHPUnit / Laravel Testing | 32 Test Suites (62 Assertions) Lulus 100% |
+| **PDF & QR Engine** | DomPDF & Simple QrCode | Generation dokumen RPP resmi & QR Verification Token |
+| **Keamanan Data** | Custom PIN Middleware & QR Security Token | Encrypted Hash PIN 6-Digit, Session Guard, & Verification Token |
+| **Test Suite** | PHPUnit / Laravel Testing | 39 Test Suites (83 Assertions) Lulus 100% |
 
 ---
 
 ## 🚀 Fitur Utama
 
-### 1. 🔑 Lock Screen & Proteksi Keamanan PIN 6-Digit (Modul 2 & 6)
+### 1. 📜 Clinical RPP Generator Engine & Ekspor PDF (Modul 7)
+- **Editor RPP Konseling (`/rpp/{appointmentId}`)**:
+  - **Subjective (S)**: Form terpisah untuk **Keluhan Klien** dan **Masalah Klien**.
+  - **Objective (O)**: Pencatatan hasil observasi & **Dinamika Psikologis**.
+  - **Assessment (A)**: Checkbox 4 Metode (*Paper & Pencil Test*, *Inventory*, *Observasi*, *Wawancara*) + **Analisis Klinis Free Text**.
+  - **🩺 PPDGJ-III / ICD-10 Searchable Dropdown & Free Text**: Pencarian interaktif kode diagnosis resmi serta textarea khusus untuk **Diagnosis Kustom / Catatan Diagnosis Bebas**.
+  - **Intervensi Psikologis**: Checkbox intervensi utama + textarea catatan khusus/rincian teknik intervensi.
+  - **Pesan / Tugas Rumah Klien**: Area ketik lapang (`rows="5"`) untuk *Homework / Action Plan*.
+- **Cetak Dokumentasi RPP PDF**: Layout cetak presisi A4 dengan Tanda Tangan Digital Psikolog & SIPA.
+- **🔒 Validation Token QR Code Security**: QR Code unik di dokumen cetak yang dapat divalidasi keabsahannya secara online via `/verify-rpp/{token}`.
+
+### 2. 📊 Dashboard Analytics & Financial Summary (Modul 7)
+- **Kartu Metrik Real-Time (`/`)**: Total Sesi Bulan Ini, Revenue Bulanan, Revenue Tahunan, & Alert **Unclosed Notes** (Notifikasi Rekam Medis Belum Dikunci).
+- **🩺 Top 5 Distribusi Diagnosa ICD-10**: Grafik batang frekuensi diagnosa terbanyak.
+- **📈 Workload Chart Psikolog**: Beban kerja sesi per hari dalam seminggu.
+- **Aksi Cepat RPP**: Tabel daftar sesi terbaru dengan tautan cepat langsung ke RPP Generator.
+
+### 3. 🔑 Lock Screen & Proteksi Keamanan PIN 6-Digit (Modul 2 & 6)
 - **Virtual Keypad Lock Screen (`/lock-screen`)**: Seluruh halaman aplikasi dilindungi oleh PIN 6-digit (Default PIN: `123456`).
 - **Middleware Guard (`pin.protected`)**: Memastikan akses tanpa sesi `pin_unlocked` selalu di-redirect ke halaman Lock Screen.
 - **Pengaturan PIN (`/settings/security`)**: Fitur ubah PIN dengan verifikasi PIN lama dan **Instant Lock Screen (`🔒`)** untuk mengunci aplikasi secara langsung.
 
-### 2. 👥 Manajemen Data Klien / Pasien (Modul 3)
+### 4. 👥 Manajemen Data Klien / Pasien (Modul 3)
 - **Auto-Generate Kode Klien**: Format unik otomatis `CLI-YYYYMM-XXX`.
 - **Direktori & Pencarian Real-Time (`/clients`)**: Pencarian nama, kode klien, atau HP, filter jenis kelamin, paginasi, dan *Soft Delete*.
 - **Pendaftaran Klien (`/clients/create`)**: Pencatatan identitas pribadi lengkap & kontak darurat (nama, hp, relasi).
 - **Profil & Rekam Histori (`/clients/{id}`)**: Menampilkan detail profil, kontak darurat, serta daftar riwayat kasus & sesi konseling.
 
-### 3. 📋 Manajemen Kasus Klinis / Rekam Medis (Modul 4)
+### 5. 📋 Manajemen Kasus Klinis / Rekam Medis (Modul 4)
 - **Auto-Generate Kode Kasus**: Format unik otomatis `CAS-YYYYMM-XXX`.
 - **Manajemen Program Terapi (`/cases`)**: Penautan kasus ke klien, pencatatan keluhan awal (*Initial Complaint*), dan target terapi (*Therapy Goal*).
 - **Pengubahan Status Kasus**: Toggle status *Active*, *On Hold*, *Completed*, atau *Cancelled*.
 - **Evaluasi Perkembangan Global (*Progress Note*)**: Catatan ringkasan perkembangan progres terapi klien secara berkesinambungan.
 
-### 4. 📅 Penjadwalan Sesi Konseling & Catatan Klinis (Modul 5)
+### 6. 📅 Penjadwalan Sesi Konseling & Catatan Klinis (Modul 5)
 - **🛡️ Validasi Anti-Overlap Waktu**: Secara otomatis mendeteksi dan **mencegah bentrokan jadwal** jika ada sesi lain pada tanggal & rentang jam yang sama.
-- **Pencatatan Clinical Notes (`/sessions/{id}`)**:
-  - *Dynamic Summary* (Ringkasan sesi)
-  - *Psychological Dynamics* (Dinamika emosi, kognisi, perilaku)
-  - *Therapy Interventions* (Teknik terapi yang digunakan)
-  - *Homework & Recommendations* (Tugas rumah & rekomendasi)
-- **🔒 Penguncian Sesi (Lock Session)**: Mengunci dokumen rekam medis menjadi *read-only* demi mematuhi standar hukum rekam medis.
-- **Manajemen Transaksi**: Pengelolaan tarif konseling, status pembayaran (*Unpaid, Paid, Waived*), dan metode pembayaran (*Cash, Transfer, QRIS*).
+- **Pencatatan Clinical Notes (`/sessions/{id}`)**: Ringkasan sesi, dinamika psikologis, intervensi terapi, serta rekomendasi.
+- **🔒 Penguncian Sesi (Lock Session)**: Mengunci dokumen rekam medis menjadi *read-only* demi mematuhi standar etika & hukum rekam medis.
+- **Manajemen Transaksi**: Pengelolaan tarif konseling, status pembayaran (*Unpaid, Paid, Waived*), dan metode pembayaran.
 
-### 5. 🗂️ Master Reference Manager (Modul 6)
-- Pengelolaan opsi *dropdown* dinamis untuk Kategori Kasus, Tipe Follow-Up, dan Metode Pembayaran via GUI (`/settings/references`) tanpa perlu *hardcode* di program.
-
-### 6. 📊 Dashboard Praktik Psikologi (`/`)
-- Kartu statistik real-time: Total Klien, Kasus Aktif, Sesi Hari Ini, dan Sesi Mendatang.
-- Agenda konseling hari ini dengan akses cepat ke kelola sesi.
-- Quick Actions untuk pendaftaran Klien Baru, Kasus Baru, dan Jadwal Sesi Baru.
+### 7. 🗂️ Master Reference Manager (Modul 6)
+- Pengelolaan opsi *dropdown* dinamis untuk Kategori Kasus, Tipe Follow-Up, dan Metode Pembayaran via GUI (`/settings/references`).
 
 ---
 
@@ -71,12 +80,13 @@
 
 ```mermaid
 flowchart TD
-    A["🔑 Lock Screen (/lock-screen)"] -->|Masukkan PIN 6-Digit| B["📊 Dashboard Praktik (/)"]
+    A["🔑 Lock Screen (/lock-screen)"] -->|Masukkan PIN 6-Digit| B["📊 Dashboard Analytics (/)"]
     
     B --> C["👥 Manajemen Klien (/clients)"]
     B --> D["📋 Kasus Klinis (/cases)"]
     B --> E["📅 Sesi Konseling (/sessions)"]
-    B --> F["⚙️ Settings (/settings)"]
+    B --> F["📜 RPP Generator Engine (/rpp/{id})"]
+    B --> G["⚙️ Settings (/settings)"]
     
     C -->|Tambah Klien Baru| C1["ClientCreate (Auto Code: CLI-YYYYMM-XXX)"]
     C1 -->|Lihat Profil Klien| C2["ClientShow (Profil & Histori Kasus)"]
@@ -93,8 +103,9 @@ flowchart TD
     E3 --> E1
     E2 -- Tidak --> E4["Simpan Jadwal Sesi"]
     
-    E4 --> E5["SessionShow (Clinical Notes & Transaksi)"]
-    E5 -->|🔒 Kunci Rekam Medis| E6["Sesi Locked (Read-Only)"]
+    E4 --> F1["RppGenerator (Keluhan, Masalah, Dinamika, PPDGJ-III, Free Text Diagnosis, Asesmen, Intervensi)"]
+    F1 -->|Cetak Dokumen| F2["🖨️ Export PDF (DomPDF + QR Code Security)"]
+    F2 -->|Scan QR Token| F3["🔍 Public Verification Page (/verify-rpp/{token})"]
 ```
 
 ---
@@ -158,8 +169,8 @@ php artisan test
 ```
 
 **Hasil Pengujian:**
-- **32 Test Suites**
-- **62 Assertions**
+- **39 Test Suites**
+- **83 Assertions**
 - **Status:** `100% PASSED`
 
 ---

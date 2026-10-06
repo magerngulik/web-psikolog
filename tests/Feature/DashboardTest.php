@@ -34,6 +34,6 @@ class DashboardTest extends TestCase
     {
         Livewire::test('dashboard')
             ->assertStatus(200)
-            ->assertSee('Dashboard Praktik Psikologi');
+            ->assertSee('Dashboard Analytics');
     }
 }

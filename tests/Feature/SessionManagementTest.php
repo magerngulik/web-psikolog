@@ -138,5 +138,10 @@ class SessionManagementTest extends TestCase
             'is_locked' => true,
             'status' => 'done',
         ]);
+
+        $this->assertDatabaseHas('session_notes', [
+            'appointment_id' => $session->id,
+            'is_locked' => true,
+        ]);
     }
 }
