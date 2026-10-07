@@ -7,6 +7,11 @@ use App\Livewire\Clients\ClientCreate;
 use App\Livewire\Clients\ClientEdit;
 use App\Livewire\Clients\ClientIndex;
 use App\Livewire\Clients\ClientShow;
+use App\Livewire\Organizations\OrganizationIndex;
+use App\Livewire\Activities\ActivityIndex;
+use App\Livewire\Activities\ActivityCreate;
+use App\Livewire\Activities\ActivityShow;
+use App\Livewire\Activities\ActivityEdit;
 use App\Livewire\Dashboard;
 use App\Livewire\LockScreen;
 use App\Livewire\Reports\AnnualLogbook;
@@ -44,6 +49,15 @@ Route::middleware(['pin.protected'])->group(function () {
     Route::get('/sessions', SessionIndex::class)->name('sessions.index');
     Route::get('/sessions/create', SessionCreate::class)->name('sessions.create');
     Route::get('/sessions/{id}', SessionShow::class)->name('sessions.show');
+
+    // Modul Mitra Organisasi
+    Route::get('/organizations', OrganizationIndex::class)->name('organizations.index');
+
+    // Modul Kegiatan & Seminar
+    Route::get('/activities', ActivityIndex::class)->name('activities.index');
+    Route::get('/activities/create', ActivityCreate::class)->name('activities.create');
+    Route::get('/activities/{id}', ActivityShow::class)->name('activities.show');
+    Route::get('/activities/{id}/edit', ActivityEdit::class)->name('activities.edit');
 
     // Modul RPP Generator & Reports (Dialihkan ke Sesi Rekam Medis)
     Route::get('/rpp/{appointmentId}', function ($appointmentId) {

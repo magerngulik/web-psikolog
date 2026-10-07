@@ -3,11 +3,13 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Models\Activity;
 use App\Models\PatientSession;
 use App\Models\SessionNote;
 use App\Models\Payment;
 use App\Models\Client;
 use App\Models\MedicalCase;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class Dashboard extends Component
@@ -16,6 +18,9 @@ class Dashboard extends Component
     public $unclosedNotesCount;
     public $monthlyRevenue;
     public $annualRevenue;
+    public $monthlySessionRevenue = 0;
+    public $monthlyActivityRevenue = 0;
+    public $upcomingActivities = [];
     public $icd10Distribution = [];
     public $workloadData = [];
     public $recentAppointments = [];
@@ -36,7 +41,7 @@ class Dashboard extends Component
             ->whereIn('status', ['done', 'Completed', 'finished'])
             ->count();
 
-        // 2. Keuangan (Sum payment or session fee)
+        // 2. Keuangan (Sum payment or session fee + Activity seminar fee)
         $paymentSumMonth = Payment::whereMonth('created_at', $currentMonth)
             ->whereYear('created_at', $currentYear)
             ->where('status', 'Paid')
@@ -47,7 +52,15 @@ class Dashboard extends Component
             ->where('payment_status', 'paid')
             ->sum('fee');
 
-        $this->monthlyRevenue = max((float)$paymentSumMonth, (float)$sessionFeeSumMonth);
+        $activityFeeSumMonth = Activity::whereMonth('start_date', $currentMonth)
+            ->whereYear('start_date', $currentYear)
+            ->where('payment_status', 'paid')
+            ->sum('fee');
+
+        $clinicalRevenueMonth = max((float)$paymentSumMonth, (float)$sessionFeeSumMonth);
+        $this->monthlySessionRevenue = $clinicalRevenueMonth;
+        $this->monthlyActivityRevenue = (float)$activityFeeSumMonth;
+        $this->monthlyRevenue = $clinicalRevenueMonth + (float)$activityFeeSumMonth;
 
         $paymentSumYear = Payment::whereYear('created_at', $currentYear)
             ->where('status', 'Paid')
@@ -57,7 +70,21 @@ class Dashboard extends Component
             ->where('payment_status', 'paid')
             ->sum('fee');
 
-        $this->annualRevenue = max((float)$paymentSumYear, (float)$sessionFeeSumYear);
+        $activityFeeSumYear = Activity::whereYear('start_date', $currentYear)
+            ->where('payment_status', 'paid')
+            ->sum('fee');
+
+        $clinicalRevenueYear = max((float)$paymentSumYear, (float)$sessionFeeSumYear);
+        $this->annualRevenue = $clinicalRevenueYear + (float)$activityFeeSumYear;
+
+        // Upcoming Activities / Seminars
+        $this->upcomingActivities = Activity::with('organization')
+            ->where('start_date', '>=', now()->toDateString())
+            ->where('status', 'scheduled')
+            ->orderBy('start_date', 'asc')
+            ->orderBy('start_time', 'asc')
+            ->limit(4)
+            ->get();
 
         // 3. Distribusi Diagnosa ICD-10 Top 5
         $this->icd10Distribution = SessionNote::select('icd10_code', 'icd10_description', DB::raw('count(*) as total'))
@@ -102,6 +129,8 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('livewire.dashboard')->layout('components.layouts.app');
+        return view('livewire.dashboard', [
+            'psychologist' => auth()->user() ?? User::first(),
+        ])->layout('components.layouts.app');
     }
 }

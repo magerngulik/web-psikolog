@@ -39,54 +39,56 @@
     $currentMeta = $placeholders[$group_key] ?? $placeholders['case_category'];
 @endphp
 
-<div class="max-w-5xl mx-auto p-6 space-y-6">
-    <div class="bg-slate-800 rounded-2xl shadow-xl border border-slate-700 p-6 space-y-6">
+<div class="max-w-5xl mx-auto space-y-6">
+    <div class="sanctuary-glass-card rounded-3xl shadow-2xl border border-teal-500/15 p-6 sm:p-8 space-y-6">
         <div>
-            <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                <span>⚙️</span> Master Reference Manager
-            </h2>
-            <p class="text-sm text-slate-400 mt-1">
+            <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse"></span>
+                <span class="text-xs font-mono font-bold uppercase tracking-wider text-teal-300">Master Data Configuration</span>
+            </div>
+            <h1 class="font-serif text-3xl font-semibold text-white tracking-tight mt-1">Master Reference Manager</h1>
+            <p class="text-xs sm:text-sm text-slate-400 font-sans mt-0.5">
                 Kelola data referensi master sistem: Kategori kasus, Tipe follow up, Metode pembayaran, Intervensi psikologis sesi, dan Diagnosis klinis tambahan.
             </p>
         </div>
 
         @if (session()->has('message'))
-            <div class="p-4 bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm rounded-xl font-medium flex items-center justify-between">
+            <div class="p-4 bg-teal-500/10 border border-teal-500/25 text-teal-300 text-xs sm:text-sm rounded-2xl font-medium flex items-center justify-between">
                 <span>✓ {{ session('message') }}</span>
             </div>
         @endif
 
         <!-- Tab Navigasi Master Data -->
-        <div class="flex flex-wrap gap-2 border-b border-slate-700 pb-4">
-            <button wire:click="switchGroup('case_category')" type="button" class="px-4 py-2 text-sm font-semibold rounded-xl transition {{ $group_key === 'case_category' ? 'bg-teal-500 text-slate-900 shadow-lg shadow-teal-500/20' : 'bg-slate-700 text-slate-300 hover:bg-slate-600' }}">
+        <div class="flex flex-wrap gap-2 border-b border-teal-500/10 pb-4">
+            <button wire:click="switchGroup('case_category')" type="button" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition {{ $group_key === 'case_category' ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold shadow-md shadow-teal-950/40' : 'bg-spruce-900 text-slate-300 hover:bg-spruce-800 border border-teal-500/15' }}">
                 📁 Kategori Kasus
             </button>
-            <button wire:click="switchGroup('follow_up_type')" type="button" class="px-4 py-2 text-sm font-semibold rounded-xl transition {{ $group_key === 'follow_up_type' ? 'bg-teal-500 text-slate-900 shadow-lg shadow-teal-500/20' : 'bg-slate-700 text-slate-300 hover:bg-slate-600' }}">
+            <button wire:click="switchGroup('follow_up_type')" type="button" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition {{ $group_key === 'follow_up_type' ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold shadow-md shadow-teal-950/40' : 'bg-spruce-900 text-slate-300 hover:bg-spruce-800 border border-teal-500/15' }}">
                 🔄 Tipe Follow Up
             </button>
-            <button wire:click="switchGroup('payment_method')" type="button" class="px-4 py-2 text-sm font-semibold rounded-xl transition {{ $group_key === 'payment_method' ? 'bg-teal-500 text-slate-900 shadow-lg shadow-teal-500/20' : 'bg-slate-700 text-slate-300 hover:bg-slate-600' }}">
+            <button wire:click="switchGroup('payment_method')" type="button" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition {{ $group_key === 'payment_method' ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold shadow-md shadow-teal-950/40' : 'bg-spruce-900 text-slate-300 hover:bg-spruce-800 border border-teal-500/15' }}">
                 💳 Metode Bayar
             </button>
-            <button wire:click="switchGroup('psychological_intervention')" type="button" class="px-4 py-2 text-sm font-semibold rounded-xl transition {{ $group_key === 'psychological_intervention' ? 'bg-teal-500 text-slate-900 shadow-lg shadow-teal-500/20' : 'bg-slate-700 text-slate-300 hover:bg-slate-600' }}">
+            <button wire:click="switchGroup('psychological_intervention')" type="button" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition {{ $group_key === 'psychological_intervention' ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold shadow-md shadow-teal-950/40' : 'bg-spruce-900 text-slate-300 hover:bg-spruce-800 border border-teal-500/15' }}">
                 🧩 Intervensi Psikologis
             </button>
-            <button wire:click="switchGroup('clinical_diagnosis')" type="button" class="px-4 py-2 text-sm font-semibold rounded-xl transition {{ $group_key === 'clinical_diagnosis' ? 'bg-teal-500 text-slate-900 shadow-lg shadow-teal-500/20' : 'bg-slate-700 text-slate-300 hover:bg-slate-600' }}">
+            <button wire:click="switchGroup('clinical_diagnosis')" type="button" class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition {{ $group_key === 'clinical_diagnosis' ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold shadow-md shadow-teal-950/40' : 'bg-spruce-900 text-slate-300 hover:bg-spruce-800 border border-teal-500/15' }}">
                 🩺 Diagnosis Tambahan
             </button>
         </div>
 
         <!-- Form Tambah / Edit Referensi -->
-        <div class="bg-slate-900/60 p-5 rounded-xl border border-slate-700/60 space-y-4">
+        <div class="bg-spruce-950/60 p-5 rounded-2xl border border-teal-500/15 space-y-4">
             <div class="flex items-center justify-between">
-                <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+                <h2 class="font-serif text-base font-semibold text-white flex items-center gap-2">
                     @if($editingId)
-                        <span class="text-amber-400">✏️ Mode Edit Opsi Referensi</span>
+                        <span class="text-amber-300">✏️ Mode Edit Opsi Referensi</span>
                     @else
-                        <span class="text-teal-400">➕ Tambah Referensi Baru</span>
+                        <span class="text-teal-300">➕ Tambah Referensi Baru</span>
                     @endif
-                </h3>
+                </h2>
                 @if($editingId)
-                    <button wire:click="cancelEdit" type="button" class="text-xs text-slate-400 hover:text-white transition">
+                    <button wire:click="cancelEdit" type="button" class="text-xs text-slate-400 hover:text-white transition font-mono">
                         ✕ Batal Edit
                     </button>
                 @endif
@@ -102,7 +104,7 @@
                         type="text" 
                         wire:model="label" 
                         placeholder="{{ $currentMeta['label_ph'] }}" 
-                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-500 transition"
+                        class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition"
                     >
                     @error('label') <span class="text-rose-400 text-xs block mt-1">{{ $message }}</span> @enderror
                 </div>
@@ -116,18 +118,18 @@
                         type="text" 
                         wire:model="value" 
                         placeholder="{{ $currentMeta['value_ph'] }}" 
-                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm font-mono focus:outline-none focus:border-teal-500 transition"
+                        class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition"
                     >
                     @error('value') <span class="text-rose-400 text-xs block mt-1">{{ $message }}</span> @enderror
                 </div>
 
                 <!-- Action Button -->
                 <div class="md:col-span-3 flex items-end gap-2">
-                    <button type="submit" class="w-full {{ $editingId ? 'bg-amber-500 hover:bg-amber-600' : 'bg-teal-500 hover:bg-teal-600' }} text-slate-900 font-semibold text-sm py-2.5 px-4 rounded-xl transition shadow-lg shadow-teal-500/10">
+                    <button type="submit" class="w-full {{ $editingId ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold' : 'bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold' }} text-xs sm:text-sm py-2.5 px-4 rounded-xl transition shadow-lg shadow-teal-950/40">
                         {{ $editingId ? 'Perbarui Opsi' : '+ Tambah Opsi' }}
                     </button>
                     @if($editingId)
-                        <button type="button" wire:click="cancelEdit" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold text-sm py-2.5 px-3 rounded-xl transition">
+                        <button type="button" wire:click="cancelEdit" class="bg-spruce-900 hover:bg-spruce-800 border border-teal-500/20 text-slate-300 font-semibold text-xs sm:text-sm py-2.5 px-3 rounded-xl transition">
                             Batal
                         </button>
                     @endif
@@ -135,32 +137,32 @@
             </form>
 
             <!-- Helper Text Berdasarkan Grup -->
-            <div class="text-xs text-slate-400 bg-slate-800/80 p-3 rounded-lg border border-slate-700/50">
+            <div class="text-xs text-teal-200/80 bg-spruce-900/60 p-3.5 rounded-xl border border-teal-500/10 leading-relaxed font-sans">
                 {!! $currentMeta['helper'] !!}
             </div>
         </div>
 
         <!-- Daftar Referensi -->
         <div class="space-y-2">
-            <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+            <div class="flex items-center justify-between text-xs text-slate-400 px-1 font-mono">
                 <span>Daftar Referensi Aktif & Terdaftar</span>
-                <span>Total: {{ $references->count() }} ({{ $references->where('is_active', true)->count() }} aktif)</span>
+                <span class="text-teal-300">Total: {{ $references->count() }} ({{ $references->where('is_active', true)->count() }} aktif)</span>
             </div>
 
-            <div class="divide-y divide-slate-700/50 bg-slate-900/30 rounded-xl border border-slate-700/60 overflow-hidden">
+            <div class="divide-y divide-teal-500/10 bg-spruce-950/40 rounded-2xl border border-teal-500/15 overflow-hidden">
                 @forelse($references as $item)
-                    <div class="p-3.5 flex items-center justify-between hover:bg-slate-800/40 transition">
+                    <div class="p-3.5 flex items-center justify-between hover:bg-teal-500/[0.04] transition">
                         <div class="flex items-center gap-3">
-                            <span class="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-teal-400">
+                            <span class="text-xs font-mono px-2 py-0.5 rounded-lg bg-spruce-900 border border-teal-500/20 text-teal-300">
                                 {{ $item->value }}
                             </span>
-                            <span class="font-medium text-white text-sm">{{ $item->label }}</span>
+                            <span class="font-medium text-white text-xs sm:text-sm">{{ $item->label }}</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button wire:click="toggleActive('{{ $item->id }}')" type="button" class="text-xs font-semibold px-3 py-1 rounded-full border transition {{ $item->is_active ? 'bg-teal-500/10 text-teal-400 border-teal-500/30 hover:bg-teal-500/20' : 'bg-slate-700 text-slate-400 border-slate-600 hover:bg-slate-600' }}">
+                            <button wire:click="toggleActive('{{ $item->id }}')" type="button" class="text-xs font-semibold px-3 py-1 rounded-full border transition {{ $item->is_active ? 'bg-teal-500/15 text-teal-300 border-teal-500/30 hover:bg-teal-500/25' : 'bg-spruce-900 text-slate-400 border-teal-500/10 hover:bg-spruce-800' }}">
                                 {{ $item->is_active ? 'Aktif' : 'Non-aktif' }}
                             </button>
-                            <button wire:click="edit('{{ $item->id }}')" type="button" class="text-xs text-teal-400 font-semibold px-2.5 py-1 rounded-lg hover:bg-teal-500/10 transition">
+                            <button wire:click="edit('{{ $item->id }}')" type="button" class="text-xs text-teal-300 font-semibold px-2.5 py-1 rounded-lg hover:bg-teal-500/10 transition">
                                 Edit
                             </button>
                             <button wire:click="delete('{{ $item->id }}')" wire:confirm="Yakin ingin menghapus referensi '{{ addslashes($item->label) }}'?" type="button" class="text-xs text-rose-400 font-semibold px-2 py-1 rounded-lg hover:bg-rose-500/10 transition">
@@ -169,7 +171,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="py-8 text-center text-slate-500 text-sm">
+                    <div class="py-8 text-center text-slate-400 text-xs sm:text-sm">
                         Belum ada data referensi untuk grup ini. Silakan tambahkan melalui form di atas.
                     </div>
                 @endforelse

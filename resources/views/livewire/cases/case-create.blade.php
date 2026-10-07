@@ -1,39 +1,39 @@
-<div class="p-6 max-w-4xl mx-auto space-y-6">
+<div class="max-w-4xl mx-auto space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-white">Buat Kasus Klinis Baru</h1>
-            <p class="text-sm text-slate-400">Daftarkan problem/program intervensi psikologis untuk klien</p>
+            <h1 class="font-serif text-3xl font-semibold text-white tracking-tight">Buat Kasus Klinis Baru</h1>
+            <p class="text-xs sm:text-sm text-slate-400 font-sans mt-0.5">Daftarkan problem atau episode penanganan psikologis untuk klien</p>
         </div>
-        <a href="{{ route('cases.index') }}" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 font-semibold rounded-xl transition text-sm">
+        <a href="{{ route('cases.index') }}" class="px-4 py-2 bg-spruce-900 hover:bg-spruce-800 border border-teal-500/20 text-slate-300 font-medium rounded-xl transition text-xs sm:text-sm">
             Kembali
         </a>
     </div>
 
-    <form wire:submit.prevent="save" class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-6">
+    <form wire:submit.prevent="save" class="sanctuary-glass-card border border-teal-500/15 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Pilih Klien -->
             <div class="md:col-span-2">
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Pilih Klien *</label>
-                <select wire:model="client_id" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500 transition">
+                <label for="case_client_id" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Pilih Klien *</label>
+                <select id="case_client_id" wire:model="client_id" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
                     <option value="">-- Pilih Klien --</option>
                     @foreach ($clients as $client)
                         <option value="{{ $client->id }}">{{ $client->full_name }} ({{ $client->client_code }})</option>
                     @endforeach
                 </select>
-                @error('client_id') <span class="text-rose-400 text-xs">{{ $message }}</span> @enderror
+                @error('client_id') <span class="text-rose-400 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <!-- Judul Kasus -->
             <div>
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Judul Kasus / Masalah Utama *</label>
-                <input wire:model="title" type="text" placeholder="misal: Kecemasan Menghadapi Karir Baru" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500 transition">
-                @error('title') <span class="text-rose-400 text-xs">{{ $message }}</span> @enderror
+                <label for="case_title" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Judul Kasus / Masalah Utama *</label>
+                <input id="case_title" wire:model="title" type="text" placeholder="misal: Kecemasan Menghadapi Karir Baru" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
+                @error('title') <span class="text-rose-400 text-xs mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <!-- Kategori -->
             <div>
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Kategori Kasus *</label>
-                <select wire:model="category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500 transition">
+                <label for="case_category" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Kategori Kasus *</label>
+                <select id="case_category" wire:model="category" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
                     <option value="Anxiety">Anxiety / Kecemasan</option>
                     <option value="Depression">Depresi</option>
                     <option value="Relationship">Hubungan / Pasangan</option>
@@ -46,36 +46,38 @@
 
             <!-- Keluhan Utama Klien -->
             <div class="md:col-span-2">
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">
+                <label for="case_subjective_complaint" class="block text-xs font-semibold uppercase text-slate-400 mb-1">
                     Keluhan Utama Klien
                 </label>
                 <textarea 
+                    id="case_subjective_complaint"
                     wire:model="subjective_complaint" 
-                    rows="4" 
+                    rows="3" 
                     placeholder="Gambarkan keluhan utama awal yang dirasakan klien saat ini, perasaan cemas, gelisah, sedih, dll..." 
-                    class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-teal-500 transition leading-relaxed"
+                    class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition leading-relaxed"
                 ></textarea>
                 @error('subjective_complaint') <span class="text-xs text-rose-400 mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <!-- Pokok Masalah / Pemicu -->
             <div class="md:col-span-2">
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">
+                <label for="case_subjective_problem" class="block text-xs font-semibold uppercase text-slate-400 mb-1">
                     Pokok Masalah / Pemicu
                 </label>
                 <textarea 
+                    id="case_subjective_problem"
                     wire:model="subjective_problem" 
-                    rows="4" 
+                    rows="3" 
                     placeholder="Gambarkan pokok persoalan atau pemicu masalah (misal: relasi keluarga, tekanan pekerjaan, trauma masa lalu, dll)..." 
-                    class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-sm text-white focus:outline-none focus:border-teal-500 transition leading-relaxed"
+                    class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition leading-relaxed"
                 ></textarea>
                 @error('subjective_problem') <span class="text-xs text-rose-400 mt-1 block">{{ $message }}</span> @enderror
             </div>
 
             <!-- Status Kasus -->
             <div>
-                <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Status Awal Kasus</label>
-                <select wire:model="status" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-500 transition">
+                <label for="case_status" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Status Awal Kasus</label>
+                <select id="case_status" wire:model="status" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
                     <option value="active">Active (Aktif Berjalan)</option>
                     <option value="on_hold">On Hold (Ditunda)</option>
                     <option value="completed">Completed (Selesai)</option>
@@ -85,7 +87,7 @@
 
         <!-- Submit Button -->
         <div class="flex justify-end pt-4">
-            <button type="submit" class="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-semibold rounded-xl transition shadow-lg shadow-teal-500/20">
+            <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl transition shadow-lg shadow-teal-950/60 transform hover:-translate-y-0.5 text-xs sm:text-sm">
                 Simpan Kasus Medis
             </button>
         </div>
