@@ -65,5 +65,24 @@ class LockScreenTest extends TestCase
             ->call('deleteNumber')
             ->assertSet('pin', '1');
     }
+
+    public function test_fresh_database_auto_initializes_default_pin_123456(): void
+    {
+        // Wipe all security keys to simulate fresh installation / unseeded database
+        SecurityKey::query()->delete();
+        $this->assertEquals(0, SecurityKey::count());
+
+        Livewire::test('lock-screen')
+            ->call('addNumber', '1')
+            ->call('addNumber', '2')
+            ->call('addNumber', '3')
+            ->call('addNumber', '4')
+            ->call('addNumber', '5')
+            ->call('addNumber', '6')
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertTrue(session()->get('pin_unlocked'));
+        $this->assertEquals(1, SecurityKey::count());
+    }
 }
 

@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
             SystemReferenceSeeder::class,
             NationalHolidaySeeder::class,
             SecurityKeySeeder::class,
-                
+            UserSeeder::class,
         ]);
     }
 }

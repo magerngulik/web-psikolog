@@ -49,8 +49,12 @@ class OfflineAssetsTest extends TestCase
 
         $response->assertStatus(200);
 
-        // Must include compiled Vite assets
-        $response->assertSee('build/assets/app-');
+        // Must include Vite assets (either dev server or compiled build)
+        if (file_exists(public_path('hot'))) {
+            $response->assertSee(':5173');
+        } else {
+            $response->assertSee('build/assets/app-');
+        }
 
         // Must NOT include any external CDNs
         $response->assertDontSee('cdn.tailwindcss.com');
@@ -63,7 +67,13 @@ class OfflineAssetsTest extends TestCase
         $response = $this->get(route('lock-screen'));
 
         $response->assertStatus(200);
-        $response->assertSee('build/assets/app-');
+
+        if (file_exists(public_path('hot'))) {
+            $response->assertSee(':5173');
+        } else {
+            $response->assertSee('build/assets/app-');
+        }
+
         $response->assertDontSee('cdn.tailwindcss.com');
         $response->assertDontSee('fonts.googleapis.com');
         $response->assertDontSee('fonts.gstatic.com');

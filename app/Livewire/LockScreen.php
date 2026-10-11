@@ -11,6 +11,16 @@ class LockScreen extends Component
     public $pin = '';
     public $errorMessage = '';
 
+    public function mount()
+    {
+        if (! SecurityKey::where('is_active', true)->exists()) {
+            SecurityKey::create([
+                'pin_hash' => Hash::make('123456'),
+                'is_active' => true,
+            ]);
+        }
+    }
+
     public function addNumber($num)
     {
         if (strlen($this->pin) < 6) {
@@ -31,6 +41,13 @@ class LockScreen extends Component
     public function verifyPin()
     {
         $activeKey = SecurityKey::where('is_active', true)->first();
+
+        if (! $activeKey) {
+            $activeKey = SecurityKey::create([
+                'pin_hash' => Hash::make('123456'),
+                'is_active' => true,
+            ]);
+        }
 
         if ($activeKey && Hash::check($this->pin, $activeKey->pin_hash)) {
             session()->put('pin_unlocked', true);
