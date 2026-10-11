@@ -1,5 +1,9 @@
 <?php
 
+use App\Livewire\Activities\ActivityCreate;
+use App\Livewire\Activities\ActivityEdit;
+use App\Livewire\Activities\ActivityIndex;
+use App\Livewire\Activities\ActivityShow;
 use App\Livewire\Cases\CaseCreate;
 use App\Livewire\Cases\CaseIndex;
 use App\Livewire\Cases\CaseShow;
@@ -7,18 +11,15 @@ use App\Livewire\Clients\ClientCreate;
 use App\Livewire\Clients\ClientEdit;
 use App\Livewire\Clients\ClientIndex;
 use App\Livewire\Clients\ClientShow;
-use App\Livewire\Organizations\OrganizationIndex;
-use App\Livewire\Activities\ActivityIndex;
-use App\Livewire\Activities\ActivityCreate;
-use App\Livewire\Activities\ActivityShow;
-use App\Livewire\Activities\ActivityEdit;
 use App\Livewire\Dashboard;
 use App\Livewire\LockScreen;
+use App\Livewire\Organizations\OrganizationIndex;
 use App\Livewire\Reports\AnnualLogbook;
 use App\Livewire\Reports\RppVerifier;
 use App\Livewire\Sessions\SessionCreate;
 use App\Livewire\Sessions\SessionIndex;
 use App\Livewire\Sessions\SessionShow;
+use App\Livewire\Settings\BackupManager;
 use App\Livewire\Settings\ProfileSettings;
 use App\Livewire\Settings\ReferenceManager;
 use App\Livewire\Settings\SecuritySettings;
@@ -72,4 +73,5 @@ Route::middleware(['pin.protected'])->group(function () {
     Route::get('/settings/profile', ProfileSettings::class)->name('settings.profile');
     Route::get('/settings/references', ReferenceManager::class)->name('settings.references');
     Route::get('/settings/security', SecuritySettings::class)->name('settings.security');
+    Route::get('/settings/backup', BackupManager::class)->name('settings.backup');
 });

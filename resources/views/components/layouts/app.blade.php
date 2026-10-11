@@ -151,6 +151,11 @@
                        {!! request()->routeIs('settings.security*') ? 'aria-current="page"' : '' !!}>
                         <span aria-hidden="true" class="text-xs">🔑</span> <span>PIN</span>
                     </a>
+                    <a href="{{ route('settings.backup') }}" 
+                       class="px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-teal-400 {{ request()->routeIs('settings.backup*') ? 'bg-gradient-to-r from-teal-500/20 to-emerald-500/20 text-teal-300 border border-teal-500/30 font-semibold shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent' }}"
+                       {!! request()->routeIs('settings.backup*') ? 'aria-current="page"' : '' !!}>
+                        <span aria-hidden="true" class="text-xs">💾</span> <span>Backup</span>
+                    </a>
                 </nav>
 
                 <!-- Practice Pill -->
@@ -173,6 +178,7 @@
                 <a href="{{ route('settings.references') }}" class="px-2.5 py-1 rounded-lg {{ request()->routeIs('settings.references*') ? 'bg-teal-500/20 text-teal-300 font-semibold' : 'text-slate-400' }}">Ref</a>
                 <a href="{{ route('settings.profile') }}" class="px-2.5 py-1 rounded-lg {{ request()->routeIs('settings.profile*') ? 'bg-teal-500/20 text-teal-300 font-semibold' : 'text-slate-400' }}">Profil</a>
                 <a href="{{ route('settings.security') }}" class="px-2.5 py-1 rounded-lg {{ request()->routeIs('settings.security*') ? 'bg-teal-500/20 text-teal-300 font-semibold' : 'text-slate-400' }}">PIN</a>
+                <a href="{{ route('settings.backup') }}" class="px-2.5 py-1 rounded-lg {{ request()->routeIs('settings.backup*') ? 'bg-teal-500/20 text-teal-300 font-semibold' : 'text-slate-400' }}">Backup</a>
             </div>
         </header>
 
