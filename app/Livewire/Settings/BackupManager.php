@@ -4,6 +4,7 @@ namespace App\Livewire\Settings;
 
 use App\Models\SecurityKey;
 use App\Services\DatabaseBackupService;
+use App\Services\SystemDiagnosticService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -31,6 +32,11 @@ class BackupManager extends Component
     public string $restorePin = '';
 
     public bool $confirmRestore = false;
+
+    // Log Preview Modal State
+    public bool $showLogPreviewModal = false;
+
+    public string $logFilterLevel = 'all'; // 'all' | 'error' | 'warning' | 'info'
 
     public function mount(DatabaseBackupService $service): void
     {
@@ -200,10 +206,56 @@ class BackupManager extends Component
         }
     }
 
-    public function render(DatabaseBackupService $service)
+    /**
+     * Download structured diagnostic support bundle.
+     */
+    public function downloadDiagnostic(SystemDiagnosticService $diagnosticService)
+    {
+        return $diagnosticService->downloadDiagnosticReport();
+    }
+
+    /**
+     * Open log viewer modal.
+     */
+    public function openLogPreview(): void
+    {
+        $this->showLogPreviewModal = true;
+    }
+
+    /**
+     * Close log viewer modal.
+     */
+    public function closeLogPreview(): void
+    {
+        $this->showLogPreviewModal = false;
+    }
+
+    /**
+     * Set level filter for log viewer.
+     */
+    public function setLogFilter(string $level): void
+    {
+        $this->logFilterLevel = in_array($level, ['all', 'error', 'warning', 'info']) ? $level : 'all';
+    }
+
+    /**
+     * Clear application log file.
+     */
+    public function clearLogFile(SystemDiagnosticService $diagnosticService): void
+    {
+        if ($diagnosticService->clearLog()) {
+            session()->flash('success_message', 'Berkas log error dan diagnostik berhasil dibersihkan.');
+        } else {
+            session()->flash('error_message', 'Gagal membersihkan berkas log.');
+        }
+    }
+
+    public function render(DatabaseBackupService $service, SystemDiagnosticService $diagnosticService)
     {
         $backups = $service->listBackups();
         $config = $service->getScheduleConfig();
+        $diagnosticSummary = $diagnosticService->getDiagnosticSummary();
+        $recentLogs = $this->showLogPreviewModal ? $diagnosticService->getRecentLogEntries(100, $this->logFilterLevel) : [];
 
         $totalBytes = array_sum(array_column($backups, 'size'));
         $totalSizeFormatted = $this->formatBytes($totalBytes);
@@ -212,6 +264,8 @@ class BackupManager extends Component
             'backups' => $backups,
             'config' => $config,
             'totalSizeFormatted' => $totalSizeFormatted,
+            'diagnosticSummary' => $diagnosticSummary,
+            'recentLogs' => $recentLogs,
         ])->layout('components.layouts.app');
     }
 

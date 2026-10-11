@@ -331,6 +331,105 @@
         </div>
     </div>
 
+    <!-- Bagian Diagnostik & Log Error Aplikasi (Customer Support Offline) -->
+    <div class="sanctuary-glass-card rounded-3xl p-6 sm:p-8 border border-teal-500/15 shadow-2xl space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div class="flex items-start gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-teal-500/10 border border-teal-500/25 flex items-center justify-center text-2xl shrink-0">
+                    🩺
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-mono font-bold uppercase tracking-wider text-teal-300">Offline Technical Support & Diagnostics</span>
+                    </div>
+                    <h2 class="font-serif text-xl font-semibold text-white tracking-tight mt-0.5">
+                        Log Error & Diagnostik Sistem
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                        Fitur ini disiapkan khusus untuk penggunaan aplikasi secara <strong>100% offline</strong>. Jika Anda mengalami kendala atau membutuhkan bantuan teknis dari pengembang, klik <strong>"Download Log Diagnostik"</strong> dan kirimkan berkas teks tersebut untuk pemeriksaan masalah secara akurat.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2.5 flex-wrap shrink-0">
+                <button wire:click="downloadDiagnostic" 
+                        type="button" 
+                        title="Unduh berkas laporan diagnostik lengkap untuk dikirim ke pengembang"
+                        class="px-4 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl text-xs sm:text-sm transition shadow-lg shadow-teal-950/60 flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5">
+                    <span>⬇️</span>
+                    <span>Download Log Diagnostik</span>
+                </button>
+                <button wire:click="openLogPreview" 
+                        type="button" 
+                        title="Tinjau catatan log error terbaru langsung di layar"
+                        class="px-3.5 py-2.5 bg-spruce-900 hover:bg-spruce-800 text-teal-300 border border-teal-500/30 hover:border-teal-400 font-semibold rounded-xl text-xs sm:text-sm transition flex items-center gap-1.5 cursor-pointer">
+                    <span>👁️</span>
+                    <span>Preview Log</span>
+                </button>
+                <button wire:click="clearLogFile" 
+                        wire:confirm="Yakin ingin membersihkan riwayat log error? Tindakan ini akan mengosongkan berkas log lama untuk menghemat ruang disk."
+                        type="button" 
+                        title="Kosongkan berkas log untuk menghemat ruang disk"
+                        class="px-3 py-2.5 bg-spruce-950 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:border-rose-400 font-semibold rounded-xl text-xs transition flex items-center gap-1.5 cursor-pointer">
+                    <span>🧹</span>
+                    <span class="hidden sm:inline">Bersihkan Log</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Metric Badges Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-teal-500/10">
+            <!-- Metric 1: Log Size -->
+            <div class="p-3.5 bg-spruce-950/60 rounded-xl border border-teal-500/10 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-semibold">Ukuran Berkas Log</span>
+                    <span class="text-sm font-bold font-mono text-white mt-0.5 block">{{ $diagnosticSummary['log_size_formatted'] }}</span>
+                </div>
+                <span class="text-base text-teal-400">📄</span>
+            </div>
+
+            <!-- Metric 2: Error Status 24h -->
+            <div class="p-3.5 bg-spruce-950/60 rounded-xl border border-teal-500/10 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-semibold">Error (24 Jam Terakhir)</span>
+                    <span class="text-sm font-bold font-mono {{ $diagnosticSummary['error_count_last_24h'] > 0 ? 'text-amber-400' : 'text-emerald-400' }} mt-0.5 block">
+                        {{ $diagnosticSummary['error_count_last_24h'] }} terdeteksi
+                    </span>
+                </div>
+                <span class="text-base">{{ $diagnosticSummary['error_count_last_24h'] > 0 ? '⚠️' : '✓' }}</span>
+            </div>
+
+            <!-- Metric 3: Catatan Terakhir -->
+            <div class="p-3.5 bg-spruce-950/60 rounded-xl border border-teal-500/10 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-semibold">Aktivitas Terakhir</span>
+                    <span class="text-xs font-mono text-slate-300 mt-0.5 block truncate max-w-[150px]" title="{{ $diagnosticSummary['last_log_entry'] ?? 'Belum ada catatan' }}">
+                        {{ $diagnosticSummary['last_log_entry'] ?? 'Log Bersih' }}
+                    </span>
+                </div>
+                <span class="text-base text-slate-400">🕒</span>
+            </div>
+
+            <!-- Metric 4: Status Sistem -->
+            <div class="p-3.5 bg-spruce-950/60 rounded-xl border border-teal-500/10 flex items-center justify-between">
+                <div>
+                    <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-semibold">Kesehatan Sistem</span>
+                    <span class="text-xs font-bold uppercase mt-0.5 flex items-center gap-1.5 {{ $diagnosticSummary['system_status'] === 'healthy' ? 'text-emerald-400' : ($diagnosticSummary['system_status'] === 'warning' ? 'text-amber-400' : 'text-rose-400') }}">
+                        <span class="w-1.5 h-1.5 rounded-full {{ $diagnosticSummary['system_status'] === 'healthy' ? 'bg-emerald-400' : ($diagnosticSummary['system_status'] === 'warning' ? 'bg-amber-400' : 'bg-rose-400') }}"></span>
+                        {{ $diagnosticSummary['system_status'] === 'healthy' ? 'Normal (Siap)' : ($diagnosticSummary['system_status'] === 'warning' ? 'Perhatian' : 'Perlu Bantuan') }}
+                    </span>
+                </div>
+                <span class="text-base">🛡️</span>
+            </div>
+        </div>
+
+        <div class="text-[11px] text-slate-400 bg-spruce-900/40 p-3 rounded-xl border border-teal-500/10 flex items-center justify-between flex-wrap gap-2">
+            <span>🔒 <strong>Jaminan Privasi Medis:</strong> Berkas log otomatis disanitasi. Seluruh PIN keamanan, kata sandi, dan data rahasia klien tidak akan pernah disertakan dalam berkas diagnostik.</span>
+            <span class="font-mono text-teal-300/80">PHP {{ $diagnosticSummary['php_version'] }} &bull; {{ $diagnosticSummary['os_platform'] }}</span>
+        </div>
+    </div>
+
     <!-- Modal Konfirmasi Restore & Proteksi PIN Keamanan -->
     @if ($showRestoreModal)
         <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
@@ -400,6 +499,87 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+    @endif
+
+    <!-- Modal Preview Log Error & Diagnostik -->
+    @if ($showLogPreviewModal)
+        <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in">
+            <div class="sanctuary-glass-card rounded-3xl p-6 sm:p-8 max-w-4xl w-full border border-teal-500/30 shadow-2xl space-y-5 max-h-[90vh] flex flex-col">
+                <div class="flex items-start justify-between gap-4 shrink-0">
+                    <div class="flex items-center gap-3">
+                        <div class="w-11 h-11 rounded-2xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-xl shrink-0">
+                            🩺
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-mono uppercase font-bold tracking-widest text-teal-300 block">
+                                In-App Log Viewer
+                            </span>
+                            <h3 class="font-serif text-xl font-bold text-white">Catatan Log Error & Diagnostik</h3>
+                        </div>
+                    </div>
+                    <button wire:click="closeLogPreview" type="button" class="text-slate-400 hover:text-white text-lg p-1 cursor-pointer">✕</button>
+                </div>
+
+                <!-- Filter Level Tabs & Download Shortcut -->
+                <div class="flex items-center justify-between gap-3 shrink-0 flex-wrap">
+                    <div class="flex items-center gap-1.5 p-1 bg-spruce-950/80 rounded-xl border border-teal-500/20 text-xs">
+                        <button type="button" wire:click="setLogFilter('all')" class="px-3 py-1.5 rounded-lg transition cursor-pointer {{ $logFilterLevel === 'all' ? 'bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30' : 'text-slate-400 hover:text-white' }}">
+                            Semua
+                        </button>
+                        <button type="button" wire:click="setLogFilter('error')" class="px-3 py-1.5 rounded-lg transition cursor-pointer {{ $logFilterLevel === 'error' ? 'bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30' : 'text-slate-400 hover:text-white' }}">
+                            Hanya Error
+                        </button>
+                        <button type="button" wire:click="setLogFilter('warning')" class="px-3 py-1.5 rounded-lg transition cursor-pointer {{ $logFilterLevel === 'warning' ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30' : 'text-slate-400 hover:text-white' }}">
+                            Warning
+                        </button>
+                        <button type="button" wire:click="setLogFilter('info')" class="px-3 py-1.5 rounded-lg transition cursor-pointer {{ $logFilterLevel === 'info' ? 'bg-teal-500/20 text-teal-300 font-bold border border-teal-500/30' : 'text-slate-400 hover:text-white' }}">
+                            Info
+                        </button>
+                    </div>
+
+                    <button wire:click="downloadDiagnostic" type="button" class="px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md cursor-pointer">
+                        <span>⬇️</span>
+                        <span>Unduh File Lengkap (.txt)</span>
+                    </button>
+                </div>
+
+                <!-- Log Entries Scroll Area -->
+                <div class="grow overflow-y-auto space-y-2 pr-1 rounded-2xl bg-spruce-950/90 border border-teal-500/15 p-4 font-mono text-xs">
+                    @forelse ($recentLogs as $log)
+                        <div class="p-2.5 rounded-xl border transition {{ in_array($log['level'], ['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY']) ? 'bg-rose-950/20 border-rose-500/20 text-rose-200' : ($log['level'] === 'WARNING' ? 'bg-amber-950/20 border-amber-500/20 text-amber-200' : 'bg-slate-900/50 border-teal-500/10 text-slate-300') }}">
+                            <div class="flex items-center justify-between gap-2 text-[11px] mb-1">
+                                <span class="text-slate-400 font-semibold">{{ $log['datetime'] }}</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase {{ in_array($log['level'], ['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY']) ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : ($log['level'] === 'WARNING' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-teal-500/20 text-teal-300 border border-teal-500/30') }}">
+                                    {{ $log['level'] }}
+                                </span>
+                            </div>
+                            <div class="font-sans text-xs break-words font-medium text-white">
+                                {{ $log['message'] }}
+                            </div>
+                            @if (!empty($log['trace']))
+                                <details class="mt-2 text-[11px] text-slate-400">
+                                    <summary class="cursor-pointer text-teal-400 hover:text-teal-300 select-none text-[10px] font-sans">
+                                        Lihat detail stack trace...
+                                    </summary>
+                                    <pre class="mt-1.5 p-2 bg-slate-950 rounded-lg overflow-x-auto text-[10px] text-slate-300 leading-relaxed font-mono whitespace-pre-wrap">{{ $log['trace'] }}</pre>
+                                </details>
+                            @endif
+                        </div>
+                    @empty
+                        <div class="py-12 text-center text-slate-400 font-sans">
+                            <span class="text-2xl block mb-2">✓</span>
+                            <span>Tidak ada catatan log yang sesuai dengan filter ini.</span>
+                        </div>
+                    @endforelse
+                </div>
+
+                <div class="flex items-center justify-end shrink-0 pt-2 border-t border-teal-500/10">
+                    <button wire:click="closeLogPreview" type="button" class="px-5 py-2 rounded-xl bg-spruce-900 hover:bg-spruce-800 text-slate-300 hover:text-white border border-teal-500/20 text-xs font-semibold transition cursor-pointer">
+                        Tutup
+                    </button>
+                </div>
             </div>
         </div>
     @endif
