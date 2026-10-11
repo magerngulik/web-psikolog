@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Client;
 use App\Models\MedicalCase;
 use App\Models\SecurityKey;
+use App\Models\SystemReference;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Livewire;
@@ -125,5 +126,52 @@ class CaseManagementTest extends TestCase
             'status' => 'completed',
             'progress_note' => 'Catatan perkembangan terapi sesi 1 membaik.',
         ]);
+    }
+
+    public function test_case_create_displays_info_tooltip_and_loads_categories_from_system_reference(): void
+    {
+        $this->withSession(['pin_unlocked' => true]);
+
+        SystemReference::create([
+            'group_key' => 'case_category',
+            'label' => 'Trauma Masa Kecil',
+            'value' => 'trauma_masa_kecil',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $component = Livewire::test('cases.case-create');
+        $categories = $component->get('categories');
+
+        $this->assertTrue($categories->pluck('label')->contains('Trauma Masa Kecil'));
+        $component->assertSee('Kustomisasi Kategori Kasus')
+            ->assertSee('Buka Master Referensi');
+    }
+
+    public function test_custom_category_added_in_admin_is_available_in_case_create_and_case_index(): void
+    {
+        $this->withSession(['pin_unlocked' => true]);
+
+        // 1. Tambah kategori baru via ReferenceManager (admin)
+        Livewire::test('settings.reference-manager')
+            ->set('group_key', 'case_category')
+            ->set('label', 'Gangguan Tidur & Insomnia')
+            ->set('value', 'insomnia_disorder')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('system_references', [
+            'group_key' => 'case_category',
+            'label' => 'Gangguan Tidur & Insomnia',
+            'value' => 'insomnia_disorder',
+        ]);
+
+        // 2. Kategori baru tersebut langsung muncul di dropdown CaseCreate
+        Livewire::test('cases.case-create')
+            ->assertSee('Gangguan Tidur & Insomnia');
+
+        // 3. Kategori baru tersebut juga muncul di filter CaseIndex
+        Livewire::test('cases.case-index')
+            ->assertSee('Gangguan Tidur & Insomnia');
     }
 }

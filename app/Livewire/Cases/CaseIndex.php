@@ -3,6 +3,7 @@
 namespace App\Livewire\Cases;
 
 use App\Models\MedicalCase;
+use App\Models\SystemReference;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -15,6 +16,32 @@ class CaseIndex extends Component
     public $categoryFilter = '';
 
     protected $queryString = ['search', 'statusFilter', 'categoryFilter'];
+
+    public function getCategoriesProperty()
+    {
+        try {
+            $refs = SystemReference::where('group_key', 'case_category')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+
+            if ($refs->isNotEmpty()) {
+                return $refs;
+            }
+        } catch (\Throwable $e) {
+            // fallback
+        }
+
+        return collect([
+            (object) ['value' => 'Anxiety', 'label' => 'Anxiety / Kecemasan'],
+            (object) ['value' => 'Depression', 'label' => 'Depresi'],
+            (object) ['value' => 'Relationship', 'label' => 'Hubungan / Pasangan'],
+            (object) ['value' => 'Family', 'label' => 'Keluarga'],
+            (object) ['value' => 'Work & Career', 'label' => 'Karir / Pekerjaan'],
+            (object) ['value' => 'Personal Growth', 'label' => 'Personal Growth'],
+            (object) ['value' => 'Lainnya', 'label' => 'Lainnya'],
+        ]);
+    }
 
     public function updatingSearch()
     {

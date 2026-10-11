@@ -38,13 +38,9 @@
         <div>
             <select wire:model.live="categoryFilter" aria-label="Filter berdasarkan kategori kasus" class="w-full bg-spruce-900/80 border border-teal-500/15 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
                 <option value="">Semua Kategori</option>
-                <option value="Anxiety">Anxiety / Kecemasan</option>
-                <option value="Depression">Depresi</option>
-                <option value="Relationship">Hubungan / Pasangan</option>
-                <option value="Family">Keluarga</option>
-                <option value="Work & Career">Karir / Pekerjaan</option>
-                <option value="Personal Growth">Personal Growth</option>
-                <option value="Lainnya">Lainnya</option>
+                @foreach($this->categories as $cat)
+                    <option value="{{ $cat->value }}">{{ $cat->label }}</option>
+                @endforeach
             </select>
         </div>
     </div>

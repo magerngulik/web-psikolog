@@ -220,5 +220,127 @@ class SettingsManagementTest extends TestCase
             'id' => $ref->id,
         ]);
     }
+
+    public function test_can_reorder_reference_items_up_and_down(): void
+    {
+        // Bersihkan data awal untuk group_key 'case_category' agar urutan terisolasi
+        SystemReference::where('group_key', 'case_category')->forceDelete();
+
+        $itemA = SystemReference::create([
+            'group_key' => 'case_category',
+            'label' => 'Kategori A',
+            'value' => 'kategori_a',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $itemB = SystemReference::create([
+            'group_key' => 'case_category',
+            'label' => 'Kategori B',
+            'value' => 'kategori_b',
+            'sort_order' => 2,
+            'is_active' => true,
+        ]);
+
+        $itemC = SystemReference::create([
+            'group_key' => 'case_category',
+            'label' => 'Kategori C',
+            'value' => 'kategori_c',
+            'sort_order' => 3,
+            'is_active' => true,
+        ]);
+
+        // Turunkan Kategori A (moveDown) -> urutan harus menjadi B, A, C
+        Livewire::test('settings.reference-manager')
+            ->call('moveDown', $itemA->id)
+            ->assertHasNoErrors();
+
+        $this->assertEquals(1, $itemB->fresh()->sort_order);
+        $this->assertEquals(2, $itemA->fresh()->sort_order);
+        $this->assertEquals(3, $itemC->fresh()->sort_order);
+
+        // Naikkan Kategori C (moveUp) -> urutan harus menjadi B, C, A
+        Livewire::test('settings.reference-manager')
+            ->call('moveUp', $itemC->id)
+            ->assertHasNoErrors();
+
+        $this->assertEquals(1, $itemB->fresh()->sort_order);
+        $this->assertEquals(2, $itemC->fresh()->sort_order);
+        $this->assertEquals(3, $itemA->fresh()->sort_order);
+    }
+
+    public function test_smart_placement_inserts_new_item_before_lainnya_keeping_lainnya_at_bottom(): void
+    {
+        // Bersihkan data awal untuk group_key 'case_category'
+        SystemReference::where('group_key', 'case_category')->forceDelete();
+
+        SystemReference::create([
+            'group_key' => 'case_category',
+            'label' => 'Kecemasan (Anxiety)',
+            'value' => 'anxiety',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $lainnya = SystemReference::create([
+            'group_key' => 'case_category',
+            'label' => 'Lainnya',
+            'value' => 'lainnya',
+            'sort_order' => 2,
+            'is_active' => true,
+        ]);
+
+        // Tambah opsi baru melalui ReferenceManager
+        Livewire::test('settings.reference-manager')
+            ->set('group_key', 'case_category')
+            ->set('label', 'Gangguan Makan (Eating Disorder)')
+            ->set('value', 'eating_disorder')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $newItem = SystemReference::where('value', 'eating_disorder')->first();
+        $this->assertNotNull($newItem);
+
+        // Item baru harus memiliki sort_order 2, dan 'Lainnya' terdorong ke sort_order 3 (paling akhir)
+        $this->assertEquals(2, $newItem->fresh()->sort_order);
+        $this->assertEquals(3, $lainnya->fresh()->sort_order);
+    }
+
+    public function test_case_create_dropdown_reflects_updated_reorder_sequence(): void
+    {
+        SystemReference::where('group_key', 'case_category')->forceDelete();
+
+        $itemFirst = SystemReference::create([
+            'group_key' => 'case_category',
+            'label' => 'Kategori Prioritas Tinggi',
+            'value' => 'high_priority',
+            'sort_order' => 1,
+            'is_active' => true,
+        ]);
+
+        $itemSecond = SystemReference::create([
+            'group_key' => 'case_category',
+            'label' => 'Kategori Standar',
+            'value' => 'standard',
+            'sort_order' => 2,
+            'is_active' => true,
+        ]);
+
+        $component = Livewire::test('cases.case-create');
+        $categories = $component->get('categories');
+
+        // Pastikan opsi pertama pada CaseCreate persis Kategori Prioritas Tinggi
+        $this->assertEquals('high_priority', $categories->first()->value);
+
+        // Tukar urutan: Naikkan Kategori Standar ke #1
+        Livewire::test('settings.reference-manager')
+            ->call('moveUp', $itemSecond->id)
+            ->assertHasNoErrors();
+
+        // Cek kembali CaseCreate, sekarang urutan pertama harus berubah menjadi Kategori Standar
+        $updatedComponent = Livewire::test('cases.case-create');
+        $updatedCategories = $updatedComponent->get('categories');
+        $this->assertEquals('standard', $updatedCategories->first()->value);
+    }
 }
 

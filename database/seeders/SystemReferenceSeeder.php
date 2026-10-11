@@ -16,11 +16,15 @@ class SystemReferenceSeeder extends Seeder
             ['group_key' => 'gender', 'label' => 'Perempuan', 'value' => 'Perempuan', 'sort_order' => 2],
 
             // Case Category
-            ['group_key' => 'case_category', 'label' => 'Anak & Remaja', 'value' => 'Anak & Remaja', 'sort_order' => 1],
-            ['group_key' => 'case_category', 'label' => 'Dewasa', 'value' => 'Dewasa', 'sort_order' => 2],
-            ['group_key' => 'case_category', 'label' => 'Pernikahan & Keluarga', 'value' => 'Pernikahan & Keluarga', 'sort_order' => 3],
-            ['group_key' => 'case_category', 'label' => 'Karir & Pekerjaan', 'value' => 'Karir & Pekerjaan', 'sort_order' => 4],
-            ['group_key' => 'case_category', 'label' => 'Lainnya', 'value' => 'Lainnya', 'sort_order' => 5],
+            ['group_key' => 'case_category', 'label' => 'Anxiety / Kecemasan', 'value' => 'Anxiety', 'sort_order' => 1],
+            ['group_key' => 'case_category', 'label' => 'Depresi', 'value' => 'Depression', 'sort_order' => 2],
+            ['group_key' => 'case_category', 'label' => 'Hubungan / Pasangan', 'value' => 'Relationship', 'sort_order' => 3],
+            ['group_key' => 'case_category', 'label' => 'Keluarga', 'value' => 'Family', 'sort_order' => 4],
+            ['group_key' => 'case_category', 'label' => 'Karir & Pekerjaan', 'value' => 'Work & Career', 'sort_order' => 5],
+            ['group_key' => 'case_category', 'label' => 'Personal Growth', 'value' => 'Personal Growth', 'sort_order' => 6],
+            ['group_key' => 'case_category', 'label' => 'Anak & Remaja', 'value' => 'Anak & Remaja', 'sort_order' => 7],
+            ['group_key' => 'case_category', 'label' => 'Dewasa', 'value' => 'Dewasa', 'sort_order' => 8],
+            ['group_key' => 'case_category', 'label' => 'Lainnya', 'value' => 'Lainnya', 'sort_order' => 9],
 
             // Follow Up Type
             ['group_key' => 'follow_up_type', 'label' => 'Kontrol Rutin', 'value' => 'routine_control', 'sort_order' => 1],

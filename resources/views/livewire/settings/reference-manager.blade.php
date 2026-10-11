@@ -3,9 +3,9 @@
         'case_category' => [
             'label_title' => 'Nama Kategori Kasus',
             'label_ph' => 'misal: Trauma Pasca Bencana',
-            'value_title' => 'Value Sistem (Key)',
-            'value_ph' => 'misal: trauma_bencana',
-            'helper' => '💡 <strong>Kategori Kasus:</strong> Digunakan untuk klasifikasi kasus klinis baru saat pendaftaran klien.',
+            'value_title' => 'Value Sistem (Key) - Opsional',
+            'value_ph' => 'misal: trauma_bencana atau kosongkan',
+            'helper' => '💡 <strong>Kategori Kasus:</strong> Digunakan untuk klasifikasi kasus klinis baru saat pendaftaran klien. Jika Value Sistem dikosongkan, sistem akan otomatis mengisinya sesuai Nama Kategori.',
         ],
         'follow_up_type' => [
             'label_title' => 'Label Status Follow Up',
@@ -151,18 +151,46 @@
 
             <div class="divide-y divide-teal-500/10 bg-spruce-950/40 rounded-2xl border border-teal-500/15 overflow-hidden">
                 @forelse($references as $item)
-                    <div class="p-3.5 flex items-center justify-between hover:bg-teal-500/[0.04] transition">
-                        <div class="flex items-center gap-3">
-                            <span class="text-xs font-mono px-2 py-0.5 rounded-lg bg-spruce-900 border border-teal-500/20 text-teal-300">
+                    <div class="p-3 sm:p-3.5 flex items-center justify-between hover:bg-teal-500/[0.04] transition gap-3">
+                        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                            <!-- Reorder Controls (▲ / ▼) -->
+                            <div class="flex items-center gap-0.5 shrink-0">
+                                <button 
+                                    wire:click="moveUp('{{ $item->id }}')" 
+                                    type="button" 
+                                    {{ $loop->first ? 'disabled' : '' }} 
+                                    title="{{ $loop->first ? 'Sudah berada di urutan teratas' : 'Pindahkan ke atas' }}"
+                                    class="p-1 rounded-lg border transition {{ $loop->first ? 'opacity-20 border-transparent text-slate-600 cursor-not-allowed' : 'border-teal-500/20 text-slate-300 hover:text-teal-300 hover:bg-teal-500/15 cursor-pointer' }}"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"></path></svg>
+                                </button>
+                                <button 
+                                    wire:click="moveDown('{{ $item->id }}')" 
+                                    type="button" 
+                                    {{ $loop->last ? 'disabled' : '' }} 
+                                    title="{{ $loop->last ? 'Sudah berada di urutan terbawah' : 'Pindahkan ke bawah' }}"
+                                    class="p-1 rounded-lg border transition {{ $loop->last ? 'opacity-20 border-transparent text-slate-600 cursor-not-allowed' : 'border-teal-500/20 text-slate-300 hover:text-teal-300 hover:bg-teal-500/15 cursor-pointer' }}"
+                                >
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                            </div>
+
+                            <!-- Position Badge -->
+                            <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-spruce-900 border border-teal-500/20 text-teal-400 shrink-0">
+                                #{{ $loop->iteration }}
+                            </span>
+
+                            <!-- Value & Label -->
+                            <span class="text-xs font-mono px-2 py-0.5 rounded-lg bg-spruce-900 border border-teal-500/20 text-teal-300 shrink-0">
                                 {{ $item->value }}
                             </span>
-                            <span class="font-medium text-white text-xs sm:text-sm">{{ $item->label }}</span>
+                            <span class="font-medium text-white text-xs sm:text-sm truncate">{{ $item->label }}</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button wire:click="toggleActive('{{ $item->id }}')" type="button" class="text-xs font-semibold px-3 py-1 rounded-full border transition {{ $item->is_active ? 'bg-teal-500/15 text-teal-300 border-teal-500/30 hover:bg-teal-500/25' : 'bg-spruce-900 text-slate-400 border-teal-500/10 hover:bg-spruce-800' }}">
+                        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                            <button wire:click="toggleActive('{{ $item->id }}')" type="button" class="text-xs font-semibold px-2.5 sm:px-3 py-1 rounded-full border transition {{ $item->is_active ? 'bg-teal-500/15 text-teal-300 border-teal-500/30 hover:bg-teal-500/25' : 'bg-spruce-900 text-slate-400 border-teal-500/10 hover:bg-spruce-800' }}">
                                 {{ $item->is_active ? 'Aktif' : 'Non-aktif' }}
                             </button>
-                            <button wire:click="edit('{{ $item->id }}')" type="button" class="text-xs text-teal-300 font-semibold px-2.5 py-1 rounded-lg hover:bg-teal-500/10 transition">
+                            <button wire:click="edit('{{ $item->id }}')" type="button" class="text-xs text-teal-300 font-semibold px-2 sm:px-2.5 py-1 rounded-lg hover:bg-teal-500/10 transition">
                                 Edit
                             </button>
                             <button wire:click="delete('{{ $item->id }}')" wire:confirm="Yakin ingin menghapus referensi '{{ addslashes($item->label) }}'?" type="button" class="text-xs text-rose-400 font-semibold px-2 py-1 rounded-lg hover:bg-rose-500/10 transition">

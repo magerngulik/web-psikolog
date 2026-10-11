@@ -4,6 +4,7 @@ namespace App\Livewire\Cases;
 
 use App\Models\Client;
 use App\Models\MedicalCase;
+use App\Models\SystemReference;
 use Livewire\Component;
 
 class CaseCreate extends Component
@@ -17,10 +18,41 @@ class CaseCreate extends Component
     public $goal = '';
     public $status = 'active';
 
+    public function getCategoriesProperty()
+    {
+        try {
+            $refs = SystemReference::where('group_key', 'case_category')
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+
+            if ($refs->isNotEmpty()) {
+                return $refs;
+            }
+        } catch (\Throwable $e) {
+            // fallback
+        }
+
+        return collect([
+            (object) ['value' => 'Anxiety', 'label' => 'Anxiety / Kecemasan'],
+            (object) ['value' => 'Depression', 'label' => 'Depresi'],
+            (object) ['value' => 'Relationship', 'label' => 'Hubungan / Pasangan'],
+            (object) ['value' => 'Family', 'label' => 'Keluarga'],
+            (object) ['value' => 'Work & Career', 'label' => 'Karir / Pekerjaan'],
+            (object) ['value' => 'Personal Growth', 'label' => 'Personal Growth'],
+            (object) ['value' => 'Lainnya', 'label' => 'Lainnya'],
+        ]);
+    }
+
     public function mount()
     {
         // Terima client_id via query string jika ada (misal dari tombol halaman profil klien)
         $this->client_id = request()->query('client_id', $this->client_id);
+
+        $availableValues = $this->categories->pluck('value')->all();
+        if (empty($this->category) || !in_array($this->category, $availableValues)) {
+            $this->category = $availableValues[0] ?? 'Anxiety';
+        }
     }
 
     protected $rules = [
