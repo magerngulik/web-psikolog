@@ -24,6 +24,16 @@
                 </svg>
                 Kembali
             </a>
+            <button wire:click="deleteCase" 
+                    wire:confirm="Apakah Anda yakin ingin memindahkan kasus '{{ addslashes($case->title) }}' ke Tong Sampah?" 
+                    type="button" 
+                    class="sanctuary-glass border border-rose-500/30 hover:border-rose-500 hover:bg-rose-500/10 text-rose-300 hover:text-rose-200 px-4 py-2.5 rounded-xl font-medium text-sm transition flex items-center gap-2" 
+                    title="Hapus Kasus">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Hapus Kasus
+            </button>
             <!-- Direct Shortcut ke Jadwal Sesi -->
             <a href="{{ Route::has('sessions.create') ? route('sessions.create', ['case_id' => $case->id]) : '#' }}" class="px-5 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl transition text-sm shadow-lg shadow-teal-500/20 flex items-center gap-2">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -165,10 +175,24 @@
                                     <span class="text-amber-400 font-medium bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md text-[11px]">Belum Lunas</span>
                                 @endif
                             </div>
-                            <a href="{{ Route::has('sessions.show') ? route('sessions.show', $session->id) : '#' }}" class="text-xs text-teal-400 hover:text-teal-300 font-bold flex items-center gap-1.5 group-hover:translate-x-1 transition">
-                                <span>Kelola Catatan SOAP & Biaya</span>
-                                <span>&rarr;</span>
-                            </a>
+                            <div class="flex items-center gap-3">
+                                @if(!$session->is_locked)
+                                    <button wire:click="deleteSession('{{ $session->id }}')" 
+                                            wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
+                                            type="button" 
+                                            class="text-xs text-rose-400/80 hover:text-rose-300 hover:underline flex items-center gap-1 transition" 
+                                            title="Hapus Sesi Ini">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        <span>Hapus</span>
+                                    </button>
+                                @endif
+                                <a href="{{ Route::has('sessions.show') ? route('sessions.show', $session->id) : '#' }}" class="text-xs text-teal-400 hover:text-teal-300 font-bold flex items-center gap-1.5 group-hover:translate-x-1 transition">
+                                    <span>Kelola Catatan SOAP & Biaya</span>
+                                    <span>&rarr;</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 @empty

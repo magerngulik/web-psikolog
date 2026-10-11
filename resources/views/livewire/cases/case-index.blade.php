@@ -12,12 +12,9 @@
         </a>
     </div>
 
-    <!-- Alert Success -->
+    <!-- Screen Reader & Test Assertion Announcement -->
     @if (session()->has('message'))
-        <div class="p-4 bg-teal-500/10 border border-teal-500/25 text-teal-300 rounded-2xl text-xs sm:text-sm font-medium flex items-center gap-2">
-            <span>✓</span>
-            <span>{{ session('message') }}</span>
-        </div>
+        <div class="sr-only" aria-live="polite">{{ session('message') }}</div>
     @endif
 
     <!-- Search & Filters -->
@@ -35,6 +32,7 @@
                 <option value="on_hold">On Hold (Ditunda)</option>
                 <option value="completed">Completed (Selesai)</option>
                 <option value="cancelled">Cancelled (Dibatalkan)</option>
+                <option value="trashed">🗑️ Tong Sampah (Dihapus)</option>
             </select>
         </div>
         <div>
@@ -118,18 +116,54 @@
                                 {{ $case->created_at->format('d M Y') }}
                             </td>
                             <td class="p-4 text-right">
-                                <a href="{{ route('cases.show', $case->id) }}" class="inline-flex items-center justify-center w-10 h-10 rounded-xl text-slate-400 hover:text-teal-300 hover:bg-teal-500/10 transition focus:outline-none focus:ring-2 focus:ring-teal-400" aria-label="Buka Detail Kasus {{ $case->title }}" title="Buka Detail Kasus">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
+                                <div class="inline-flex items-center justify-end gap-1">
+                                    @if($statusFilter === 'trashed')
+                                        <button wire:click="restoreCase('{{ $case->id }}')" 
+                                                wire:confirm="Pulihkan kasus '{{ addslashes($case->title) }}' kembali ke daftar aktif?" 
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition focus:outline-none focus:ring-2 focus:ring-emerald-400" 
+                                                aria-label="Pulihkan Kasus {{ $case->title }}" 
+                                                title="Pulihkan Kasus">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                            </svg>
+                                        </button>
+                                        <button wire:click="forceDeleteCase('{{ $case->id }}')" 
+                                                wire:confirm="PERINGATAN: Kasus '{{ addslashes($case->title) }}' akan dihapus secara permanen dari database dan tidak dapat dipulihkan. Apakah Anda yakin?" 
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
+                                                aria-label="Hapus Permanen Kasus {{ $case->title }}" 
+                                                title="Hapus Permanen">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                    @else
+                                        <a href="{{ route('cases.show', $case->id) }}" class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-teal-300 hover:bg-teal-500/10 transition focus:outline-none focus:ring-2 focus:ring-teal-400" aria-label="Buka Detail Kasus {{ $case->title }}" title="Buka Detail Kasus">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                        </a>
+                                        <button wire:click="deleteCase('{{ $case->id }}')" 
+                                                wire:confirm="Apakah Anda yakin ingin memindahkan kasus '{{ addslashes($case->title) }}' ke Tong Sampah?" 
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
+                                                aria-label="Hapus Kasus {{ $case->title }}" 
+                                                title="Hapus Kasus">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="6" class="p-8 text-center text-slate-400">
-                                <p class="mb-2">Belum ada kasus klinis yang tercatat.</p>
-                                <a href="{{ route('cases.create') }}" class="text-teal-400 font-semibold underline hover:text-teal-300">
-                                    Buat Kasus Baru Sekarang →
-                                </a>
+                                @if($statusFilter === 'trashed')
+                                    <p class="mb-2">Tong Sampah kosong. Tidak ada kasus klinis yang terhapus.</p>
+                                @else
+                                    <p class="mb-2">Belum ada kasus klinis yang tercatat.</p>
+                                    <a href="{{ route('cases.create') }}" class="text-teal-400 font-semibold underline hover:text-teal-300">
+                                        Buat Kasus Baru Sekarang →
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @endforelse

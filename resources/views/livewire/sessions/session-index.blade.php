@@ -12,14 +12,6 @@
         </a>
     </div>
 
-    <!-- Alert Success -->
-    @if (session()->has('message'))
-        <div class="p-4 bg-teal-500/10 border border-teal-500/25 text-teal-300 rounded-2xl text-xs sm:text-sm font-medium flex items-center gap-2">
-            <span>✓</span>
-            <span>{{ session('message') }}</span>
-        </div>
-    @endif
-
     <!-- Search & Filters -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="md:col-span-2 relative">
@@ -29,7 +21,7 @@
             <input wire:model.live.debounce.300ms="search" aria-label="Cari nama klien atau judul kasus" type="text" placeholder="Cari nama klien, kode klien, atau judul kasus..." class="w-full bg-spruce-900/80 border border-teal-500/15 rounded-xl pl-10 pr-4 py-2.5 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
         </div>
         <div>
-            <input wire:model.live="dateFilter" aria-label="Filter berdasarkan tanggal sesi" type="date" class="w-full bg-spruce-900/80 border border-teal-500/15 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
+            <x-date-picker wire:model.live="dateFilter" placeholder="Filter tanggal sesi..." />
         </div>
         <div>
             <select wire:model.live="statusFilter" aria-label="Filter berdasarkan status sesi" class="w-full bg-spruce-900/80 border border-teal-500/15 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
@@ -40,6 +32,7 @@
                 <option value="done">Done (Selesai)</option>
                 <option value="cancelled">Cancelled (Batal)</option>
                 <option value="no_show">No Show (Tidak Hadir)</option>
+                <option value="trashed">🗑️ Tong Sampah (Dihapus)</option>
             </select>
         </div>
     </div>
@@ -129,21 +122,59 @@
                                 <span class="block text-xs font-mono text-slate-300 mt-0.5">Rp {{ number_format($session->fee, 0, ',', '.') }}</span>
                             </td>
                             <td class="p-4 text-right">
-                                <a href="{{ route('sessions.show', $session->id) }}" 
-                                   class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/25 text-teal-300 border border-teal-500/30 text-xs font-medium transition shadow-sm" 
-                                   title="Buka Rekam Medis Sesi">
-                                    <span>📝</span>
-                                    <span>Rekam Medis</span>
-                                </a>
+                                <div class="inline-flex items-center justify-end gap-1.5">
+                                    @if($statusFilter === 'trashed')
+                                        <button wire:click="restoreSession('{{ $session->id }}')" 
+                                                wire:confirm="Pulihkan Sesi Ke-{{ $session->session_number }} kembali ke agenda aktif?" 
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-slate-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition focus:outline-none focus:ring-2 focus:ring-emerald-400" 
+                                                aria-label="Pulihkan Sesi Ke-{{ $session->session_number }}" 
+                                                title="Pulihkan Sesi">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                            </svg>
+                                        </button>
+                                        <button wire:click="forceDeleteSession('{{ $session->id }}')" 
+                                                wire:confirm="PERINGATAN: Sesi Ke-{{ $session->session_number }} akan dihapus secara permanen dari database dan tidak dapat dipulihkan. Apakah Anda yakin?" 
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
+                                                aria-label="Hapus Permanen Sesi Ke-{{ $session->session_number }}" 
+                                                title="Hapus Permanen">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                    @else
+                                        <a href="{{ route('sessions.show', $session->id) }}" 
+                                           class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/25 text-teal-300 border border-teal-500/30 text-xs font-medium transition shadow-sm" 
+                                           title="Buka Rekam Medis Sesi">
+                                            <span>📝</span>
+                                            <span>Rekam Medis</span>
+                                        </a>
+                                        @if(!$session->is_locked)
+                                            <button wire:click="deleteSession('{{ $session->id }}')" 
+                                                    wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
+                                                    aria-label="Hapus Sesi Ke-{{ $session->session_number }}" 
+                                                    title="Hapus Sesi">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
+                                        @endif
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="6" class="p-8 text-center text-slate-400">
-                                <p class="mb-2">Belum ada agenda sesi konsultasi.</p>
-                                <a href="{{ route('sessions.create') }}" class="text-teal-400 font-semibold underline hover:text-teal-300">
-                                    Jadwalkan Sesi Baru Sekarang →
-                                </a>
+                                @if($statusFilter === 'trashed')
+                                    <p class="mb-2">Tong Sampah kosong. Tidak ada sesi konseling yang terhapus.</p>
+                                @else
+                                    <p class="mb-2">Belum ada agenda sesi konsultasi.</p>
+                                    <a href="{{ route('sessions.create') }}" class="text-teal-400 font-semibold underline hover:text-teal-300">
+                                        Jadwalkan Sesi Baru Sekarang →
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @endforelse

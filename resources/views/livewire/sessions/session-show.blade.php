@@ -21,6 +21,16 @@
                 <button wire:click="saveNotes" type="button" class="px-3.5 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-teal-950/40">
                     💾 <span>Simpan Sesi</span>
                 </button>
+                <button wire:click="deleteSession" 
+                        wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
+                        type="button" 
+                        class="px-3.5 py-2 sanctuary-glass border border-rose-500/30 hover:border-rose-500 hover:bg-rose-500/10 text-rose-300 hover:text-rose-200 font-medium rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-rose-950/20" 
+                        title="Hapus Sesi">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>Hapus Sesi</span>
+                </button>
             @endif
             <a href="{{ route('cases.show', $session->medicalCase->id) }}" class="px-3 py-2 bg-spruce-900/80 hover:bg-spruce-800 border border-teal-500/20 text-slate-300 font-medium rounded-xl transition text-xs sm:text-sm">
                 Lihat Kasus
@@ -31,20 +41,15 @@
         </div>
     </div>
 
-    <!-- Alert Messages -->
+    <!-- Screen Reader & Test Assertion Announcement -->
     @if (session()->has('message'))
-        <div class="p-4 bg-teal-500/10 border border-teal-500/25 text-teal-300 rounded-2xl text-xs sm:text-sm font-medium flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <span>✓</span>
-                <span>{{ session('message') }}</span>
-            </div>
-        </div>
+        <div class="sr-only" aria-live="polite">{{ session('message') }}</div>
     @endif
     @if (session()->has('error'))
-        <div class="p-4 bg-rose-500/10 border border-rose-500/25 text-rose-300 rounded-2xl text-xs sm:text-sm font-medium">
-            {{ session('error') }}
-        </div>
+        <div class="sr-only" aria-live="assertive">{{ session('error') }}</div>
     @endif
+
+
 
     <!-- Lock Session Warning Banner -->
     @if($session->is_locked || $is_locked)
@@ -363,8 +368,8 @@
                 </div>
 
                 <div>
-                    <label for="session_fee" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Biaya Konseling (Rp)</label>
-                    <input id="session_fee" wire:model="fee" type="number" min="0" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white font-mono focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
+                    <label for="session_fee" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Biaya Konseling</label>
+                    <x-currency-input id="session_fee" wire:model="fee" :disabled="$session->is_locked || $is_locked" />
                 </div>
 
                 <div>

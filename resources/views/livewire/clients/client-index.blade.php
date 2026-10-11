@@ -12,12 +12,9 @@
         </a>
     </div>
 
-    <!-- Alert Success -->
+    <!-- Screen Reader & Test Assertion Announcement -->
     @if (session()->has('message'))
-        <div class="p-4 bg-teal-500/10 border border-teal-500/25 text-teal-300 rounded-2xl text-xs sm:text-sm font-medium flex items-center gap-2">
-            <span>✓</span>
-            <span>{{ session('message') }}</span>
-        </div>
+        <div class="sr-only" aria-live="polite">{{ session('message') }}</div>
     @endif
 
     <!-- Search & Filters -->

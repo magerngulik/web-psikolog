@@ -122,14 +122,14 @@
                     <label for="start_date" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 font-mono">
                         Tanggal Mulai <span class="text-rose-400">*</span>
                     </label>
-                    <input wire:model="start_date" id="start_date" type="date" class="w-full bg-spruce-950/80 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition font-mono">
+                    <x-date-picker wire:model="start_date" id="start_date" />
                 </div>
 
                 <div>
                     <label for="end_date" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 font-mono">
                         Tanggal Selesai
                     </label>
-                    <input wire:model="end_date" id="end_date" type="date" class="w-full bg-spruce-950/80 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition font-mono">
+                    <x-date-picker wire:model="end_date" id="end_date" />
                 </div>
 
                 <div>
@@ -230,12 +230,9 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div>
                     <label for="fee" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5 font-mono">
-                        Honorarium / Biaya (Rp) <span class="text-rose-400">*</span>
+                        Honorarium / Biaya <span class="text-rose-400">*</span>
                     </label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-xs font-mono text-slate-400">Rp</span>
-                        <input wire:model="fee" id="fee" type="number" min="0" step="50000" class="w-full bg-spruce-950/80 border border-teal-500/20 rounded-xl pl-10 pr-4 py-2.5 text-white text-sm focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition font-mono font-bold">
-                    </div>
+                    <x-currency-input wire:model="fee" id="fee" />
                 </div>
 
                 <div>

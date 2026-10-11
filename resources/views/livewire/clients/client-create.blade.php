@@ -33,7 +33,7 @@
                 </div>
                 <div>
                     <label for="client_dob" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Tanggal Lahir</label>
-                    <input id="client_dob" wire:model="date_of_birth" type="date" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition text-sm">
+                    <x-date-picker id="client_dob" wire:model="date_of_birth" max-date="today" placeholder="Pilih tanggal lahir..." />
                 </div>
                 <div>
                     <label for="client_phone" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Nomor WhatsApp / HP</label>

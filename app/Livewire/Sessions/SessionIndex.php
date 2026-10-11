@@ -21,9 +21,70 @@ class SessionIndex extends Component
         $this->resetPage();
     }
 
+    public function updatingStatusFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDateFilter()
+    {
+        $this->resetPage();
+    }
+
+    public function deleteSession($id)
+    {
+        $session = Session::findOrFail($id);
+
+        if ($session->is_locked) {
+            $this->dispatch('notify', 
+                message: "⚠️ Sesi ke-{$session->session_number} sudah TERKUNCI secara final dan tidak dapat dihapus demi kepatuhan rekam medis klinis.",
+                type: 'error'
+            );
+            return;
+        }
+
+        $sessionNumber = $session->session_number;
+        $session->delete();
+
+        $this->dispatch('notify', 
+            message: "Sesi ke-{$sessionNumber} berhasil dipindahkan ke Tong Sampah.",
+            type: 'success'
+        );
+    }
+
+    public function restoreSession($id)
+    {
+        $session = Session::onlyTrashed()->findOrFail($id);
+        $session->restore();
+
+        $this->dispatch('notify', 
+            message: "Sesi ke-{$session->session_number} berhasil dipulihkan.",
+            type: 'success'
+        );
+    }
+
+    public function forceDeleteSession($id)
+    {
+        $session = Session::onlyTrashed()->findOrFail($id);
+        $sessionNumber = $session->session_number;
+
+        // Delete associated note if exists
+        $session->sessionNote()->delete();
+        $session->forceDelete();
+
+        $this->dispatch('notify', 
+            message: "Sesi ke-{$sessionNumber} berhasil dihapus secara permanen.",
+            type: 'success'
+        );
+    }
+
     public function render()
     {
-        $sessions = Session::query()
+        $query = $this->statusFilter === 'trashed'
+            ? Session::onlyTrashed()
+            : Session::query();
+
+        $sessions = $query
             ->with(['medicalCase.client'])
             ->when($this->search, function ($query) {
                 $query->whereHas('medicalCase.client', function ($q) {
@@ -33,7 +94,7 @@ class SessionIndex extends Component
                     $q->where('title', 'like', '%' . $this->search . '%');
                 });
             })
-            ->when($this->statusFilter, function ($query) {
+            ->when($this->statusFilter && $this->statusFilter !== 'trashed', function ($query) {
                 $query->where('status', $this->statusFilter);
             })
             ->when($this->dateFilter, function ($query) {

@@ -74,7 +74,7 @@
                     <label for="session_date" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 font-mono">
                         Tanggal Pertemuan <span class="text-rose-400">*</span>
                     </label>
-                    <input wire:model="session_date" id="session_date" type="date" class="w-full bg-spruce-950/80 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition text-sm font-mono">
+                    <x-date-picker wire:model="session_date" id="session_date" />
                     @error('session_date') <span class="text-rose-400 text-xs mt-1.5 block font-mono">{{ $message }}</span> @enderror
                 </div>
 
@@ -107,12 +107,9 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
                 <div>
                     <label for="fee" class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 font-mono">
-                        Biaya Konseling (Rp)
+                        Biaya Konseling
                     </label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-mono text-slate-400">Rp</span>
-                        <input wire:model="fee" id="fee" type="number" min="0" step="10000" class="w-full bg-spruce-950/80 border border-teal-500/20 rounded-xl pl-9 pr-3 py-2.5 text-white focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400 transition font-mono text-sm">
-                    </div>
+                    <x-currency-input wire:model="fee" id="fee" />
                     @error('fee') <span class="text-rose-400 text-xs mt-1.5 block font-mono">{{ $message }}</span> @enderror
                 </div>
 

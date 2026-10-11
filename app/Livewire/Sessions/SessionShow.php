@@ -205,6 +205,7 @@ class SessionShow extends Component
     {
         if ($this->session->is_locked || $this->is_locked) {
             session()->flash('error', '⚠️ Rekam medis sesi ini sudah TERKUNCI dan tidak dapat diubah lagi.');
+            $this->dispatch('notify', message: '⚠️ Rekam medis sesi ini sudah TERKUNCI dan tidak dapat diubah lagi.', type: 'error');
             return;
         }
 
@@ -283,6 +284,7 @@ class SessionShow extends Component
         });
 
         session()->flash('message', 'Catatan rekam medis sesi berhasil diperbarui!');
+        $this->dispatch('notify', message: 'Catatan rekam medis sesi berhasil diperbarui!', type: 'success');
     }
 
     public function saveRpp()
@@ -317,6 +319,7 @@ class SessionShow extends Component
         $this->status = 'done';
 
         session()->flash('message', '🔒 Sesi konsultasi & Catatan Rekam Medis RESMI DIKUNCI!');
+        $this->dispatch('notify', message: '🔒 Sesi konsultasi & Catatan Rekam Medis RESMI DIKUNCI!', type: 'success');
     }
 
     public function exportPdf()
@@ -346,6 +349,23 @@ class SessionShow extends Component
             fn () => print($pdf->output()),
             "RPP_Konseling_{$patientName}_{$sessionDate}.pdf"
         );
+    }
+
+    public function deleteSession()
+    {
+        if ($this->session->is_locked || $this->is_locked) {
+            $this->dispatch('notify', 
+                message: "⚠️ Sesi ke-{$this->session->session_number} sudah TERKUNCI secara final dan tidak dapat dihapus demi kepatuhan rekam medis klinis.",
+                type: 'error'
+            );
+            return;
+        }
+
+        $sessionNumber = $this->session->session_number;
+        $this->session->delete();
+
+        session()->flash('message', "Sesi ke-{$sessionNumber} berhasil dipindahkan ke Tong Sampah.");
+        return redirect()->route('sessions.index');
     }
 
     public function render()
