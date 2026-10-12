@@ -25,7 +25,8 @@ use App\Livewire\Settings\ReferenceManager;
 use App\Livewire\Settings\SecuritySettings;
 use Illuminate\Support\Facades\Route;
 
-// Guest Lock Screen & Public Verification
+// Guest Activation, Lock Screen & Public Verification
+Route::get('/activation', \App\Livewire\Activation::class)->name('activation');
 Route::get('/lock-screen', LockScreen::class)->name('lock-screen');
 Route::get('/verify-rpp/{token}', RppVerifier::class)->name('rpp.verify');
 

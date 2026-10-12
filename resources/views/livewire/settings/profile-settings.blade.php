@@ -106,4 +106,42 @@
             </button>
         </div>
     </form>
+
+    <!-- Informasi Lisensi Perangkat & Hardware Lock -->
+    <div class="sanctuary-glass-card border border-teal-500/15 rounded-3xl p-6 sm:p-7 shadow-xl space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-teal-500/10">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">🛡️</span>
+                <h2 class="font-serif text-base sm:text-lg font-semibold text-white">Status Lisensi Perangkat</h2>
+            </div>
+            @if ($activeLicense)
+                <span class="px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 font-mono text-xs font-semibold">
+                    ✓ TERAKTIVASI (LIFETIME)
+                </span>
+            @else
+                <span class="px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 font-mono text-xs font-semibold">
+                    BELUM TERAKTIVASI
+                </span>
+            @endif
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-sans">
+            <div class="bg-spruce-950/70 p-3.5 rounded-2xl border border-teal-500/10">
+                <span class="text-[10px] text-slate-400 block font-mono uppercase">Machine ID Laptop</span>
+                <span class="font-mono text-teal-200 font-bold text-xs select-all mt-0.5 block">{{ $machineId }}</span>
+            </div>
+            <div class="bg-spruce-950/70 p-3.5 rounded-2xl border border-teal-500/10">
+                <span class="text-[10px] text-slate-400 block font-mono uppercase">Pemilik Terdaftar</span>
+                <span class="text-white font-medium text-xs mt-0.5 block truncate">{{ $activeLicense?->client_name ?? 'Praktik Mandiri' }}</span>
+            </div>
+            <div class="bg-spruce-950/70 p-3.5 rounded-2xl border border-teal-500/10">
+                <span class="text-[10px] text-slate-400 block font-mono uppercase">Jenis Lisensi</span>
+                <span class="text-teal-300 font-medium text-xs mt-0.5 block">Beli Putus (Offline Ed25519)</span>
+            </div>
+        </div>
+
+        <p class="text-[11px] text-slate-400 font-sans leading-relaxed">
+            Lisensi ini terkunci secara kriptografis ke motherboard/prosesor laptop ini. Jika Anda memindahkan data ke perangkat baru, hubungi developer untuk penerbitan lisensi baru.
+        </p>
+    </div>
 </div>

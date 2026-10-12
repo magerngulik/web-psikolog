@@ -12,8 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->web(append: [
+            \App\Http\Middleware\EnsureAppIsLicensed::class,
+        ]);
+
         $middleware->alias([
             'pin.protected' => \App\Http\Middleware\CheckSecurityPin::class,
+            'licensed' => \App\Http\Middleware\EnsureAppIsLicensed::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

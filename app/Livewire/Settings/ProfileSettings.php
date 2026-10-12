@@ -93,9 +93,12 @@ class ProfileSettings extends Component
         return $prefix . ($this->name ?: 'Nama Psikolog') . $suffix;
     }
 
-    public function render()
+    public function render(\App\Services\LicenseService $licenseService)
     {
-        return view('livewire.settings.profile-settings')->layout('components.layouts.app');
+        return view('livewire.settings.profile-settings', [
+            'activeLicense' => $licenseService->getActiveLicense(),
+            'machineId' => $licenseService->getMachineId(),
+        ])->layout('components.layouts.app');
     }
 }
 
