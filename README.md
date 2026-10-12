@@ -175,6 +175,13 @@ php artisan test
 
 ---
 
+## Cara untuk running native versions
+```bash
+composer run native:dev
+```
+
+## Cara untuk generate native Apps
+
 ## 📄 Lisensi
 
 Proyek ini menggunakan lisensi [MIT License](LICENSE).
