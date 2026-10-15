@@ -175,13 +175,69 @@ php artisan test
 
 ---
 
-## Cara untuk running native versions
+## 💻 Mode Desktop NativePHP & Build Installer
+
+Aplikasi ini dapat dijalankan dan dibundel menjadi aplikasi desktop mandiri (*standalone desktop app*) untuk macOS dan Windows tanpa ketergantungan browser eksternal.
+
+### 1. Menjalankan Mode Desktop (Development)
+Untuk menjalankan jendela aplikasi desktop bersamaan dengan hot-reload Vite:
 ```bash
 composer run native:dev
 ```
 
-## Cara untuk generate native Apps
+### 2. Cara Generate / Build Aplikasi (Production Installers)
+Perintah build akan memaketkan seluruh runtime (PHP internal, SQLite, dan aset antarmuka) ke dalam 1 file installer siap pakai. Pengguna (klien) **tidak perlu** menginstal Node.js, PHP, Composer, ataupun web server di laptop mereka.
+
+#### A. Build untuk macOS (MacBook / iMac / Mac Mini)
+```bash
+# Build installer macOS (.dmg)
+php artisan native:build mac
+
+# Atau spesifik arsitektur prosesor:
+php artisan native:build mac arm64   # Apple Silicon (M1 / M2 / M3 / M4)
+php artisan native:build mac x64     # Mac berbasis prosesor Intel
+```
+*Hasil file `.dmg` dan `.zip` akan tersimpan di dalam folder `dist/`.*
+
+#### B. Build untuk Windows (PC & Laptop Windows)
+```bash
+# Build installer Windows (.exe NSIS Installer)
+php artisan native:build win
+
+# Atau spesifik arsitektur 64-bit:
+php artisan native:build win x64
+```
+*Hasil file installer `.exe` akan tersimpan di dalam folder `dist/`.*
+
+#### C. Build untuk Semua Platform Sekaligus
+```bash
+php artisan native:build all
+```
+
+---
+
+## 🛡️ Sistem Lisensi Offline (Beli Putus / Hardware-Locked)
+
+Aplikasi Web Psikolog dilengkapi sistem penguncian lisensi berbasis kriptografi asimetris **Ed25519** yang terikat pada perangkat fisik (*Machine ID*).
+
+### Menerbitkan Kunci Lisensi untuk Klien Baru:
+Anda **tidak perlu** mem-build ulang program setiap kali ada pembeli baru. File installer untuk semua klien adalah sama. Anda cukup menjalankan satu baris perintah di terminal Anda saat menerima Machine ID dari pembeli:
+
+```bash
+php artisan license:generate {MACHINE_ID} --client="{NAMA_LENGKAP_KLIEN}"
+```
+
+**Contoh:**
+```bash
+php artisan license:generate WP-B010-C29F-19D8-5EF1 --client="Dr. Sarah, M.Psi., Psikolog"
+```
+Salin token `WP-LIC-...` yang muncul di terminal dan kirimkan ke WhatsApp pembeli.
+
+Dokumentasi lengkap dan tutorial aktivasi tersedia di folder `documentations/`:
+- 📄 [Panduan Aktivasi Lisensi Offline (PDF)](documentations/panduan_aktivasi_lisensi_offline.pdf)
+- 📝 [Panduan Aktivasi Lisensi Offline (Markdown)](documentations/panduan_aktivasi_lisensi_offline.md)
+
+---
 
 ## 📄 Lisensi
-
 Proyek ini menggunakan lisensi [MIT License](LICENSE).
