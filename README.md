@@ -197,7 +197,7 @@ php artisan native:build mac
 php artisan native:build mac arm64   # Apple Silicon (M1 / M2 / M3 / M4)
 php artisan native:build mac x64     # Mac berbasis prosesor Intel
 ```
-*Hasil file `.dmg` dan `.zip` akan tersimpan di dalam folder `dist/`.*
+*Hasil file `.dmg` dan `.zip` akan tersimpan di dalam folder `nativephp/electron/dist/`.*
 
 #### B. Build untuk Windows (PC & Laptop Windows)
 ```bash
@@ -207,7 +207,7 @@ php artisan native:build win
 # Atau spesifik arsitektur 64-bit:
 php artisan native:build win x64
 ```
-*Hasil file installer `.exe` akan tersimpan di dalam folder `dist/`.*
+*Hasil file installer `.exe` akan tersimpan di dalam folder `nativephp/electron/dist/`.*
 
 #### C. Build untuk Semua Platform Sekaligus
 ```bash

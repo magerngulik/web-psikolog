@@ -15,7 +15,12 @@ class EnsureAppIsLicensed
 
     public function handle(Request $request, Closure $next): Response
     {
-        $isLicensed = $this->licenseService->isLicensed();
+        try {
+            $isLicensed = $this->licenseService->isLicensed();
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('License middleware check bypassed with false: ' . $e->getMessage());
+            $isLicensed = false;
+        }
 
         // If not licensed, force redirect to activation screen
         if (!$isLicensed) {

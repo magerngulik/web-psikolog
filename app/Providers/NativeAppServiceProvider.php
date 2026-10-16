@@ -13,6 +13,8 @@ class NativeAppServiceProvider implements ProvidesPhpIni
      */
     public function boot(): void
     {
+        $this->ensureInitialDataSeeded();
+
         Window::open()
             ->title('Web Psikolog — Clinical Practice & Records')
             ->width(1366)
@@ -22,6 +24,19 @@ class NativeAppServiceProvider implements ProvidesPhpIni
             ->rememberState()
             ->backgroundColor('#080f14')
             ->showDevTools(false);
+    }
+
+    protected function ensureInitialDataSeeded(): void
+    {
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('system_references')) {
+                if (\App\Models\SystemReference::count() === 0) {
+                    \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+                }
+            }
+        } catch (\Throwable $e) {
+            // Silently pass if database is not yet ready
+        }
     }
 
     /**

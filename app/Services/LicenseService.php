@@ -294,21 +294,26 @@ class LicenseService
             return true;
         }
 
-        $activeLicense = AppLicense::where('is_active', true)->first();
+        try {
+            $activeLicense = AppLicense::where('is_active', true)->first();
 
-        if (!$activeLicense) {
+            if (!$activeLicense) {
+                return false;
+            }
+
+            // Must match current machine ID
+            if (strtoupper($activeLicense->machine_id) !== strtoupper($this->getMachineId())) {
+                return false;
+            }
+
+            // Verify cryptographic signature
+            $check = $this->verifyAndParseToken($activeLicense->license_token);
+
+            return $check['valid'];
+        } catch (\Throwable $e) {
+            // Safe fallback if database table does not exist yet or connection fails
             return false;
         }
-
-        // Must match current machine ID
-        if (strtoupper($activeLicense->machine_id) !== strtoupper($this->getMachineId())) {
-            return false;
-        }
-
-        // Verify cryptographic signature
-        $check = $this->verifyAndParseToken($activeLicense->license_token);
-
-        return $check['valid'];
     }
 
     /**
