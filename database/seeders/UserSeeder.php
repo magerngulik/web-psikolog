@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
                 'name' => 'Basirah',
                 'title_prefix' => '',
                 'title_suffix' => 'S.Psi., M.Psi., Psikolog',
-                'sipa_number' => '503/123-SIPA/2026',
+                'sipa_number' => '503/123-SIPPK/2026',
                 'practice_name' => 'MANDIRI',
                 'practice_city' => 'Selatpanjang',
                 'password' => Hash::make('password'),

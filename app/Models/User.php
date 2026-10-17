@@ -40,7 +40,12 @@ class User extends Authenticatable
 
     public function getSipaNumberAttribute($value)
     {
-        return $value ?: '503/123-SIPA/2026';
+        return $value ?: '503/123-SIPPK/2026';
+    }
+
+    public function getSippkNumberAttribute()
+    {
+        return $this->sipa_number;
     }
 
     public function getPracticeNameAttribute($value)

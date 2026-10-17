@@ -6,7 +6,7 @@
         </div>
         <h1 class="font-serif text-3xl font-semibold text-white tracking-tight mt-1">Profil Psikolog & Tempat Praktik</h1>
         <p class="text-xs sm:text-sm text-slate-400 font-sans mt-0.5">
-            Kelola identitas resmi, gelar profesi, nomor SIPA, dan data tempat praktik yang tercantum pada dokumen RPP dan Logbook SKP.
+            Kelola identitas resmi, gelar profesi, nomor SIPPK, dan data tempat praktik yang tercantum pada dokumen RPP dan Logbook SKP.
         </p>
     </div>
 
@@ -29,7 +29,7 @@
                 NAMA: <span class="text-white font-semibold uppercase">{{ $this->formatted_name }}</span>
             </div>
             <div>
-                SIPA: <span class="text-slate-400">{{ $sipa_number }}</span>
+                SIPPK: <span class="text-slate-400">{{ $sipa_number }}</span>
             </div>
             <div class="text-slate-400 pt-1 text-[11px] flex items-center justify-between">
                 <span>Titik Tanda Tangan: <span class="text-teal-300 font-medium">{{ $practice_city ?: 'Selatpanjang' }}</span>, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</span>
@@ -42,20 +42,20 @@
                 @endif
             </div>
 
-            <!-- Tanda Tangan Visual Preview -->
-            <div class="pt-2 border-t border-teal-500/15 flex items-center gap-4">
-                <div class="w-32 h-16 bg-white/5 border border-dashed border-teal-500/30 rounded-lg flex items-center justify-center overflow-hidden p-1">
+            <!-- Tanda Tangan Visual Preview (2x Ukuran) -->
+            <div class="pt-2 border-t border-teal-500/15 flex items-center gap-5">
+                <div class="w-56 h-28 bg-white/5 border border-dashed border-teal-500/30 rounded-xl flex items-center justify-center overflow-hidden p-2">
                     @if ($signature_photo)
                         <img src="{{ $signature_photo->temporaryUrl() }}" class="max-h-full max-w-full object-contain filter drop-shadow" alt="TTD Sementara">
                     @elseif ($existing_signature_path)
                         <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($existing_signature_path) }}" class="max-h-full max-w-full object-contain filter drop-shadow" alt="TTD Aktif">
                     @else
-                        <span class="text-[10px] text-slate-500 font-sans text-center">Kolom TTD Basah</span>
+                        <span class="text-xs text-slate-500 font-sans text-center">Kolom TTD Basah</span>
                     @endif
                 </div>
-                <div class="text-[11px] font-sans text-slate-400 space-y-0.5">
-                    <span class="text-white font-semibold block text-xs underline">{{ $this->formatted_name }}</span>
-                    <span>SIPA: {{ $sipa_number }}</span>
+                <div class="text-xs font-sans text-slate-400 space-y-1">
+                    <span class="text-white font-semibold block text-sm underline">{{ $this->formatted_name }}</span>
+                    <span>SIPPK: {{ $sipa_number }}</span>
                 </div>
             </div>
         </div>
@@ -85,8 +85,8 @@
                     @error('title_suffix') <span class="text-rose-400 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
                 <div class="md:col-span-6">
-                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Nomor SIPA / STR Profesi *</label>
-                    <input type="text" wire:model="sipa_number" placeholder="misal: 503/123-SIPA/2026" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
+                    <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Nomor SIPPK / STR Profesi *</label>
+                    <input type="text" wire:model="sipa_number" placeholder="misal: 503/123-SIPPK/2026" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
                     @error('sipa_number') <span class="text-rose-400 text-xs mt-1 block">{{ $message }}</span> @enderror
                 </div>
                 <div class="md:col-span-6">
@@ -184,7 +184,7 @@
                             @endif
                         </div>
 
-                        <div class="h-32 bg-slate-900/60 rounded-xl border border-teal-500/15 flex items-center justify-center p-3 relative overflow-hidden group">
+                        <div class="h-48 bg-slate-900/60 rounded-xl border border-teal-500/15 flex items-center justify-center p-4 relative overflow-hidden group">
                             @if ($signature_photo)
                                 <img src="{{ $signature_photo->temporaryUrl() }}" class="max-h-full max-w-full object-contain filter drop-shadow-md" alt="Preview TTD Baru">
                                 <span class="absolute bottom-1 right-2 text-[9px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded font-mono">File Baru Terpilih</span>

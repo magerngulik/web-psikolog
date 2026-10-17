@@ -34,13 +34,17 @@ class DigitalSignatureProfileTest extends TestCase
             'name' => 'Basirah',
             'email' => 'basirah@example.com',
             'password' => bcrypt('password'),
-            'sipa_number' => '503/123-SIPA/2026',
+            'sipa_number' => '503/123-SIPPK/2026',
         ]);
 
         Livewire::test(ProfileSettings::class)
             ->assertSee('3. Tanda Tangan Digital Resmi Psikolog')
             ->assertSee('Pilih File Tanda Tangan')
-            ->assertSee('Belum ada tanda tangan digital');
+            ->assertSee('Belum ada tanda tangan digital')
+            ->assertSee('Nomor SIPPK / STR Profesi')
+            ->assertSee('503/123-SIPPK/2026');
+
+        $this->assertEquals('503/123-SIPPK/2026', $user->sippk_number);
     }
 
     public function test_can_upload_and_save_digital_signature(): void
@@ -49,7 +53,7 @@ class DigitalSignatureProfileTest extends TestCase
             'name' => 'Basirah',
             'email' => 'basirah@example.com',
             'password' => bcrypt('password'),
-            'sipa_number' => '503/123-SIPA/2026',
+            'sipa_number' => '503/123-SIPPK/2026',
         ]);
 
         $file = UploadedFile::fake()->image('signature.png', 400, 150);
@@ -80,7 +84,7 @@ class DigitalSignatureProfileTest extends TestCase
             'name' => 'Basirah',
             'email' => 'basirah@example.com',
             'password' => bcrypt('password'),
-            'sipa_number' => '503/123-SIPA/2026',
+            'sipa_number' => '503/123-SIPPK/2026',
             'signature_path' => $path,
         ]);
 
@@ -107,7 +111,7 @@ class DigitalSignatureProfileTest extends TestCase
             'name' => 'Basirah',
             'email' => 'basirah@example.com',
             'password' => bcrypt('password'),
-            'sipa_number' => '503/123-SIPA/2026',
+            'sipa_number' => '503/123-SIPPK/2026',
             'signature_path' => $path,
         ]);
 
@@ -170,7 +174,7 @@ class DigitalSignatureProfileTest extends TestCase
             'name' => 'Basirah',
             'email' => 'basirah@example.com',
             'password' => bcrypt('password'),
-            'sipa_number' => '503/123-SIPA/2026',
+            'sipa_number' => '503/123-SIPPK/2026',
             'signature_path' => $path,
         ]);
 

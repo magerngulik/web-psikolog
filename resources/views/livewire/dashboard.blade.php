@@ -22,7 +22,7 @@
                         • {{ $psychologist->practice_city }}
                     @endif
                     @if($psychologist?->sipa_number)
-                        • <span class="font-mono text-teal-300/90">SIPA: {{ $psychologist->sipa_number }}</span>
+                        • <span class="font-mono text-teal-300/90">SIPPK: {{ $psychologist->sipa_number }}</span>
                     @endif
                 </p>
             </div>

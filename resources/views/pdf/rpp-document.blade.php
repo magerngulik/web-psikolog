@@ -242,13 +242,13 @@
                 <p>{{ $appointment->psychologist?->practice_city ?: 'Jakarta' }}, {{ \Carbon\Carbon::parse($appointment->session_date ?? $appointment->date)->translatedFormat('d F Y') }}</p>
                 <p>Psikolog Penanggung Jawab,</p>
                 @if($appointment->psychologist?->signature_base64)
-                    <div style="height: 55px; text-align: center; margin: 3px 0;">
-                        <img src="{{ $appointment->psychologist->signature_base64 }}" style="max-height: 52px; max-width: 135px; object-fit: contain;" alt="Tanda Tangan Digital">
+                    <div style="height: 105px; text-align: center; margin: 4px 0;">
+                        <img src="{{ $appointment->psychologist->signature_base64 }}" style="max-height: 100px; max-width: 250px; object-fit: contain;" alt="Tanda Tangan Digital">
                     </div>
                 @else
-                    <br><br>
+                    <div style="height: 95px;"></div>
                 @endif
-                <p><strong><u>{{ $appointment->psychologist?->formatted_name ?? ($appointment->psychologist?->name ?? 'Psikolog Penanggung Jawab') }}</u></strong><br>SIPA: {{ $appointment->psychologist?->sipa_number ?? '-' }}</p>
+                <p><strong><u>{{ $appointment->psychologist?->formatted_name ?? ($appointment->psychologist?->name ?? 'Psikolog Penanggung Jawab') }}</u></strong><br>SIPPK: {{ $appointment->psychologist?->sipa_number ?? '-' }}</p>
             </td>
         </tr>
     </table>

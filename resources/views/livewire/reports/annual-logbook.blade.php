@@ -56,7 +56,7 @@
                         {{ $logbookData['user']?->formatted_name ?? ($logbookData['user']?->name ?? 'Psikolog Klinis') }}
                     </h2>
                     <span class="text-xs px-2.5 py-0.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-300 font-mono">
-                        SIPA: {{ $logbookData['user']?->sipa_number ?? '-' }}
+                        SIPPK: {{ $logbookData['user']?->sipa_number ?? '-' }}
                     </span>
                 </div>
                 <p class="text-xs text-slate-300/80 mt-1">

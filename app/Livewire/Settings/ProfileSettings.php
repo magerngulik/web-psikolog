@@ -15,7 +15,7 @@ class ProfileSettings extends Component
     public $name = '';
     public $title_prefix = '';
     public $title_suffix = 'S.Psi., M.Psi., Psikolog';
-    public $sipa_number = '503/123-SIPA/2026';
+    public $sipa_number = '503/123-SIPPK/2026';
     public $practice_name = 'MANDIRI';
     public $practice_city = 'Selatpanjang';
     public $practice_address = '';
@@ -33,7 +33,7 @@ class ProfileSettings extends Component
             $this->name = $user->name ?? '';
             $this->title_prefix = $user->title_prefix ?? '';
             $this->title_suffix = $user->title_suffix ?? 'S.Psi., M.Psi., Psikolog';
-            $this->sipa_number = $user->sipa_number ?? '503/123-SIPA/2026';
+            $this->sipa_number = $user->sipa_number ?? '503/123-SIPPK/2026';
             $this->practice_name = $user->practice_name ?? 'MANDIRI';
             $this->practice_city = $user->practice_city ?? 'Selatpanjang';
             $this->practice_address = $user->practice_address ?? '';

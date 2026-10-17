@@ -56,7 +56,7 @@ class PatientSession extends Model
         return $this->belongsTo(User::class, 'user_id')->withDefault(function () {
             return User::first() ?? new User([
                 'name' => 'Psikolog Klinis',
-                'sipa_number' => '503/123-SIPA/2026',
+                'sipa_number' => '503/123-SIPPK/2026',
             ]);
         });
     }
