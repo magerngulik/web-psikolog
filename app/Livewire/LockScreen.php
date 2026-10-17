@@ -13,11 +13,15 @@ class LockScreen extends Component
 
     public function mount()
     {
-        if (! SecurityKey::where('is_active', true)->exists()) {
-            SecurityKey::create([
-                'pin_hash' => Hash::make('123456'),
-                'is_active' => true,
-            ]);
+        try {
+            if (! SecurityKey::where('is_active', true)->exists()) {
+                SecurityKey::create([
+                    'pin_hash' => Hash::make('123456'),
+                    'is_active' => true,
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Database not ready yet - will be initialized on next request
         }
     }
 
@@ -40,20 +44,25 @@ class LockScreen extends Component
 
     public function verifyPin()
     {
-        $activeKey = SecurityKey::where('is_active', true)->first();
+        try {
+            $activeKey = SecurityKey::where('is_active', true)->first();
 
-        if (! $activeKey) {
-            $activeKey = SecurityKey::create([
-                'pin_hash' => Hash::make('123456'),
-                'is_active' => true,
-            ]);
-        }
+            if (! $activeKey) {
+                $activeKey = SecurityKey::create([
+                    'pin_hash' => Hash::make('123456'),
+                    'is_active' => true,
+                ]);
+            }
 
-        if ($activeKey && Hash::check($this->pin, $activeKey->pin_hash)) {
-            session()->put('pin_unlocked', true);
-            return redirect()->route('dashboard');
-        } else {
-            $this->errorMessage = 'PIN Security Key salah. Silakan coba lagi.';
+            if ($activeKey && Hash::check($this->pin, $activeKey->pin_hash)) {
+                session()->put('pin_unlocked', true);
+                return redirect()->route('dashboard');
+            } else {
+                $this->errorMessage = 'PIN Security Key salah. Silakan coba lagi.';
+                $this->pin = '';
+            }
+        } catch (\Throwable $e) {
+            $this->errorMessage = 'Sistem sedang inisialisasi. Tunggu beberapa detik lalu coba lagi.';
             $this->pin = '';
         }
     }

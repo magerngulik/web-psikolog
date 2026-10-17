@@ -66,15 +66,25 @@
                     </p>
                 </div>
 
-                <!-- QR Code WhatsApp Box -->
+                {{-- QR Code WhatsApp Box --}}
                 <div class="bg-spruce-900/40 border border-teal-500/15 rounded-2xl p-4 flex items-center gap-4">
-                    <div class="p-2 bg-spruce-950 rounded-xl border border-teal-500/25 shrink-0 shadow-md">
-                        {!! $qrSvg !!}
-                    </div>
+                    @if($qrSvg)
+                        <div class="p-2 bg-spruce-950 rounded-xl border border-teal-500/25 shrink-0 shadow-md">
+                            {!! $qrSvg !!}
+                        </div>
+                    @else
+                        <div class="p-3 bg-spruce-950 rounded-xl border border-teal-500/25 shrink-0 shadow-md flex items-center justify-center w-[80px] h-[80px]">
+                            <span class="text-3xl">📱</span>
+                        </div>
+                    @endif
                     <div class="space-y-1.5">
                         <span class="text-xs font-bold text-white block">Aktivasi Cepat via HP</span>
                         <p class="text-[11px] text-slate-400 leading-relaxed font-sans">
-                            Scan QR di samping menggunakan kamera smartphone / WhatsApp Anda untuk mengirim kode secara otomatis tanpa perlu mengetik ulang.
+                            @if($qrSvg)
+                                Scan QR di samping menggunakan kamera smartphone / WhatsApp Anda untuk mengirim kode secara otomatis tanpa perlu mengetik ulang.
+                            @else
+                                Klik tombol di bawah untuk membuka WhatsApp dan mengirim kode perangkat Anda secara otomatis.
+                            @endif
                         </p>
                         @if ($whatsAppUrl)
                             <a href="{{ $whatsAppUrl }}" target="_blank" class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 underline underline-offset-2">

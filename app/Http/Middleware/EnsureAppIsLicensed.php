@@ -24,7 +24,10 @@ class EnsureAppIsLicensed
 
         // If not licensed, force redirect to activation screen
         if (!$isLicensed) {
-            if (!$request->routeIs('activation') && !$request->routeIs('rpp.verify')) {
+            if (!$request->routeIs('activation') 
+                && !$request->routeIs('rpp.verify') 
+                && !$request->routeIs('*livewire*') 
+                && !str_contains($request->path(), 'livewire')) {
                 return redirect()->route('activation');
             }
         } else {

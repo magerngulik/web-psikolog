@@ -27,3 +27,7 @@ Homestead.yaml
 Thumbs.db
 /dist
 /build
+*.exe
+*.blockmap
+*.dmg
+*.zip

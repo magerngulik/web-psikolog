@@ -29,13 +29,17 @@ class NativeAppServiceProvider implements ProvidesPhpIni
     protected function ensureInitialDataSeeded(): void
     {
         try {
+            if (! \Illuminate\Support\Facades\Schema::hasTable('users') || ! \Illuminate\Support\Facades\Schema::hasTable('app_licenses')) {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            }
+
             if (\Illuminate\Support\Facades\Schema::hasTable('system_references')) {
                 if (\App\Models\SystemReference::count() === 0) {
                     \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
                 }
             }
         } catch (\Throwable $e) {
-            // Silently pass if database is not yet ready
+            \Illuminate\Support\Facades\Log::warning('DB auto-init check in NativeAppServiceProvider: ' . $e->getMessage());
         }
     }
 

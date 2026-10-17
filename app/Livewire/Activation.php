@@ -21,17 +21,31 @@ class Activation extends Component
 
     public function mount(LicenseService $licenseService)
     {
-        if ($licenseService->isLicensed()) {
-            return redirect()->route('dashboard');
+        try {
+            if ($licenseService->isLicensed()) {
+                return redirect()->route('dashboard');
+            }
+        } catch (\Throwable $e) {
+            // Safe — treat as unlicensed
         }
 
-        $this->machineId = $licenseService->getMachineId();
-        $this->whatsAppUrl = $licenseService->getWhatsAppLink();
-        $this->qrSvg = (string) QrCode::size(140)
-            ->color(45, 212, 191) // teal-400
-            ->backgroundColor(11, 22, 27) // spruce-950
-            ->margin(1)
-            ->generate($this->whatsAppUrl);
+        try {
+            $this->machineId = $licenseService->getMachineId();
+        } catch (\Throwable $e) {
+            $this->machineId = 'UNKNOWN-' . substr(md5(gethostname()), 0, 8);
+        }
+
+        try {
+            $this->whatsAppUrl = $licenseService->getWhatsAppLink();
+            $this->qrSvg = (string) QrCode::size(140)
+                ->color(45, 212, 191) // teal-400
+                ->backgroundColor(11, 22, 27) // spruce-950
+                ->margin(1)
+                ->generate($this->whatsAppUrl);
+        } catch (\Throwable $e) {
+            // QR code generation failed — fallback to plain WhatsApp URL link (no SVG)
+            $this->qrSvg = '';
+        }
     }
 
     public function activate(LicenseService $licenseService)
