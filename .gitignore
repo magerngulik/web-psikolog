@@ -31,3 +31,9 @@ Thumbs.db
 *.blockmap
 *.dmg
 *.zip
+
+# NativePHP
+/nativephp
+.nativephp
+/database/nativephp.sqlite*
+
