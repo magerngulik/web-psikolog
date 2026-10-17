@@ -31,8 +31,32 @@
             <div>
                 SIPA: <span class="text-slate-400">{{ $sipa_number }}</span>
             </div>
-            <div class="text-slate-400 pt-1 text-[11px]">
-                Titik Tanda Tangan: <span class="text-teal-300 font-medium">{{ $practice_city ?: 'Selatpanjang' }}</span>, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}
+            <div class="text-slate-400 pt-1 text-[11px] flex items-center justify-between">
+                <span>Titik Tanda Tangan: <span class="text-teal-300 font-medium">{{ $practice_city ?: 'Selatpanjang' }}</span>, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</span>
+                @if($signature_photo)
+                    <span class="text-emerald-400 text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Preview TTD Baru</span>
+                @elseif($existing_signature_path)
+                    <span class="text-teal-400 text-[10px] bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">TTD Tersimpan Aktif</span>
+                @else
+                    <span class="text-slate-500 text-[10px] italic">TTD Manual (Belum Diunggah)</span>
+                @endif
+            </div>
+
+            <!-- Tanda Tangan Visual Preview -->
+            <div class="pt-2 border-t border-teal-500/15 flex items-center gap-4">
+                <div class="w-32 h-16 bg-white/5 border border-dashed border-teal-500/30 rounded-lg flex items-center justify-center overflow-hidden p-1">
+                    @if ($signature_photo)
+                        <img src="{{ $signature_photo->temporaryUrl() }}" class="max-h-full max-w-full object-contain filter drop-shadow" alt="TTD Sementara">
+                    @elseif ($existing_signature_path)
+                        <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($existing_signature_path) }}" class="max-h-full max-w-full object-contain filter drop-shadow" alt="TTD Aktif">
+                    @else
+                        <span class="text-[10px] text-slate-500 font-sans text-center">Kolom TTD Basah</span>
+                    @endif
+                </div>
+                <div class="text-[11px] font-sans text-slate-400 space-y-0.5">
+                    <span class="text-white font-semibold block text-xs underline">{{ $this->formatted_name }}</span>
+                    <span>SIPA: {{ $sipa_number }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -96,6 +120,101 @@
                 <div>
                     <label class="block text-xs font-semibold uppercase text-slate-400 mb-1">Alamat Lengkap Praktik</label>
                     <textarea wire:model="practice_address" rows="2" placeholder="Alamat kantor / tempat praktik..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition leading-relaxed"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Tanda Tangan Digital Resmi Psikolog -->
+        <div>
+            <h2 class="font-serif text-lg font-semibold text-teal-300 border-b border-teal-500/10 pb-2 mb-4 flex items-center gap-2">
+                <span>✍️</span> 3. Tanda Tangan Digital Resmi Psikolog
+            </h2>
+
+            <div class="space-y-4">
+                <p class="text-xs text-slate-400 font-sans leading-relaxed">
+                    Unggah foto atau scan tanda tangan Anda untuk dicantumkan secara otomatis pada dokumen resmi seperti <strong>Rekam Pemeriksaan Psikologis (RPP Konseling)</strong> dan <strong>Logbook SKP IPK Tahunan</strong>.
+                    Disarankan menggunakan gambar tanda tangan berlatar belakang <strong>transparan (PNG)</strong> atau latar belakang putih bersih.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                    <!-- Area Upload -->
+                    <div class="md:col-span-7 space-y-3">
+                        <label class="block text-xs font-semibold uppercase text-slate-400">Pilih File Tanda Tangan (PNG, JPG, WEBP — Maks. 2MB)</label>
+                        
+                        <div class="relative flex flex-col items-center justify-center p-6 border-2 border-dashed border-teal-500/30 hover:border-teal-400/60 rounded-2xl bg-spruce-900/40 transition group cursor-pointer">
+                            <input type="file" wire:model="signature_photo" accept="image/png,image/jpeg,image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                            
+                            <div class="text-center space-y-2 pointer-events-none">
+                                <div class="w-12 h-12 rounded-xl bg-teal-500/15 border border-teal-400/30 text-teal-300 flex items-center justify-center mx-auto group-hover:scale-105 transition">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <span class="text-xs font-semibold text-teal-300 group-hover:underline">Klik untuk pilih file tanda tangan</span>
+                                    <p class="text-[11px] text-slate-500 mt-0.5">atau drag & drop file ke area ini</p>
+                                </div>
+                            </div>
+
+                            <!-- Uploading Indicator -->
+                            <div wire:loading wire:target="signature_photo" class="absolute inset-0 bg-spruce-950/80 backdrop-blur-sm rounded-2xl flex items-center justify-center z-20">
+                                <div class="flex items-center gap-2 text-teal-300 text-xs font-mono">
+                                    <svg class="animate-spin h-4 w-4 text-teal-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span>Mengunggah file tanda tangan...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @error('signature_photo') 
+                            <span class="text-rose-400 text-xs mt-1 block">{{ $message }}</span> 
+                        @enderror
+                    </div>
+
+                    <!-- Area Pratinjau Tanda Tangan -->
+                    <div class="md:col-span-5 bg-spruce-950/80 border border-teal-500/20 rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono font-semibold text-teal-300 uppercase tracking-wider">Pratinjau TTD</span>
+                            @if ($existing_signature_path || $signature_photo)
+                                <span class="text-[10px] text-emerald-400 font-mono">✓ Siap Digunakan</span>
+                            @else
+                                <span class="text-[10px] text-slate-500 font-mono">Kosong</span>
+                            @endif
+                        </div>
+
+                        <div class="h-32 bg-slate-900/60 rounded-xl border border-teal-500/15 flex items-center justify-center p-3 relative overflow-hidden group">
+                            @if ($signature_photo)
+                                <img src="{{ $signature_photo->temporaryUrl() }}" class="max-h-full max-w-full object-contain filter drop-shadow-md" alt="Preview TTD Baru">
+                                <span class="absolute bottom-1 right-2 text-[9px] bg-teal-500/20 text-teal-300 px-1.5 py-0.5 rounded font-mono">File Baru Terpilih</span>
+                            @elseif ($existing_signature_path)
+                                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($existing_signature_path) }}" class="max-h-full max-w-full object-contain filter drop-shadow-md" alt="Preview TTD Tersimpan">
+                            @else
+                                <div class="text-center p-4">
+                                    <span class="text-2xl block mb-1 opacity-40">🖋️</span>
+                                    <p class="text-[11px] text-slate-500">Belum ada tanda tangan digital yang diunggah.</p>
+                                </div>
+                            @endif
+                        </div>
+
+                        @if ($existing_signature_path)
+                            <div class="pt-1 flex items-center justify-between">
+                                <span class="text-[11px] text-slate-400">Tanda tangan aktif di dokumen</span>
+                                <button type="button" 
+                                        wire:click="deleteSignature" 
+                                        wire:confirm="Yakin ingin menghapus tanda tangan digital ini? Dokumen akan kembali menyisakan kolom kosong untuk tanda tangan manual."
+                                        class="px-2.5 py-1 bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 rounded-lg text-xs font-medium transition active:scale-95 flex items-center gap-1">
+                                    <span>🗑️</span>
+                                    <span>Hapus Tanda Tangan</span>
+                                </button>
+                            </div>
+                        @elseif ($signature_photo)
+                            <div class="pt-1">
+                                <span class="text-[11px] text-amber-300 block">⚠️ File baru dipilih, klik tombol <strong>"Simpan Profil Praktik"</strong> di bawah untuk menerapkan.</span>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>

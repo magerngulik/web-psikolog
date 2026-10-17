@@ -168,7 +168,14 @@
             <td width="40%">
                 <div class="sig-block">
                     <p style="margin: 0 0 4px 0;">{{ $user?->practice_city ?: 'Selatpanjang' }}, 31 Desember {{ $year }}</p>
-                    <p style="margin: 0 0 50px 0;">Psikolog Klinis,</p>
+                    <p style="margin: 0 0 4px 0;">Psikolog Klinis,</p>
+                    @if($user?->signature_base64)
+                        <div style="height: 50px; text-align: center; margin: 2px 0;">
+                            <img src="{{ $user->signature_base64 }}" style="max-height: 48px; max-width: 135px; object-fit: contain;" alt="Tanda Tangan Digital">
+                        </div>
+                    @else
+                        <div style="height: 46px;"></div>
+                    @endif
                     <p style="margin: 0; font-weight: bold; text-decoration: underline;">
                         {{ $user?->formatted_name ?? ($user?->name ?? 'Psikolog Klinis') }}
                     </p>
