@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\GeneratesSequentialCode;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,40 +10,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Organization extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use GeneratesSequentialCode, HasFactory, HasUuids, SoftDeletes;
 
     protected $guarded = [];
 
-    protected static function boot()
+    public function sequentialCodeColumn(): string
     {
-        parent::boot();
+        return 'org_code';
+    }
 
-        static::creating(function ($org) {
-            if (empty($org->org_code)) {
-                $yearMonth = date('Ym');
-                $prefix = 'ORG-' . $yearMonth . '-';
-
-                $lastOrg = self::withTrashed()
-                    ->where('org_code', 'like', $prefix . '%')
-                    ->orderBy('org_code', 'desc')
-                    ->first();
-
-                $nextNumber = 1;
-                if ($lastOrg && preg_match('/' . preg_quote($prefix, '/') . '(\d+)/', $lastOrg->org_code, $matches)) {
-                    $nextNumber = ((int) $matches[1]) + 1;
-                }
-
-                do {
-                    $code = $prefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-                    $exists = self::withTrashed()->where('org_code', $code)->exists();
-                    if ($exists) {
-                        $nextNumber++;
-                    }
-                } while ($exists);
-
-                $org->org_code = $code;
-            }
-        });
+    public function sequentialCodePrefix(): string
+    {
+        return 'ORG-'.date('Ym').'-';
     }
 
     public function activities()

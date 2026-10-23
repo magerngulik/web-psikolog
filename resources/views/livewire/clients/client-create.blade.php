@@ -141,8 +141,9 @@
 
         <!-- Submit Button -->
         <div class="flex justify-end pt-4">
-            <button type="submit" class="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl transition shadow-lg shadow-teal-950/60 transform hover:-translate-y-0.5 text-sm">
-                Simpan Data Klien
+            <button type="submit" wire:loading.attr="disabled" class="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 disabled:opacity-50 text-slate-950 font-bold rounded-xl transition shadow-lg shadow-teal-950/60 transform hover:-translate-y-0.5 text-sm">
+                <span wire:loading.remove wire:target="save">Simpan Data Klien</span>
+                <span wire:loading wire:target="save">Menyimpan...</span>
             </button>
         </div>
     </form>

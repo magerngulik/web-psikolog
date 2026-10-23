@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\GeneratesSequentialCode;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Activity extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use GeneratesSequentialCode, HasFactory, HasUuids, SoftDeletes;
 
     protected $guarded = [];
 
@@ -20,36 +21,14 @@ class Activity extends Model
         'skp_points' => 'decimal:2',
     ];
 
-    protected static function boot()
+    public function sequentialCodeColumn(): string
     {
-        parent::boot();
+        return 'activity_code';
+    }
 
-        static::creating(function ($activity) {
-            if (empty($activity->activity_code)) {
-                $yearMonth = date('Ym');
-                $prefix = 'ACT-' . $yearMonth . '-';
-
-                $lastActivity = self::withTrashed()
-                    ->where('activity_code', 'like', $prefix . '%')
-                    ->orderBy('activity_code', 'desc')
-                    ->first();
-
-                $nextNumber = 1;
-                if ($lastActivity && preg_match('/' . preg_quote($prefix, '/') . '(\d+)/', $lastActivity->activity_code, $matches)) {
-                    $nextNumber = ((int) $matches[1]) + 1;
-                }
-
-                do {
-                    $code = $prefix . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
-                    $exists = self::withTrashed()->where('activity_code', $code)->exists();
-                    if ($exists) {
-                        $nextNumber++;
-                    }
-                } while ($exists);
-
-                $activity->activity_code = $code;
-            }
-        });
+    public function sequentialCodePrefix(): string
+    {
+        return 'ACT-'.date('Ym').'-';
     }
 
     public function organization()

@@ -78,8 +78,6 @@ class CaseCreate extends Component
 
         $validatedData = $this->validate();
 
-        $count = MedicalCase::count() + 1;
-        $validatedData['case_code'] = 'CAS-' . date('Ym') . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
         $validatedData['start_date'] = now()->toDateString();
         $validatedData['subjective_complaint'] = $this->subjective_complaint;
         $validatedData['subjective_problem'] = $this->subjective_problem;

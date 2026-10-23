@@ -228,6 +228,46 @@ class ClientManagementTest extends TestCase
             'disability_description' => 'ADHD / Neurodivergent',
         ]);
     }
+
+    public function test_creating_client_after_soft_delete_does_not_collide_client_code(): void
+    {
+        $this->withSession(['pin_unlocked' => true]);
+        $prefix = 'CLI-'.date('Ym').'-';
+
+        $client1 = Client::create([
+            'full_name' => 'Klien Pertama',
+            'gender' => 'male',
+        ]);
+        $client2 = Client::create([
+            'full_name' => 'Klien Kedua',
+            'gender' => 'female',
+        ]);
+
+        $this->assertEquals($prefix.'001', $client1->client_code);
+        $this->assertEquals($prefix.'002', $client2->client_code);
+
+        // Soft delete both client 1 and client 2 (including the highest code 002)
+        $client1->delete();
+        $client2->delete();
+        $this->assertEquals(0, Client::count());
+
+        // Creating a 3rd client via Livewire must generate 003, not 001 or 002
+        Livewire::test('clients.client-create')
+            ->set('full_name', 'Janicia Davinci')
+            ->set('gender', 'female')
+            ->set('date_of_birth', '2022-01-18')
+            ->set('address', 'Jalan Imam Bonjol')
+            ->set('emergency_contact_name', 'Jaya')
+            ->set('emergency_contact_phone', '081276506580')
+            ->set('emergency_relation', 'orang tua')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('clients', [
+            'full_name' => 'Janicia Davinci',
+            'client_code' => $prefix.'003',
+        ]);
+    }
 }
 
 

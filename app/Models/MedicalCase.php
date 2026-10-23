@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\GeneratesSequentialCode;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MedicalCase extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use GeneratesSequentialCode, HasFactory, HasUuids, SoftDeletes;
 
     protected $table = 'cases';
 
@@ -31,6 +32,16 @@ class MedicalCase extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function sequentialCodeColumn(): string
+    {
+        return 'case_code';
+    }
+
+    public function sequentialCodePrefix(): string
+    {
+        return 'CAS-'.date('Ym').'-';
     }
 
     public function sessions()

@@ -60,10 +60,6 @@ class ClientCreate extends Component
             ? trim((string) $this->disability_description) 
             : null;
 
-        // Generate Client Code sederhana (contoh: CLI-202610-001)
-        $count = Client::count() + 1;
-        $validatedData['client_code'] = 'CLI-' . date('Ym') . '-' . str_pad($count, 3, '0', STR_PAD_LEFT);
-
         $client = Client::create($validatedData);
 
         session()->flash('message', 'Klien berhasil didaftarkan!');

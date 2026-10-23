@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\GeneratesSequentialCode;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use GeneratesSequentialCode, HasFactory, HasUuids, SoftDeletes;
 
     protected $guarded = [];
 
@@ -25,6 +26,16 @@ class Client extends Model
     public function cases()
     {
         return $this->hasMany(MedicalCase::class, 'client_id');
+    }
+
+    public function sequentialCodeColumn(): string
+    {
+        return 'client_code';
+    }
+
+    public function sequentialCodePrefix(): string
+    {
+        return 'CLI-'.date('Ym').'-';
     }
 
     public function getNameAttribute()

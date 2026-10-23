@@ -174,4 +174,45 @@ class CaseManagementTest extends TestCase
         Livewire::test('cases.case-index')
             ->assertSee('Gangguan Tidur & Insomnia');
     }
+
+    public function test_creating_case_after_soft_delete_does_not_collide_case_code(): void
+    {
+        $this->withSession(['pin_unlocked' => true]);
+        $prefix = 'CAS-'.date('Ym').'-';
+
+        $case1 = MedicalCase::create([
+            'client_id' => $this->client->id,
+            'title' => 'Kasus Pertama',
+            'category' => 'Anxiety',
+            'status' => 'active',
+        ]);
+        $case2 = MedicalCase::create([
+            'client_id' => $this->client->id,
+            'title' => 'Kasus Kedua',
+            'category' => 'Depression',
+            'status' => 'active',
+        ]);
+
+        $this->assertEquals($prefix.'001', $case1->case_code);
+        $this->assertEquals($prefix.'002', $case2->case_code);
+
+        // Soft delete case 2 (the highest code 002) so active MedicalCase::count() becomes 1
+        $case2->delete();
+        $this->assertEquals(1, MedicalCase::count());
+
+        Livewire::test('cases.case-create')
+            ->set('client_id', $this->client->id)
+            ->set('title', 'Kasus Ketiga Setelah Hapus')
+            ->set('category', 'Anxiety')
+            ->set('subjective_complaint', 'Keluhan')
+            ->set('subjective_problem', 'Masalah')
+            ->set('status', 'active')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('cases', [
+            'title' => 'Kasus Ketiga Setelah Hapus',
+            'case_code' => $prefix.'003',
+        ]);
+    }
 }
