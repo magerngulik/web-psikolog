@@ -46,7 +46,11 @@ git merge --abort >nul 2>nul
 git rebase --abort >nul 2>nul
 
 rem 5. Fetch commit terbaru dari remote GitHub
-git fetch origin %CURRENT_BRANCH%
+git fetch --all --prune
+if %errorlevel% neq 0 (
+    echo [WARNING] Fetch all gagal, mencoba fetch origin %CURRENT_BRANCH%...
+    git fetch origin %CURRENT_BRANCH%
+)
 if %errorlevel% neq 0 (
     echo.
     echo [ERROR] Gagal mengambil data (fetch) dari GitHub.
@@ -56,13 +60,17 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-rem 6. Reset hard ke origin/<branch> untuk menimpa perubahan lokal & mengatasi konflik
+rem 6. Reset hard ke commit terbaru untuk menimpa perubahan lokal & mengatasi konflik
 echo.
 echo [INFO] Mengabaikan semua perubahan lokal & menyamakan dengan GitHub...
 git reset --hard origin/%CURRENT_BRANCH%
 if %errorlevel% neq 0 (
+    echo [WARNING] Reset ke origin/%CURRENT_BRANCH% gagal, mencoba reset ke FETCH_HEAD...
+    git reset --hard FETCH_HEAD
+)
+if %errorlevel% neq 0 (
     echo.
-    echo [ERROR] Gagal melakukan reset ke origin/%CURRENT_BRANCH%.
+    echo [ERROR] Gagal melakukan reset ke versi terbaru.
     echo.
     pause
     exit /b 1
@@ -73,12 +81,16 @@ echo.
 echo [INFO] Membersihkan file/folder lokal yang tidak terlacak...
 git clean -fd
 
-rem 8. Bersihkan cache Laravel jika PHP & artisan tersedia
+rem 8. Jalankan migrasi dan bersihkan cache Laravel jika PHP & artisan tersedia
 where php >nul 2>nul
 if %errorlevel% equ 0 (
     if exist artisan (
         echo.
-        echo [INFO] Membersihkan cache aplikasi Laravel...
+        echo [INFO] Menjalankan migrasi database (jika ada update struktur)...
+        php artisan migrate --force
+        echo.
+        echo [INFO] Membersihkan cache template Blade & aplikasi Laravel...
+        php artisan view:clear
         php artisan optimize:clear
     )
 )
