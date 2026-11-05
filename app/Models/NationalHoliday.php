@@ -5,13 +5,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class NationalHoliday extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, HasUuids;
 
     protected $guarded = [];
+
+    protected static function booted(): void
+    {
+        static::creating(function (self $holiday): void {
+            if (! empty($holiday->holiday_date)) {
+                static::query()
+                    ->whereDate('holiday_date', $holiday->holiday_date)
+                    ->delete();
+            }
+        });
+    }
 }
 
 

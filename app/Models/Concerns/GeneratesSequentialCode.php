@@ -17,8 +17,9 @@ trait GeneratesSequentialCode
     {
         static::creating(function ($model): void {
             $column = $model->sequentialCodeColumn();
+            $current = $model->{$column} ?? null;
 
-            if (! empty($model->{$column})) {
+            if (! empty($current) && ! $model->sequentialCodeExists((string) $current)) {
                 return;
             }
 
