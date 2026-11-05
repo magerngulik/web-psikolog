@@ -215,4 +215,29 @@ class CaseManagementTest extends TestCase
             'case_code' => $prefix.'003',
         ]);
     }
+
+    public function test_case_index_renders_safely_when_client_is_soft_deleted(): void
+    {
+        $this->withSession(['pin_unlocked' => true]);
+
+        // Case with soft-deleted client
+        $caseWithDeletedClient = MedicalCase::create([
+            'client_id' => $this->client->id,
+            'title' => 'Kasus Klien Terhapus',
+            'category' => 'Anxiety',
+            'status' => 'active',
+        ]);
+        $this->client->delete(); // Soft delete client
+
+        $response = $this->get(route('cases.index'));
+        $response->assertStatus(200)
+            ->assertSee('Kasus Klien Terhapus')
+            ->assertSee($this->client->full_name)
+            ->assertSee('(Dihapus)');
+
+        $showResponse = $this->get(route('cases.show', $caseWithDeletedClient->id));
+        $showResponse->assertStatus(200)
+            ->assertSee('Kasus Klien Terhapus')
+            ->assertSee('(Dihapus)');
+    }
 }

@@ -36,7 +36,7 @@ class PatientSession extends Model
 
     public function medicalCase()
     {
-        return $this->belongsTo(MedicalCase::class, 'case_id');
+        return $this->belongsTo(MedicalCase::class, 'case_id')->withTrashed();
     }
 
     public function patient()

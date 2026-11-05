@@ -60,18 +60,34 @@
                                         #{{ $session->session_number }}
                                     </span>
                                     <div>
-                                        <a href="{{ route('clients.show', $session->medicalCase->client->id) }}" class="font-semibold text-white hover:text-teal-300 transition block text-sm">
-                                            {{ $session->medicalCase->client->full_name }}
-                                        </a>
-                                        <span class="text-[11px] text-teal-400/80 font-mono">{{ $session->medicalCase->client->client_code }}</span>
+                                        @if($session->medicalCase?->client)
+                                            <a href="{{ route('clients.show', $session->medicalCase->client->id) }}" class="font-semibold text-white hover:text-teal-300 transition block text-sm">
+                                                {{ $session->medicalCase->client->full_name }}
+                                                @if(method_exists($session->medicalCase->client, 'trashed') && $session->medicalCase->client->trashed())
+                                                    <span class="text-[10px] text-rose-400 font-sans ml-1 font-normal">(Dihapus)</span>
+                                                @endif
+                                            </a>
+                                            <span class="text-[11px] text-teal-400/80 font-mono">{{ $session->medicalCase->client->client_code }}</span>
+                                        @else
+                                            <span class="font-semibold text-slate-400 block text-sm italic">
+                                                {{ $session->medicalCase?->client?->full_name ?? 'Klien Tidak Ditemukan' }}
+                                            </span>
+                                            <span class="text-[11px] text-slate-500 font-mono">-</span>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
                             <td class="p-4">
-                                <a href="{{ route('cases.show', $session->medicalCase->id) }}" class="font-semibold text-slate-200 hover:text-teal-300 transition block text-xs sm:text-sm">
-                                    {{ $session->medicalCase->title }}
-                                </a>
-                                <span class="text-[11px] text-slate-400">{{ $session->medicalCase->category ?? 'Konseling Umum' }}</span>
+                                @if($session->medicalCase)
+                                    <a href="{{ route('cases.show', $session->medicalCase->id) }}" class="font-semibold text-slate-200 hover:text-teal-300 transition block text-xs sm:text-sm">
+                                        {{ $session->medicalCase->title }}
+                                    </a>
+                                    <span class="text-[11px] text-slate-400">{{ $session->medicalCase->category ?? 'Konseling Umum' }}</span>
+                                @else
+                                    <span class="font-semibold text-slate-400 block text-xs sm:text-sm italic">
+                                        Kasus Tidak Ditemukan
+                                    </span>
+                                @endif
                             </td>
                             <td class="p-4 text-xs">
                                 <span class="text-white font-medium block">{{ \Carbon\Carbon::parse($session->session_date)->format('d M Y') }}</span>

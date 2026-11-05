@@ -65,13 +65,23 @@
                             <td class="p-4">
                                 <div class="flex items-center gap-3">
                                     <div class="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center font-serif text-teal-300 font-bold text-sm flex-shrink-0">
-                                        {{ mb_substr($case->client->full_name, 0, 1) }}
+                                        {{ mb_substr($case->client?->full_name ?? '?', 0, 1) }}
                                     </div>
                                     <div>
-                                        <a href="{{ route('clients.show', $case->client->id) }}" class="font-semibold text-white hover:text-teal-300 transition block text-sm">
-                                            {{ $case->client->full_name }}
-                                        </a>
-                                        <span class="text-[11px] text-teal-400/80 font-mono">{{ $case->client->client_code }}</span>
+                                        @if($case->client)
+                                            <a href="{{ route('clients.show', $case->client->id) }}" class="font-semibold text-white hover:text-teal-300 transition block text-sm">
+                                                {{ $case->client->full_name }}
+                                                @if(method_exists($case->client, 'trashed') && $case->client->trashed())
+                                                    <span class="text-[10px] text-rose-400 font-sans ml-1 font-normal">(Dihapus)</span>
+                                                @endif
+                                            </a>
+                                            <span class="text-[11px] text-teal-400/80 font-mono">{{ $case->client->client_code }}</span>
+                                        @else
+                                            <span class="font-semibold text-slate-400 block text-sm italic">
+                                                Klien Tidak Ditemukan
+                                            </span>
+                                            <span class="text-[11px] text-slate-500 font-mono">-</span>
+                                        @endif
                                     </div>
                                 </div>
                             </td>

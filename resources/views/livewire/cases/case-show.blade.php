@@ -11,10 +11,17 @@
             <h1 class="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight mt-2">{{ $case->title }}</h1>
             <p class="text-sm text-slate-400 mt-1.5">
                 Klien: 
-                <a href="{{ route('clients.show', $case->client->id) }}" class="text-teal-400 font-semibold hover:text-teal-300 underline underline-offset-4 transition">
-                    {{ $case->client->full_name }}
-                </a>
-                <span class="font-mono text-xs text-slate-400 ml-1">({{ $case->client->client_code }})</span>
+                @if($case->client)
+                    <a href="{{ route('clients.show', $case->client->id) }}" class="text-teal-400 font-semibold hover:text-teal-300 underline underline-offset-4 transition">
+                        {{ $case->client->full_name }}
+                        @if(method_exists($case->client, 'trashed') && $case->client->trashed())
+                            <span class="text-xs text-rose-400 font-sans ml-1 font-normal">(Dihapus)</span>
+                        @endif
+                    </a>
+                    <span class="font-mono text-xs text-slate-400 ml-1">({{ $case->client->client_code }})</span>
+                @else
+                    <span class="text-slate-400 italic">Klien tidak ditemukan</span>
+                @endif
             </p>
         </div>
         <div class="flex flex-wrap items-center gap-3">

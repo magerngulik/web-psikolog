@@ -38,7 +38,7 @@
                             <option value="">-- Pilih Kasus Aktif Klien --</option>
                             @foreach ($cases as $c)
                                 <option value="{{ $c->id }}">
-                                    {{ $c->client->full_name }} — {{ $c->title }} ({{ $c->category ?? 'Umum' }})
+                                    {{ $c->client?->full_name ?? 'Klien' }} — {{ $c->title }} ({{ $c->category ?? 'Umum' }})
                                 </option>
                             @endforeach
                         </select>

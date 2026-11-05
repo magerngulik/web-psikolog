@@ -6,10 +6,20 @@
                 <span class="px-3 py-1 rounded-full text-xs font-mono font-bold bg-teal-500/10 border border-teal-500/30 text-teal-300">
                     Sesi Ke-{{ $session->session_number }}
                 </span>
-                <h1 class="font-serif text-2xl sm:text-3xl font-semibold text-white tracking-tight">{{ $session->medicalCase->title }}</h1>
+                <h1 class="font-serif text-2xl sm:text-3xl font-semibold text-white tracking-tight">{{ $session->medicalCase?->title ?? 'Sesi Konseling' }}</h1>
             </div>
             <p class="text-xs sm:text-sm text-slate-400 font-sans mt-1">
-                Klien: <a href="{{ route('clients.show', $session->medicalCase->client->id) }}" class="text-teal-300 font-semibold hover:text-teal-200 hover:underline">{{ $session->medicalCase->client->full_name }}</a>
+                Klien: 
+                @if($session->medicalCase?->client)
+                    <a href="{{ route('clients.show', $session->medicalCase->client->id) }}" class="text-teal-300 font-semibold hover:text-teal-200 hover:underline">
+                        {{ $session->medicalCase->client->full_name }}
+                        @if(method_exists($session->medicalCase->client, 'trashed') && $session->medicalCase->client->trashed())
+                            <span class="text-xs text-rose-400 font-sans ml-1 font-normal">(Dihapus)</span>
+                        @endif
+                    </a>
+                @else
+                    <span class="text-slate-400 italic">{{ $session->medicalCase?->client?->full_name ?? 'Klien Tidak Ditemukan' }}</span>
+                @endif
                 • Waktu: <span class="text-slate-200 font-mono">{{ \Carbon\Carbon::parse($session->session_date)->format('d M Y') }}, {{ \Carbon\Carbon::parse($session->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($session->end_time)->format('H:i') }} WIB</span>
             </p>
         </div>
@@ -32,9 +42,11 @@
                     <span>Hapus Sesi</span>
                 </button>
             @endif
-            <a href="{{ route('cases.show', $session->medicalCase->id) }}" class="px-3 py-2 bg-spruce-900/80 hover:bg-spruce-800 border border-teal-500/20 text-slate-300 font-medium rounded-xl transition text-xs sm:text-sm">
-                Lihat Kasus
-            </a>
+            @if($session->medicalCase)
+                <a href="{{ route('cases.show', $session->medicalCase->id) }}" class="px-3 py-2 bg-spruce-900/80 hover:bg-spruce-800 border border-teal-500/20 text-slate-300 font-medium rounded-xl transition text-xs sm:text-sm">
+                    Lihat Kasus
+                </a>
+            @endif
             <a href="{{ route('sessions.index') }}" class="px-3 py-2 bg-spruce-900/80 hover:bg-spruce-800 border border-teal-500/20 text-slate-300 font-medium rounded-xl transition text-xs sm:text-sm">
                 Kembali
             </a>
