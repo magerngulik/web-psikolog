@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\DB;
 class Dashboard extends Component
 {
     public $totalSessionsMonth;
-    public $unclosedNotesCount;
+    public $unpaidSessionsCount = 0;
+    public $unpaidSessionsTotal = 0;
     public $monthlyRevenue;
     public $annualRevenue;
     public $monthlySessionRevenue = 0;
@@ -32,14 +33,17 @@ class Dashboard extends Component
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        // 1. Ringkasan Sesi & Unclosed Notes
+        // 1. Ringkasan Sesi & Pembayaran Belum Lunas
         $this->totalSessionsMonth = PatientSession::whereMonth('session_date', $currentMonth)
             ->whereYear('session_date', $currentYear)
             ->count();
 
-        $this->unclosedNotesCount = PatientSession::where('is_locked', false)
-            ->whereIn('status', ['done', 'Completed', 'finished'])
-            ->count();
+        $unpaidQuery = PatientSession::where('payment_status', 'unpaid')
+            ->whereNotIn('status', ['cancelled', 'no_show'])
+            ->where('fee', '>', 0);
+
+        $this->unpaidSessionsCount = (clone $unpaidQuery)->count();
+        $this->unpaidSessionsTotal = (float) (clone $unpaidQuery)->sum('fee');
 
         // 2. Keuangan (Sum payment or session fee + Activity seminar fee)
         $paymentSumMonth = Payment::whereMonth('created_at', $currentMonth)
@@ -120,10 +124,10 @@ class Dashboard extends Component
         $this->totalActiveClients = Client::count();
         $this->totalActiveCases = MedicalCase::where('status', 'active')->count();
 
-        $this->recentAppointments = PatientSession::with(['medicalCase.client'])
+        $this->recentAppointments = PatientSession::with(['medicalCase.client', 'sessionNote'])
+            ->orderBy('updated_at', 'desc')
             ->orderBy('session_date', 'desc')
-            ->orderBy('start_time', 'asc')
-            ->limit(5)
+            ->limit(8)
             ->get();
     }
 

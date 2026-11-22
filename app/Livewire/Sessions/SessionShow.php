@@ -59,7 +59,6 @@ class SessionShow extends Component
     public $service_modality = 'individual_direct';
     public bool $is_high_risk = false;
     public bool $generates_report = true;
-    public $is_locked = false;
 
     // Backward-compatibility properties
     public $summary = '';
@@ -78,7 +77,6 @@ class SessionShow extends Component
         $this->service_modality = $this->session->service_modality ?? 'individual_direct';
         $this->is_high_risk = (bool) ($this->session->is_high_risk ?? false);
         $this->generates_report = (bool) ($this->session->generates_report ?? true);
-        $this->is_locked = (bool) $this->session->is_locked;
 
         // Load or initialize SessionNote
         $note = SessionNote::firstOrNew(['appointment_id' => $this->session->id]);
@@ -99,7 +97,6 @@ class SessionShow extends Component
             $this->follow_up_status = $note->follow_up_status ?? 'Selesai';
             $this->client_message = $note->client_message ?? '';
             $this->duration_minutes = $note->duration_minutes ?? $this->session->duration_minutes ?? 60;
-            $this->is_locked = (bool) ($note->is_locked || $this->session->is_locked);
 
             if ($this->icd10_code) {
                 $this->icd_search = $this->icd10_code . ($this->icd10_description ? ' - ' . $this->icd10_description : '');
@@ -203,12 +200,6 @@ class SessionShow extends Component
 
     public function saveNotes()
     {
-        if ($this->session->is_locked || $this->is_locked) {
-            session()->flash('error', '⚠️ Rekam medis sesi ini sudah TERKUNCI dan tidak dapat diubah lagi.');
-            $this->dispatch('notify', message: '⚠️ Rekam medis sesi ini sudah TERKUNCI dan tidak dapat diubah lagi.', type: 'error');
-            return;
-        }
-
         // Sync backward-compatible fields if modified directly
         if (empty($this->objective) && !empty($this->dynamic_notes)) {
             $this->objective = $this->dynamic_notes;
@@ -255,6 +246,8 @@ class SessionShow extends Component
                 'subjective_complaint' => $this->subjective_complaint,
                 'subjective_problem' => $this->subjective_problem,
                 'diagnosis_notes' => $this->diagnosis_notes,
+                'is_locked' => false,
+                'updated_at' => now(),
             ]);
 
             // Update or Create SessionNote
@@ -292,36 +285,6 @@ class SessionShow extends Component
         $this->saveNotes();
     }
 
-    public function lockSession()
-    {
-        if ($this->session->is_locked || $this->is_locked) {
-            return;
-        }
-
-        // Save current changes first
-        $this->saveNotes();
-
-        DB::transaction(function () {
-            $this->session->update([
-                'is_locked' => true,
-                'locked_at' => now(),
-                'status' => 'done',
-            ]);
-
-            if ($this->sessionNote) {
-                $this->sessionNote->update([
-                    'is_locked' => true,
-                ]);
-            }
-        });
-
-        $this->is_locked = true;
-        $this->status = 'done';
-
-        session()->flash('message', '🔒 Sesi konsultasi & Catatan Rekam Medis RESMI DIKUNCI!');
-        $this->dispatch('notify', message: '🔒 Sesi konsultasi & Catatan Rekam Medis RESMI DIKUNCI!', type: 'success');
-    }
-
     public function exportPdf()
     {
         if (!$this->sessionNote || !$this->sessionNote->exists) {
@@ -353,14 +316,6 @@ class SessionShow extends Component
 
     public function deleteSession()
     {
-        if ($this->session->is_locked || $this->is_locked) {
-            $this->dispatch('notify', 
-                message: "⚠️ Sesi ke-{$this->session->session_number} sudah TERKUNCI secara final dan tidak dapat dihapus demi kepatuhan rekam medis klinis.",
-                type: 'error'
-            );
-            return;
-        }
-
         $sessionNumber = $this->session->session_number;
         $this->session->delete();
 

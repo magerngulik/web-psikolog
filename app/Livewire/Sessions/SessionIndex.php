@@ -35,14 +35,6 @@ class SessionIndex extends Component
     {
         $session = Session::findOrFail($id);
 
-        if ($session->is_locked) {
-            $this->dispatch('notify', 
-                message: "⚠️ Sesi ke-{$session->session_number} sudah TERKUNCI secara final dan tidak dapat dihapus demi kepatuhan rekam medis klinis.",
-                type: 'error'
-            );
-            return;
-        }
-
         $sessionNumber = $session->session_number;
         $session->delete();
 

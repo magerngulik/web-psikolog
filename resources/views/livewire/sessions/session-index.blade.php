@@ -112,16 +112,6 @@
                                             {{ ucfirst($session->status) }}
                                         </span>
                                     @endif
-
-                                    @if($session->is_locked)
-                                        <span class="text-[10px] text-emerald-400/90 font-mono font-medium flex items-center gap-1">
-                                            <span>🔒</span> Terkunci (Final)
-                                        </span>
-                                    @else
-                                        <span class="text-[10px] text-amber-400/90 font-mono font-medium flex items-center gap-1">
-                                            <span>✏️</span> Draft Terbuka
-                                        </span>
-                                    @endif
                                 </div>
                             </td>
                             <td class="p-4">
@@ -165,17 +155,15 @@
                                             <span>📝</span>
                                             <span>Rekam Medis</span>
                                         </a>
-                                        @if(!$session->is_locked)
-                                            <button wire:click="deleteSession('{{ $session->id }}')" 
-                                                    wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
-                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
-                                                    aria-label="Hapus Sesi Ke-{{ $session->session_number }}" 
-                                                    title="Hapus Sesi">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                </svg>
-                                            </button>
-                                        @endif
+                                        <button wire:click="deleteSession('{{ $session->id }}')" 
+                                                wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
+                                                aria-label="Hapus Sesi Ke-{{ $session->session_number }}" 
+                                                title="Hapus Sesi">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
                                     @endif
                                 </div>
                             </td>

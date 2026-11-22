@@ -108,8 +108,9 @@ class SessionManagementTest extends TestCase
             ->assertHasErrors(['start_time']);
     }
 
-    public function test_can_save_clinical_notes_and_lock_session(): void
+    public function test_can_save_and_re_edit_clinical_notes_and_payment_status(): void
     {
+        // Even if a legacy record previously had is_locked = true, it remains editable for typo & payment updates
         $session = Session::create([
             'case_id' => $this->case->id,
             'medical_case_id' => $this->case->id,
@@ -118,8 +119,9 @@ class SessionManagementTest extends TestCase
             'start_time' => '09:00',
             'end_time' => '10:00',
             'fee' => 250000,
+            'payment_status' => 'unpaid',
             'status' => 'scheduled',
-            'is_locked' => false,
+            'is_locked' => true,
         ]);
 
         Livewire::test('sessions.session-show', ['id' => $session->id])
@@ -127,21 +129,22 @@ class SessionManagementTest extends TestCase
             ->set('dynamic_notes', 'Dinamika emosi membaik')
             ->set('intervention_notes', 'Teknik CBT')
             ->set('recommendation', 'PR jurnal harian')
+            ->set('status', 'done')
+            ->set('payment_status', 'paid')
             ->call('saveNotes')
-            ->assertHasNoErrors()
-            ->call('lockSession')
             ->assertHasNoErrors();
 
         $this->assertDatabaseHas('patient_sessions', [
             'id' => $session->id,
             'summary' => 'Dinamika emosi membaik',
-            'is_locked' => true,
+            'is_locked' => false,
             'status' => 'done',
+            'payment_status' => 'paid',
         ]);
 
         $this->assertDatabaseHas('session_notes', [
             'appointment_id' => $session->id,
-            'is_locked' => true,
+            'is_locked' => false,
         ]);
     }
 

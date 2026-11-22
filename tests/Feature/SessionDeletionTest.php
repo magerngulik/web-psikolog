@@ -72,7 +72,7 @@ class SessionDeletionTest extends TestCase
         $this->assertSoftDeleted('patient_sessions', ['id' => $session->id]);
     }
 
-    public function test_locked_session_cannot_be_deleted_from_session_index(): void
+    public function test_legacy_locked_session_can_be_deleted_from_session_index(): void
     {
         [$client, $case] = $this->createClientAndCase();
         $session = $this->createSession($case, 1, true);
@@ -80,10 +80,10 @@ class SessionDeletionTest extends TestCase
         Livewire::test(SessionIndex::class)
             ->call('deleteSession', $session->id)
             ->assertDispatched('notify', function ($name, $params) {
-                return $params['type'] === 'error' && str_contains($params['message'], 'sudah TERKUNCI');
+                return $params['type'] === 'success' && str_contains($params['message'], 'berhasil dipindahkan ke Tong Sampah');
             });
 
-        $this->assertNotSoftDeleted('patient_sessions', ['id' => $session->id]);
+        $this->assertSoftDeleted('patient_sessions', ['id' => $session->id]);
     }
 
     public function test_trashed_sessions_appear_in_trashed_filter(): void
@@ -153,18 +153,16 @@ class SessionDeletionTest extends TestCase
         $this->assertSoftDeleted('patient_sessions', ['id' => $session->id]);
     }
 
-    public function test_locked_session_cannot_be_deleted_from_session_show(): void
+    public function test_legacy_locked_session_can_be_deleted_from_session_show(): void
     {
         [$client, $case] = $this->createClientAndCase();
         $session = $this->createSession($case, 1, true);
 
         Livewire::test(SessionShow::class, ['id' => $session->id])
             ->call('deleteSession')
-            ->assertDispatched('notify', function ($name, $params) {
-                return $params['type'] === 'error' && str_contains($params['message'], 'sudah TERKUNCI');
-            });
+            ->assertRedirect(route('sessions.index'));
 
-        $this->assertNotSoftDeleted('patient_sessions', ['id' => $session->id]);
+        $this->assertSoftDeleted('patient_sessions', ['id' => $session->id]);
     }
 
     public function test_session_can_be_deleted_from_case_show_and_enables_case_deletion(): void

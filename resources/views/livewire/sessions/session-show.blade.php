@@ -27,21 +27,19 @@
             <button wire:click="exportPdf" type="button" class="px-3.5 py-2 bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-400 text-white font-semibold rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-rose-950/40">
                 📄 <span>Cetak RPP (PDF)</span>
             </button>
-            @if(!$session->is_locked && !$is_locked)
-                <button wire:click="saveNotes" type="button" class="px-3.5 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-teal-950/40">
-                    💾 <span>Simpan Sesi</span>
-                </button>
-                <button wire:click="deleteSession" 
-                        wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
-                        type="button" 
-                        class="px-3.5 py-2 sanctuary-glass border border-rose-500/30 hover:border-rose-500 hover:bg-rose-500/10 text-rose-300 hover:text-rose-200 font-medium rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-rose-950/20" 
-                        title="Hapus Sesi">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    <span>Hapus Sesi</span>
-                </button>
-            @endif
+            <button wire:click="saveNotes" type="button" class="px-3.5 py-2 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-teal-950/40">
+                💾 <span>Simpan Sesi</span>
+            </button>
+            <button wire:click="deleteSession" 
+                    wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
+                    type="button" 
+                    class="px-3.5 py-2 sanctuary-glass border border-rose-500/30 hover:border-rose-500 hover:bg-rose-500/10 text-rose-300 hover:text-rose-200 font-medium rounded-xl transition text-xs sm:text-sm flex items-center gap-1.5 shadow-md shadow-rose-950/20" 
+                    title="Hapus Sesi">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>Hapus Sesi</span>
+            </button>
             @if($session->medicalCase)
                 <a href="{{ route('cases.show', $session->medicalCase->id) }}" class="px-3 py-2 bg-spruce-900/80 hover:bg-spruce-800 border border-teal-500/20 text-slate-300 font-medium rounded-xl transition text-xs sm:text-sm">
                     Lihat Kasus
@@ -62,19 +60,6 @@
     @endif
 
 
-
-    <!-- Lock Session Warning Banner -->
-    @if($session->is_locked || $is_locked)
-        <div class="p-4 bg-gradient-to-r from-amber-950/70 via-spruce-900/85 to-amber-950/40 border border-amber-500/30 text-amber-300 rounded-2xl flex items-center gap-3.5 shadow-lg shadow-amber-950/20">
-            <span class="text-2xl flex-shrink-0">🔒</span>
-            <div>
-                <h4 class="font-serif text-sm font-bold text-amber-200">Rekam Medis Sesi Terkunci (Locked Record)</h4>
-                <p class="text-xs text-amber-200/80 mt-0.5">
-                    Dikunci pada {{ \Carbon\Carbon::parse($session->locked_at ?? now())->format('d M Y, H:i') }} WIB. Catatan ini bersifat <em>read-only</em> demi mematuhi standar integritas etika dan kerahasiaan rekam medis klinis.
-                </p>
-            </div>
-        </div>
-    @endif
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Form Clinical Notes (Alur RPP Lengkap) -->
@@ -106,14 +91,14 @@
                             <label for="subjective_complaint" class="block font-medium text-slate-300 text-xs mb-1.5">
                                 Keluhan Utama Klien
                             </label>
-                            <textarea id="subjective_complaint" wire:model="subjective_complaint" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} rows="3" placeholder="Keluhan utama yang dirasakan klien saat ini, perasaan cemas, gelisah, sedih, dll..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"></textarea>
+                            <textarea id="subjective_complaint" wire:model="subjective_complaint" rows="3" placeholder="Keluhan utama yang dirasakan klien saat ini, perasaan cemas, gelisah, sedih, dll..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"></textarea>
                             @error('subjective_complaint') <span class="text-xs text-rose-400 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         <div>
                             <label for="subjective_problem" class="block font-medium text-slate-300 text-xs mb-1.5">
                                 Pokok Masalah / Pemicu
                             </label>
-                            <textarea id="subjective_problem" wire:model="subjective_problem" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} rows="3" placeholder="Pokok persoalan atau pemicu masalah (misal: relasi keluarga, tekanan pekerjaan, dll)..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"></textarea>
+                            <textarea id="subjective_problem" wire:model="subjective_problem" rows="3" placeholder="Pokok persoalan atau pemicu masalah (misal: relasi keluarga, tekanan pekerjaan, dll)..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"></textarea>
                             @error('subjective_problem') <span class="text-xs text-rose-400 mt-1 block">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -128,7 +113,7 @@
                         <label for="objective" class="block font-medium text-slate-300 text-xs mb-1.5">
                             Observasi Dinamika Psikologis & Perilaku
                         </label>
-                        <textarea id="objective" wire:model="objective" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} rows="3" placeholder="Hasil observasi dinamika psikologis: afek emosional, kontak mata, alur pikir, mekanisme koping..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"></textarea>
+                        <textarea id="objective" wire:model="objective" rows="3" placeholder="Hasil observasi dinamika psikologis: afek emosional, kontak mata, alur pikir, mekanisme koping..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"></textarea>
                         @error('objective') <span class="text-xs text-rose-400 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -145,7 +130,7 @@
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-spruce-950 p-3 rounded-xl border border-teal-500/15">
                             @foreach($availableAssessments as $assessmentItem)
                                 <label class="inline-flex items-center text-xs p-1.5 rounded hover:bg-spruce-900 transition cursor-pointer">
-                                    <input type="checkbox" wire:model="selected_assessments" value="{{ $assessmentItem }}" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="rounded text-teal-500 focus:ring-teal-400 bg-spruce-900 border-teal-500/30 h-4 w-4">
+                                    <input type="checkbox" wire:model="selected_assessments" value="{{ $assessmentItem }}" class="rounded text-teal-500 focus:ring-teal-400 bg-spruce-900 border-teal-500/30 h-4 w-4">
                                     <span class="ml-2 text-slate-200 font-medium">{{ $assessmentItem }}</span>
                                 </label>
                             @endforeach
@@ -157,7 +142,7 @@
                         <label for="assessment" class="block font-medium text-slate-300 text-xs mb-1.5">
                             Catatan & Analisis Asesmen (Free Text)
                         </label>
-                        <textarea id="assessment" wire:model="assessment" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} rows="3" placeholder="Tuliskan interpretasi tes psikologis, dinamika kepribadian, atau catatan asesmen khusus..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"></textarea>
+                        <textarea id="assessment" wire:model="assessment" rows="3" placeholder="Tuliskan interpretasi tes psikologis, dinamika kepribadian, atau catatan asesmen khusus..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"></textarea>
                     </div>
                 </div>
 
@@ -187,7 +172,7 @@
                                     type="text" 
                                     wire:model.live.debounce.200ms="icd_search" 
                                     @focus="openDropdown = true"
-                                    {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }}
+                                   
                                     placeholder="Ketik kode (misal: F41) atau kata kunci (misal: cemas, depresi, stres)..." 
                                     class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed pr-10"
                                 >
@@ -195,7 +180,7 @@
                                     type="button" 
                                     wire:click="toggleIcdDropdown" 
                                     aria-label="Buka atau tutup katalog diagnosis ICD-10"
-                                    {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }}
+                                   
                                     class="absolute inset-y-0 right-0 px-3 flex items-center text-teal-400 hover:text-teal-300"
                                 >
                                     ▼
@@ -235,11 +220,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-3">
                                 <div>
                                     <label for="icd10_code" class="block text-xs font-semibold text-slate-400 mb-1">Kode Diagnosis</label>
-                                    <input id="icd10_code" type="text" wire:model="icd10_code" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} placeholder="misal: F41.1" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl text-white text-xs font-mono p-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10">
+                                    <input id="icd10_code" type="text" wire:model="icd10_code" placeholder="misal: F41.1" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl text-white text-xs font-mono p-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10">
                                 </div>
                                 <div class="sm:col-span-2">
                                     <label for="icd10_description" class="block text-xs font-semibold text-slate-400 mb-1">Deskripsi Diagnosis</label>
-                                    <input id="icd10_description" type="text" wire:model="icd10_description" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} placeholder="Deskripsi diagnosis..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl text-white text-xs p-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10">
+                                    <input id="icd10_description" type="text" wire:model="icd10_description" placeholder="Deskripsi diagnosis..." class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl text-white text-xs p-2.5 focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10">
                                 </div>
                             </div>
                         </div>
@@ -249,7 +234,7 @@
                             <label for="duration_minutes" class="block font-medium text-slate-300 text-xs mb-1.5">
                                 Durasi Konseling (Menit)
                             </label>
-                            <input id="duration_minutes" type="number" wire:model="duration_minutes" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white font-mono focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10">
+                            <input id="duration_minutes" type="number" wire:model="duration_minutes" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white font-mono focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10">
                         </div>
                     </div>
 
@@ -261,7 +246,7 @@
                         <textarea 
                             id="diagnosis_notes"
                             wire:model="diagnosis_notes" 
-                            {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }}
+                           
                             rows="2" 
                             placeholder="Tuliskan diagnosis yang belum tercantum dalam katalog PPDGJ-III di atas, diagnosis banding, atau formulasi diagnostik kustom lainnya..." 
                             class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"
@@ -287,7 +272,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 bg-spruce-950 p-3 rounded-xl border border-teal-500/15">
                         @foreach($availableInterventions as $id => $name)
                             <label class="inline-flex items-center text-xs p-1.5 rounded hover:bg-spruce-900 transition cursor-pointer">
-                                <input type="checkbox" wire:model="selected_interventions" value="{{ $id }}" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="rounded text-teal-500 focus:ring-teal-400 bg-spruce-900 border-teal-500/30 h-4 w-4">
+                                <input type="checkbox" wire:model="selected_interventions" value="{{ $id }}" class="rounded text-teal-500 focus:ring-teal-400 bg-spruce-900 border-teal-500/30 h-4 w-4">
                                 <span class="ml-2 text-slate-200 font-medium">{{ is_numeric($id) ? $id . '. ' : ($id ? "({$id}) " : '') }}{{ $name }}</span>
                             </label>
                         @endforeach
@@ -301,7 +286,7 @@
                         <textarea 
                             id="intervention_notes"
                             wire:model="intervention_notes" 
-                            {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }}
+                           
                             rows="3" 
                             placeholder="Tuliskan catatan khusus atau rincian teknik intervensi yang diberikan selama sesi konseling..." 
                             class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"
@@ -324,7 +309,7 @@
                             <textarea 
                                 id="client_message"
                                 wire:model="client_message" 
-                                {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }}
+                               
                                 rows="4" 
                                 placeholder="Tuliskan tugas rumah untuk klien secara mendalam (misal: latihan relaksasi pernapasan 4-7-8 setiap pagi dan malam, mengisi jurnal pikiran otomatis harian)..." 
                                 class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed"
@@ -336,7 +321,7 @@
                             <label for="follow_up_status" class="block font-medium text-slate-300 text-xs mb-1.5">
                                 Rencana Tindak Lanjut
                             </label>
-                            <select id="follow_up_status" wire:model="follow_up_status" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
+                            <select id="follow_up_status" wire:model="follow_up_status" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
                                 <option value="Selesai">Selesai (Terminasi Konseling)</option>
                                 <option value="Jadwal Ulang">Perlu Sesi Lanjutan</option>
                                 <option value="Rujukan">Dirujuk ke Spesialis Lain (Psikiater/RS)</option>
@@ -348,16 +333,11 @@
                     </div>
                 </div>
 
-                @if(!$session->is_locked && !$is_locked)
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-teal-500/15">
-                        <button wire:click="saveNotes" type="button" class="w-full sm:w-auto px-5 py-2.5 bg-spruce-900 hover:bg-spruce-800 text-teal-300 font-semibold rounded-xl text-xs sm:text-sm transition border border-teal-500/25">
-                            💾 Simpan Draft Catatan Sesi
-                        </button>
-                        <button wire:click="lockSession" onclick="confirm('Apakah Anda yakin ingin MENGUNCI rekam medis ini? Setelah dikunci, data tidak bisa diubah kembali demi mematuhi standar etika rekam medis.') || event.stopImmediatePropagation()" type="button" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl text-xs sm:text-sm transition shadow-lg shadow-teal-950/60 flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
-                            <span>🔒</span> Kunci Rekam Medis (Lock Session)
-                        </button>
-                    </div>
-                @endif
+                <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-3 border-t border-teal-500/15">
+                    <button wire:click="saveNotes" type="button" class="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-bold rounded-xl text-xs sm:text-sm transition shadow-lg shadow-teal-950/60 flex items-center justify-center gap-2">
+                        <span>💾</span> Simpan Catatan & Sesi
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -369,7 +349,7 @@
 
                 <div>
                     <label for="session_status" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Status Sesi</label>
-                    <select id="session_status" wire:model="status" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
+                    <select id="session_status" wire:model="status" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
                         <option value="scheduled">Scheduled (Terjadwal)</option>
                         <option value="confirmed">Confirmed (Dikonfirmasi)</option>
                         <option value="in_progress">In Progress (Berlangsung)</option>
@@ -381,12 +361,12 @@
 
                 <div>
                     <label for="session_fee" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Biaya Konseling</label>
-                    <x-currency-input id="session_fee" wire:model="fee" :disabled="$session->is_locked || $is_locked" />
+                    <x-currency-input id="session_fee" wire:model="fee" />
                 </div>
 
                 <div>
                     <label for="session_payment_status" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Status Pembayaran</label>
-                    <select id="session_payment_status" wire:model="payment_status" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
+                    <select id="session_payment_status" wire:model="payment_status" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
                         <option value="unpaid">Unpaid (Belum Bayar)</option>
                         <option value="paid">Paid (Lunas)</option>
                         <option value="waived">Waived (Bebas Biaya)</option>
@@ -395,18 +375,16 @@
 
                 <div>
                     <label for="session_payment_method" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Metode Pembayaran</label>
-                    <select id="session_payment_method" wire:model="payment_method" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
+                    <select id="session_payment_method" wire:model="payment_method" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs sm:text-sm text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
                         <option value="cash">Cash (Tunai)</option>
                         <option value="transfer">Transfer Bank</option>
                         <option value="qris">QRIS</option>
                     </select>
                 </div>
 
-                @if(!$session->is_locked && !$is_locked)
-                    <button wire:click="saveNotes" type="button" class="w-full py-2.5 bg-spruce-900 hover:bg-spruce-800 text-teal-300 font-semibold rounded-xl text-xs transition border border-teal-500/20">
-                        Update Status & Transaksi
-                    </button>
-                @endif
+                <button wire:click="saveNotes" type="button" class="w-full py-2.5 bg-spruce-900 hover:bg-spruce-800 text-teal-300 font-semibold rounded-xl text-xs transition border border-teal-500/20">
+                    Update Status & Transaksi
+                </button>
             </div>
 
             <!-- Card Klasifikasi Logbook & SKP IPK -->
@@ -420,7 +398,7 @@
 
                 <div>
                     <label for="session_service_modality" class="block text-xs font-semibold uppercase text-slate-400 mb-1">Moda Pelayanan / Jenis *</label>
-                    <select id="session_service_modality" wire:model="service_modality" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
+                    <select id="session_service_modality" wire:model="service_modality" class="w-full bg-spruce-900 border border-teal-500/20 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-300 disabled:border-teal-500/10 disabled:cursor-not-allowed">
                         <option value="individual_direct">Tatap Muka Klien Langsung (0.05 SKP)</option>
                         <option value="individual_virtual">Komunikasi Virtual / Video Call (0.05 SKP)</option>
                         <option value="group">Tatap Muka Kelompok (0.10 SKP)</option>
@@ -434,7 +412,7 @@
 
                 <div class="space-y-3 pt-2 border-t border-teal-500/10">
                     <label for="is_high_risk" class="flex items-start gap-2.5 cursor-pointer">
-                        <input id="is_high_risk" wire:model="is_high_risk" type="checkbox" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="mt-0.5 rounded text-amber-500 focus:ring-2 focus:ring-amber-500 bg-spruce-900 border-teal-500/30 h-4 w-4">
+                        <input id="is_high_risk" wire:model="is_high_risk" type="checkbox" class="mt-0.5 rounded text-amber-500 focus:ring-2 focus:ring-amber-500 bg-spruce-900 border-teal-500/30 h-4 w-4">
                         <span class="text-xs text-slate-300">
                             <strong class="text-slate-200">Tugas Tempat Berisiko Tinggi</strong>
                             <span class="block text-[11px] text-slate-400">Daerah rawan, bencana, lapas bahaya (+0.05 SKP)</span>
@@ -442,7 +420,7 @@
                     </label>
 
                     <label for="generates_report" class="flex items-start gap-2.5 cursor-pointer">
-                        <input id="generates_report" wire:model="generates_report" type="checkbox" {{ ($session->is_locked || $is_locked) ? 'disabled' : '' }} class="mt-0.5 rounded text-teal-500 focus:ring-2 focus:ring-teal-500 bg-spruce-900 border-teal-500/30 h-4 w-4">
+                        <input id="generates_report" wire:model="generates_report" type="checkbox" class="mt-0.5 rounded text-teal-500 focus:ring-2 focus:ring-teal-500 bg-spruce-900 border-teal-500/30 h-4 w-4">
                         <span class="text-xs text-slate-300">
                             <strong class="text-slate-200">Menyusun Laporan RPP</strong>
                             <span class="block text-[11px] text-slate-400">Pemeriksaan psikologis resmi (+0.01 SKP)</span>
@@ -450,11 +428,9 @@
                     </label>
                 </div>
 
-                @if(!$session->is_locked && !$is_locked)
-                    <button wire:click="saveNotes" type="button" class="w-full py-2 bg-spruce-900 hover:bg-spruce-800 text-teal-300 font-semibold rounded-xl text-xs transition border border-teal-500/20">
-                        Update Klasifikasi SKP
-                    </button>
-                @endif
+                <button wire:click="saveNotes" type="button" class="w-full py-2 bg-spruce-900 hover:bg-spruce-800 text-teal-300 font-semibold rounded-xl text-xs transition border border-teal-500/20">
+                    Update Klasifikasi SKP
+                </button>
             </div>
 
             <!-- Card Dokumen Resmi & Ekspor PDF -->

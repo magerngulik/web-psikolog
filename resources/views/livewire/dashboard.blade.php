@@ -44,36 +44,158 @@
         </div>
     </div>
 
-    <!-- Alert Unclosed Notes (Priority Ethical Care Banner) -->
-    @if($unclosedNotesCount > 0)
+    <!-- Alert Pembayaran Belum Lunas -->
+    @if($unpaidSessionsCount > 0)
         <div class="relative overflow-hidden rounded-2xl p-5 border border-amber-500/30 bg-gradient-to-r from-amber-950/70 via-spruce-900/85 to-amber-950/40 shadow-xl shadow-amber-950/30">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div class="flex items-start sm:items-center gap-4">
                     <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 text-2xl flex-shrink-0 shadow-inner">
-                        ⚠️
+                        💳
                     </div>
                     <div class="space-y-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="px-2.5 py-0.5 rounded-full bg-amber-400/20 border border-amber-400/40 text-amber-300 font-mono text-xs font-semibold">
-                                Etika Rekam Medis
+                                Administrasi Pembayaran
                             </span>
                             <h2 class="font-serif text-lg font-semibold text-amber-200">
-                                {{ $unclosedNotesCount }} Catatan Sesi Belum Dikunci (Draft Notes)
+                                {{ $unpaidSessionsCount }} Sesi Belum Lunas (Rp {{ number_format($unpaidSessionsTotal, 0, ',', '.') }})
                             </h2>
                         </div>
                         <p class="text-xs text-amber-200/80 leading-relaxed max-w-2xl">
-                            Demi kepatuhan etika klinis dan validasi kredit SKP, pastikan rekam medis sesi yang telah selesai segera dilengkapi, diverifikasi, dan dikunci secara permanen.
+                            Terdapat sesi konseling dengan status pembayaran belum lunas. Anda dapat memperbarui status pembayaran kapan saja langsung dari halaman rekam medis sesi.
                         </p>
                     </div>
                 </div>
                 <a href="{{ route('sessions.index') }}" 
                    class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md shadow-amber-950/40 transition flex items-center gap-2 flex-shrink-0">
-                    <span>Tinjau & Kunci Sesi</span>
+                    <span>Lihat Daftar Sesi</span>
                     <span>→</span>
                 </a>
             </div>
         </div>
     @endif
+
+    <!-- Recent Sessions & Medical Records Table -->
+    <div class="sanctuary-glass-card rounded-2xl p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-teal-500/10 pb-4">
+            <div>
+                <h2 class="font-serif text-xl font-semibold text-white flex items-center gap-2">
+                    <span>📋</span>
+                    <span>Sesi & Rekam Medis Terbaru</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Menampilkan sesi yang paling baru disimpan atau diperbarui agar langsung bisa diakses</p>
+            </div>
+            <a href="{{ route('sessions.index') }}" class="text-xs font-semibold text-teal-400 hover:text-teal-300 transition flex items-center gap-1.5 self-start sm:self-auto">
+                <span>Lihat Semua Sesi Konsultasi</span>
+                <span>→</span>
+            </a>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-teal-500/10">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-spruce-950/80 text-teal-300/80 text-[11px] uppercase font-mono tracking-wider border-b border-teal-500/15">
+                        <th class="p-3.5">Tanggal & Waktu</th>
+                        <th class="p-3.5">Klien</th>
+                        <th class="p-3.5">Status Sesi</th>
+                        <th class="p-3.5">Catatan & Pembayaran</th>
+                        <th class="p-3.5 text-right">Tindakan</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-teal-500/10 text-xs">
+                    @forelse($recentAppointments as $session)
+                        <tr class="hover:bg-teal-500/[0.04] transition">
+                            <td class="p-3.5 text-slate-200">
+                                <span class="font-medium font-sans block text-sm">{{ $session->session_date }}</span>
+                                <span class="text-[11px] text-slate-400 font-mono">{{ $session->start_time }} - {{ $session->end_time }}</span>
+                            </td>
+                            <td class="p-3.5">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-lg bg-teal-500/15 border border-teal-500/25 flex items-center justify-center font-serif text-teal-300 font-bold text-xs flex-shrink-0">
+                                        {{ mb_substr($session->medicalCase?->client?->full_name ?? 'K', 0, 1) }}
+                                    </div>
+                                    <div>
+                                        <span class="font-semibold text-white block text-sm">
+                                            {{ $session->medicalCase?->client?->full_name ?? 'Klien' }}
+                                        </span>
+                                        <span class="text-[11px] font-mono text-teal-400/80">
+                                            {{ $session->medicalCase?->client?->client_code ?? '-' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-3.5">
+                                @if($session->status == 'done' || $session->status == 'Completed')
+                                    <span class="bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[11px] px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                        Selesai
+                                    </span>
+                                @elseif($session->status == 'scheduled')
+                                    <span class="bg-blue-950/80 text-blue-300 border border-blue-500/30 text-[11px] px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                                        Terjadwal
+                                    </span>
+                                @else
+                                    <span class="bg-slate-800 text-slate-300 border border-slate-700 text-[11px] px-2.5 py-0.5 rounded-full font-medium">
+                                        {{ ucfirst($session->status) }}
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="p-3.5">
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    @php
+                                        $hasNotes = $session->sessionNote !== null
+                                            || !empty(trim((string) $session->subjective_complaint))
+                                            || !empty(trim((string) $session->dynamic_notes));
+                                    @endphp
+                                    @if($hasNotes)
+                                        <span class="bg-teal-950/80 text-teal-300 border border-teal-500/30 text-[11px] px-2 py-0.5 rounded-lg font-medium inline-flex items-center gap-1">
+                                            <span>📝</span>
+                                            <span>Tersimpan</span>
+                                        </span>
+                                    @else
+                                        <span class="bg-slate-800/80 text-slate-400 border border-slate-700 text-[11px] px-2 py-0.5 rounded-lg font-medium">
+                                            Belum Diisi
+                                        </span>
+                                    @endif
+
+                                    @if($session->payment_status === 'paid')
+                                        <span class="bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[11px] px-2 py-0.5 rounded-lg font-medium">
+                                            ✓ Lunas
+                                        </span>
+                                    @elseif($session->payment_status === 'waived')
+                                        <span class="bg-slate-800/80 text-slate-300 border border-slate-700 text-[11px] px-2 py-0.5 rounded-lg font-medium">
+                                            Bebas Biaya
+                                        </span>
+                                    @else
+                                        <span class="bg-amber-950/80 text-amber-300 border border-amber-500/30 text-[11px] px-2 py-0.5 rounded-lg font-medium">
+                                            Belum Lunas
+                                        </span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="p-3.5 text-right">
+                                <a href="{{ route('sessions.show', $session->id) }}" 
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/25 text-teal-300 border border-teal-500/30 font-medium text-xs transition shadow-sm">
+                                    <span>📝</span>
+                                    <span>Buka Rekam Medis</span>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="p-8 text-center text-slate-400 text-sm">
+                                <p class="mb-2">Belum ada sesi konsultasi yang terjadwal.</p>
+                                <a href="{{ route('sessions.create') }}" class="text-teal-400 font-semibold underline hover:text-teal-300">
+                                    Buat Sesi Konsultasi Baru →
+                                </a>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     <!-- Metric Cards Grid (Sanctuary Vitals) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -96,24 +218,24 @@
             </div>
         </div>
 
-        <!-- Card 2: Unclosed Notes -->
+        <!-- Card 2: Pembayaran Belum Lunas -->
         <div class="sanctuary-glass-card rounded-2xl p-5 flex flex-col justify-between hover:border-amber-400/30 transition-all duration-300 group">
             <div class="flex items-center justify-between mb-3">
-                <span class="text-xs font-medium uppercase tracking-wider text-slate-400">Draft Belum Dikunci</span>
+                <span class="text-xs font-medium uppercase tracking-wider text-slate-400">Belum Lunas</span>
                 <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
-                    📝
+                    💳
                 </div>
             </div>
             <div class="space-y-1">
-                <div class="font-serif text-4xl font-semibold {{ $unclosedNotesCount > 0 ? 'text-amber-300' : 'text-slate-200' }} tracking-tight">
-                    {{ $unclosedNotesCount }}
+                <div class="font-serif text-4xl font-semibold {{ $unpaidSessionsCount > 0 ? 'text-amber-300' : 'text-slate-200' }} tracking-tight">
+                    {{ $unpaidSessionsCount }}
                 </div>
                 <div class="flex items-center justify-between text-xs pt-2 border-t border-teal-500/10">
-                    <span class="text-slate-400">Status Keamanan</span>
-                    @if($unclosedNotesCount == 0)
-                        <span class="text-emerald-400 font-medium">Semua Terkunci ✓</span>
+                    <span class="text-slate-400">Tagihan Sesi</span>
+                    @if($unpaidSessionsCount == 0)
+                        <span class="text-emerald-400 font-medium">Semua Lunas ✓</span>
                     @else
-                        <span class="text-amber-400 font-medium">Perlu Divalidasi</span>
+                        <span class="text-amber-400 font-mono font-medium">Rp {{ number_format($unpaidSessionsTotal, 0, ',', '.') }}</span>
                     @endif
                 </div>
             </div>
@@ -335,107 +457,5 @@
                 <a href="{{ route('activities.create') }}" class="text-teal-400 font-semibold hover:underline ml-1">Jadwalkan kegiatan pertama →</a>
             </div>
         @endif
-    </div>
-
-    <!-- Recent Sessions & Medical Records Table -->
-    <div class="sanctuary-glass-card rounded-2xl p-6 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-teal-500/10 pb-4">
-            <div>
-                <h2 class="font-serif text-xl font-semibold text-white flex items-center gap-2">
-                    <span>📋</span>
-                    <span>Sesi & Rekam Medis Terbaru</span>
-                </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Akses langsung rekam medis sesi, diagnosis ICD-10, dan dokumen RPP</p>
-            </div>
-            <a href="{{ route('sessions.index') }}" class="text-xs font-semibold text-teal-400 hover:text-teal-300 transition flex items-center gap-1.5 self-start sm:self-auto">
-                <span>Lihat Semua Sesi Konsultasi</span>
-                <span>→</span>
-            </a>
-        </div>
-
-        <div class="overflow-x-auto rounded-xl border border-teal-500/10">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-spruce-950/80 text-teal-300/80 text-[11px] uppercase font-mono tracking-wider border-b border-teal-500/15">
-                        <th class="p-3.5">Tanggal & Waktu</th>
-                        <th class="p-3.5">Klien</th>
-                        <th class="p-3.5">Status Sesi</th>
-                        <th class="p-3.5">Rekam Medis</th>
-                        <th class="p-3.5 text-right">Tindakan</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-teal-500/10 text-xs">
-                    @forelse($recentAppointments as $session)
-                        <tr class="hover:bg-teal-500/[0.04] transition">
-                            <td class="p-3.5 text-slate-200">
-                                <span class="font-medium font-sans block text-sm">{{ $session->session_date }}</span>
-                                <span class="text-[11px] text-slate-400 font-mono">{{ $session->start_time }} - {{ $session->end_time }}</span>
-                            </td>
-                            <td class="p-3.5">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-8 h-8 rounded-lg bg-teal-500/15 border border-teal-500/25 flex items-center justify-center font-serif text-teal-300 font-bold text-xs flex-shrink-0">
-                                        {{ mb_substr($session->medicalCase?->client?->full_name ?? 'K', 0, 1) }}
-                                    </div>
-                                    <div>
-                                        <span class="font-semibold text-white block text-sm">
-                                            {{ $session->medicalCase?->client?->full_name ?? 'Klien' }}
-                                        </span>
-                                        <span class="text-[11px] font-mono text-teal-400/80">
-                                            {{ $session->medicalCase?->client?->client_code ?? '-' }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="p-3.5">
-                                @if($session->status == 'done' || $session->status == 'Completed')
-                                    <span class="bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[11px] px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                        Selesai
-                                    </span>
-                                @elseif($session->status == 'scheduled')
-                                    <span class="bg-blue-950/80 text-blue-300 border border-blue-500/30 text-[11px] px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                                        Terjadwal
-                                    </span>
-                                @else
-                                    <span class="bg-slate-800 text-slate-300 border border-slate-700 text-[11px] px-2.5 py-0.5 rounded-full font-medium">
-                                        {{ ucfirst($session->status) }}
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="p-3.5">
-                                @if($session->is_locked)
-                                    <span class="bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[11px] px-2.5 py-1 rounded-lg font-medium inline-flex items-center gap-1.5">
-                                        <span>🔒</span>
-                                        <span>Terkunci (Final)</span>
-                                    </span>
-                                @else
-                                    <span class="bg-amber-950/80 text-amber-300 border border-amber-500/30 text-[11px] px-2.5 py-1 rounded-lg font-medium inline-flex items-center gap-1.5">
-                                        <span>✏️</span>
-                                        <span>Draft (Terbuka)</span>
-                                    </span>
-                                @endif
-                            </td>
-                            <td class="p-3.5 text-right">
-                                <a href="{{ route('sessions.show', $session->id) }}" 
-                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/25 text-teal-300 border border-teal-500/30 font-medium text-xs transition shadow-sm">
-                                    <span>📝</span>
-                                    <span>Buka Rekam Medis</span>
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="p-8 text-center text-slate-400 text-sm">
-                                <p class="mb-2">Belum ada sesi konsultasi yang terjadwal.</p>
-                                <a href="{{ route('sessions.create') }}" class="text-teal-400 font-semibold underline hover:text-teal-300">
-                                    Buat Sesi Konsultasi Baru →
-                                </a>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
     </div>
 </div>

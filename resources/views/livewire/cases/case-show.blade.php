@@ -137,15 +137,6 @@
                                 <div>
                                     <div class="flex items-center gap-2">
                                         <h3 class="text-base font-bold text-white group-hover:text-teal-300 transition">Sesi Ke-{{ $session->session_number }}</h3>
-                                        @if($session->is_locked)
-                                            <span class="text-teal-300 text-[11px] font-semibold bg-teal-500/10 px-2.5 py-0.5 rounded-lg border border-teal-500/25 flex items-center gap-1 font-mono">
-                                                🔒 Locked
-                                            </span>
-                                        @else
-                                            <span class="text-amber-300 text-[11px] font-semibold bg-amber-500/10 px-2.5 py-0.5 rounded-lg border border-amber-500/20 font-mono">
-                                                ✎ Draft
-                                            </span>
-                                        @endif
                                     </div>
                                     <p class="text-xs text-slate-400 mt-1 flex flex-wrap items-center gap-2 font-mono">
                                         <span>📅 {{ \Carbon\Carbon::parse($session->session_date)->format('d M Y') }}</span>
@@ -183,18 +174,16 @@
                                 @endif
                             </div>
                             <div class="flex items-center gap-3">
-                                @if(!$session->is_locked)
-                                    <button wire:click="deleteSession('{{ $session->id }}')" 
-                                            wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
-                                            type="button" 
-                                            class="text-xs text-rose-400/80 hover:text-rose-300 hover:underline flex items-center gap-1 transition" 
-                                            title="Hapus Sesi Ini">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                        <span>Hapus</span>
-                                    </button>
-                                @endif
+                                <button wire:click="deleteSession('{{ $session->id }}')" 
+                                        wire:confirm="Apakah Anda yakin ingin memindahkan Sesi Ke-{{ $session->session_number }} ke Tong Sampah?" 
+                                        type="button" 
+                                        class="text-xs text-rose-400/80 hover:text-rose-300 hover:underline flex items-center gap-1 transition" 
+                                        title="Hapus Sesi Ini">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    <span>Hapus</span>
+                                </button>
                                 <a href="{{ Route::has('sessions.show') ? route('sessions.show', $session->id) : '#' }}" class="text-xs text-teal-400 hover:text-teal-300 font-bold flex items-center gap-1.5 group-hover:translate-x-1 transition">
                                     <span>Kelola Catatan SOAP & Biaya</span>
                                     <span>&rarr;</span>
