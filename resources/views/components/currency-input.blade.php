@@ -25,7 +25,7 @@
         this.display = this.format(this.raw);
     }
 }" x-init="syncFromRaw(); $watch('raw', () => syncFromRaw())" class="relative w-full">
-    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-teal-400 font-mono text-xs font-bold">
+    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-blush-600 font-mono text-xs font-bold">
         Rp
     </div>
     <input type="text"
@@ -35,7 +35,7 @@
            {{ $disabled ? 'disabled' : '' }}
            placeholder="{{ $placeholder }}"
            {{ $attributes->whereDoesntStartWith('wire:model')->class([
-               'w-full bg-spruce-900 border border-teal-500/20 rounded-xl pl-11 pr-4 py-2.5 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition disabled:bg-spruce-950/80 disabled:text-slate-400 disabled:border-teal-500/10 disabled:cursor-not-allowed'
+               'w-full bg-white border border-blush-200 rounded-xl pl-11 pr-4 py-2.5 text-ink-900 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blush-400 focus:border-blush-400 transition disabled:bg-blush-50 disabled:text-ink-400 disabled:border-blush-100 disabled:cursor-not-allowed'
            ]) }}>
 </div>
 

@@ -179,7 +179,8 @@ class Modul7Test extends TestCase
 
         Livewire::test(Dashboard::class)
             ->assertSet('totalSessionsMonth', 1)
-            ->assertSet('unclosedNotesCount', 1)
+            ->assertSet('unpaidSessionsCount', 0)
+            ->assertSet('unpaidSessionsTotal', 0.0)
             ->assertSet('monthlyRevenue', 150000)
             ->assertSee('F41.1');
     }

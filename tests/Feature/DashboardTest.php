@@ -37,7 +37,8 @@ class DashboardTest extends TestCase
     {
         Livewire::test('dashboard')
             ->assertStatus(200)
-            ->assertSee('Dashboard Analytics');
+            ->assertSee('Ringkasan Praktik')
+            ->assertSee('Sesi & Rekam Medis Terbaru', false);
     }
 
     public function test_recently_saved_session_appears_first_on_dashboard_even_with_future_sessions(): void

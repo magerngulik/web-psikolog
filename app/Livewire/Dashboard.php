@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\Client;
 use App\Models\MedicalCase;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class Dashboard extends Component
@@ -28,8 +29,15 @@ class Dashboard extends Component
     public $totalActiveClients = 0;
     public $totalActiveCases = 0;
 
+    // Interactive Schedule Calendar Widget State
+    public string $selectedDate = '';
+    public string $weekStartDate = '';
+
     public function mount()
     {
+        $this->selectedDate = now()->toDateString();
+        $this->weekStartDate = now()->startOfWeek()->toDateString();
+
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
@@ -131,10 +139,113 @@ class Dashboard extends Component
             ->get();
     }
 
+    public function selectDate(string $date): void
+    {
+        $parsed = Carbon::parse($date);
+        $this->selectedDate = $parsed->toDateString();
+        $this->weekStartDate = $parsed->copy()->startOfWeek()->toDateString();
+    }
+
+    public function previousWeek(): void
+    {
+        $newStart = Carbon::parse($this->weekStartDate)->subWeek();
+        $this->weekStartDate = $newStart->toDateString();
+        $this->selectedDate = $newStart->toDateString();
+    }
+
+    public function nextWeek(): void
+    {
+        $newStart = Carbon::parse($this->weekStartDate)->addWeek();
+        $this->weekStartDate = $newStart->toDateString();
+        $this->selectedDate = $newStart->toDateString();
+    }
+
+    public function goToToday(): void
+    {
+        $this->selectedDate = now()->toDateString();
+        $this->weekStartDate = now()->startOfWeek()->toDateString();
+    }
+
     public function render()
     {
+        $weekStart = Carbon::parse($this->weekStartDate ?: now()->startOfWeek()->toDateString());
+        $weekEnd = $weekStart->copy()->addDays(6);
+
+        // Count sessions & activities per day in the displayed 7-day strip
+        $weekSessionCounts = PatientSession::select(DB::raw('DATE(session_date) as day'), DB::raw('count(*) as total'))
+            ->whereBetween('session_date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+            ->groupBy('day')
+            ->pluck('total', 'day')
+            ->toArray();
+
+        $weekActivityCounts = Activity::select(DB::raw('DATE(start_date) as day'), DB::raw('count(*) as total'))
+            ->whereBetween('start_date', [$weekStart->toDateString(), $weekEnd->toDateString()])
+            ->groupBy('day')
+            ->pluck('total', 'day')
+            ->toArray();
+
+        $dayShortNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+        $todayStr = now()->toDateString();
+        $calendarDays = [];
+
+        for ($i = 0; $i < 7; $i++) {
+            $d = $weekStart->copy()->addDays($i);
+            $dStr = $d->toDateString();
+            $calendarDays[] = [
+                'date' => $dStr,
+                'dayShort' => $dayShortNames[$i],
+                'dayNum' => $d->format('d'),
+                'isToday' => $dStr === $todayStr,
+                'isSelected' => $dStr === $this->selectedDate,
+                'eventCount' => (int) ($weekSessionCounts[$dStr] ?? 0) + (int) ($weekActivityCounts[$dStr] ?? 0),
+            ];
+        }
+
+        // Load timeline items for the selected date (Sessions + Activities)
+        $daySessions = PatientSession::with(['medicalCase.client'])
+            ->whereDate('session_date', $this->selectedDate)
+            ->orderBy('start_time', 'asc')
+            ->get()
+            ->map(function ($s) {
+                $clientName = $s->medicalCase?->client?->full_name ?? 'Klien';
+                $clientCode = $s->medicalCase?->client?->client_code ?? 'Terlindung';
+                $caseTitle = $s->medicalCase?->title ?? 'Sesi Konseling';
+                return [
+                    'time' => $s->start_time ? Carbon::parse($s->start_time)->format('H:i') : '--:--',
+                    'title' => "Sesi #{$s->session_number} — {$clientName}",
+                    'maskedTitle' => "Sesi #{$s->session_number} — {$clientCode}",
+                    'subtitle' => $caseTitle,
+                    'maskedSubtitle' => 'Detail kasus disembunyikan (Mode Privasi)',
+                    'type' => 'session',
+                    'dotClass' => $s->status === 'done' ? 'bg-emerald-500' : 'bg-blush-500',
+                    'url' => route('sessions.show', $s->id),
+                ];
+            });
+
+        $dayActivities = Activity::whereDate('start_date', $this->selectedDate)
+            ->orderBy('start_time', 'asc')
+            ->get()
+            ->map(function ($a) {
+                return [
+                    'time' => $a->start_time ? Carbon::parse($a->start_time)->format('H:i') : '09:00',
+                    'title' => $a->title,
+                    'maskedTitle' => $a->title,
+                    'subtitle' => $a->event_type_label ?? 'Kegiatan / Seminar',
+                    'maskedSubtitle' => $a->event_type_label ?? 'Kegiatan / Seminar',
+                    'type' => 'activity',
+                    'dotClass' => 'bg-violet-500',
+                    'url' => route('activities.show', $a->id),
+                ];
+            });
+
+        $selectedDateSchedule = $daySessions->concat($dayActivities)->sortBy('time')->values();
+
         return view('livewire.dashboard', [
             'psychologist' => auth()->user() ?? User::first(),
+            'calendarDays' => $calendarDays,
+            'calendarMonthLabel' => Carbon::parse($this->selectedDate)->translatedFormat('F Y'),
+            'selectedDateFormatted' => Carbon::parse($this->selectedDate)->translatedFormat('l, d F'),
+            'selectedDateSchedule' => $selectedDateSchedule,
         ])->layout('components.layouts.app');
     }
 }

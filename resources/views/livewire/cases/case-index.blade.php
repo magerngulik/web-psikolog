@@ -2,11 +2,11 @@
     <!-- Top Action Bar -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="font-serif text-3xl font-semibold text-white tracking-tight">Manajemen Kasus Klinis</h1>
-            <p class="text-xs sm:text-sm text-slate-400 font-sans mt-0.5">Daftar rekam medis, episode penanganan, dan program intervensi psikologis klien</p>
+            <h1 class="font-serif text-3xl font-semibold text-ink-900 tracking-tight">Manajemen Kasus Klinis</h1>
+            <p class="text-xs sm:text-sm text-ink-500 font-sans mt-0.5">Daftar rekam medis, episode penanganan, dan program intervensi psikologis klien</p>
         </div>
         <a href="{{ route('cases.create') }}" 
-           class="inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-semibold text-xs sm:text-sm rounded-xl transition shadow-lg shadow-teal-950/40 gap-2 transform hover:-translate-y-0.5">
+           class="inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blush-500 to-blush-600 hover:from-blush-600 hover:to-blush-700 text-white font-semibold text-xs sm:text-sm rounded-xl transition shadow-lg shadow-blush-200/50 gap-2 transform hover:-translate-y-0.5">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
             <span>+ Buat Kasus Baru</span>
         </a>
@@ -20,13 +20,13 @@
     <!-- Search & Filters -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="md:col-span-2 relative">
-            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-ink-500">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             </div>
-            <input wire:model.live.debounce.300ms="search" aria-label="Cari kasus berdasarkan judul, keluhan, atau nama klien" type="text" placeholder="Cari judul kasus, keluhan utama, atau nama klien..." class="w-full bg-spruce-900/80 border border-teal-500/15 rounded-xl pl-10 pr-4 py-2.5 text-white placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
+            <input wire:model.live.debounce.300ms="search" aria-label="Cari kasus berdasarkan judul, keluhan, atau nama klien" type="text" placeholder="Cari judul kasus, keluhan utama, atau nama klien..." class="w-full bg-white border border-blush-200 rounded-xl pl-10 pr-4 py-2.5 text-ink-900 placeholder-ink-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blush-400 focus:border-blush-200 transition">
         </div>
         <div>
-            <select wire:model.live="statusFilter" aria-label="Filter berdasarkan status kasus" class="w-full bg-spruce-900/80 border border-teal-500/15 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
+            <select wire:model.live="statusFilter" aria-label="Filter berdasarkan status kasus" class="w-full bg-white border border-blush-200 rounded-xl px-4 py-2.5 text-ink-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blush-400 focus:border-blush-200 transition">
                 <option value="">Semua Status Kasus</option>
                 <option value="active">Active (Aktif)</option>
                 <option value="on_hold">On Hold (Ditunda)</option>
@@ -36,7 +36,7 @@
             </select>
         </div>
         <div>
-            <select wire:model.live="categoryFilter" aria-label="Filter berdasarkan kategori kasus" class="w-full bg-spruce-900/80 border border-teal-500/15 rounded-xl px-4 py-2.5 text-white text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-teal-400 transition">
+            <select wire:model.live="categoryFilter" aria-label="Filter berdasarkan kategori kasus" class="w-full bg-white border border-blush-200 rounded-xl px-4 py-2.5 text-ink-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blush-400 focus:border-blush-200 transition">
                 <option value="">Semua Kategori</option>
                 @foreach($this->categories as $cat)
                     <option value="{{ $cat->value }}">{{ $cat->label }}</option>
@@ -46,11 +46,11 @@
     </div>
 
     <!-- Table Container -->
-    <div class="sanctuary-glass-card rounded-2xl overflow-hidden border border-teal-500/15 shadow-xl">
+    <div class="sanctuary-glass-card rounded-2xl overflow-hidden border border-blush-200 shadow-xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-spruce-950/80 border-b border-teal-500/15 text-teal-300/80 text-[11px] font-mono uppercase tracking-wider">
+                    <tr class="bg-blush-50 border-b border-blush-200 text-blush-700 text-[11px] font-mono uppercase tracking-wider">
                         <th class="p-4">Klien</th>
                         <th class="p-4">Judul Kasus & Kategori</th>
                         <th class="p-4">Status Kasus</th>
@@ -59,43 +59,43 @@
                         <th class="p-4 text-right">Tindakan</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-teal-500/10 text-xs sm:text-sm">
+                <tbody class="divide-y divide-blush-100 text-xs sm:text-sm">
                     @forelse ($cases as $case)
-                        <tr class="hover:bg-teal-500/[0.04] transition">
+                        <tr class="hover:bg-blush-50/70 transition">
                             <td class="p-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center font-serif text-teal-300 font-bold text-sm flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-xl bg-blush-100 border border-blush-200 flex items-center justify-center font-serif text-blush-700 font-bold text-sm flex-shrink-0">
                                         {{ mb_substr($case->client?->full_name ?? '?', 0, 1) }}
                                     </div>
                                     <div>
                                         @if($case->client)
-                                            <a href="{{ route('clients.show', $case->client->id) }}" class="font-semibold text-white hover:text-teal-300 transition block text-sm">
+                                            <a href="{{ route('clients.show', $case->client->id) }}" class="font-semibold text-ink-900 hover:text-blush-800 transition block text-sm">
                                                 {{ $case->client->full_name }}
                                                 @if(method_exists($case->client, 'trashed') && $case->client->trashed())
-                                                    <span class="text-[10px] text-rose-400 font-sans ml-1 font-normal">(Dihapus)</span>
+                                                    <span class="text-[10px] text-rose-700 font-sans ml-1 font-normal">(Dihapus)</span>
                                                 @endif
                                             </a>
-                                            <span class="text-[11px] text-teal-400/80 font-mono">{{ $case->client->client_code }}</span>
+                                            <span class="text-[11px] text-blush-600 font-mono">{{ $case->client->client_code }}</span>
                                         @else
-                                            <span class="font-semibold text-slate-400 block text-sm italic">
+                                            <span class="font-semibold text-ink-500 block text-sm italic">
                                                 Klien Tidak Ditemukan
                                             </span>
-                                            <span class="text-[11px] text-slate-500 font-mono">-</span>
+                                            <span class="text-[11px] text-ink-500 font-mono">-</span>
                                         @endif
                                     </div>
                                 </div>
                             </td>
                             <td class="p-4">
-                                <a href="{{ route('cases.show', $case->id) }}" class="font-semibold text-slate-200 hover:text-teal-300 transition block text-sm">
+                                <a href="{{ route('cases.show', $case->id) }}" class="font-semibold text-ink-700 hover:text-blush-800 transition block text-sm">
                                     {{ $case->title }}
                                 </a>
-                                <span class="inline-block mt-1 px-2 py-0.5 rounded text-[11px] font-medium bg-spruce-900 border border-teal-500/20 text-teal-300">
+                                <span class="inline-block mt-1 px-2 py-0.5 rounded text-[11px] font-medium bg-white border border-blush-200 text-blush-700">
                                     {{ $case->category ?? 'Umum' }}
                                 </span>
                             </td>
                             <td class="p-4">
                                 @if($case->status == 'active')
-                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 inline-flex items-center gap-1.5">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 inline-flex items-center gap-1.5">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                                         Aktif
                                     </span>
@@ -105,20 +105,20 @@
                                         Selesai
                                     </span>
                                 @elseif($case->status == 'on_hold')
-                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-950/80 text-amber-300 border border-amber-500/30 inline-flex items-center gap-1.5">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 inline-flex items-center gap-1.5">
                                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                                         Ditunda
                                     </span>
                                 @else
-                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-950/80 text-rose-300 border border-rose-500/30 inline-flex items-center gap-1.5">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200 inline-flex items-center gap-1.5">
                                         {{ ucfirst($case->status) }}
                                     </span>
                                 @endif
                             </td>
-                            <td class="p-4 text-slate-300 text-xs">
-                                <span class="font-mono font-bold text-white text-sm">{{ $case->sessions_count }}</span> Sesi
+                            <td class="p-4 text-ink-700 text-xs">
+                                <span class="font-mono font-bold text-ink-900 text-sm">{{ $case->sessions_count }}</span> Sesi
                             </td>
-                            <td class="p-4 text-slate-400 text-xs font-mono">
+                            <td class="p-4 text-ink-500 text-xs font-mono">
                                 {{ $case->created_at->format('d M Y') }}
                             </td>
                             <td class="p-4 text-right">
@@ -126,7 +126,7 @@
                                     @if($statusFilter === 'trashed')
                                         <button wire:click="restoreCase('{{ $case->id }}')" 
                                                 wire:confirm="Pulihkan kasus '{{ addslashes($case->title) }}' kembali ke daftar aktif?" 
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-emerald-300 hover:bg-emerald-500/10 transition focus:outline-none focus:ring-2 focus:ring-emerald-400" 
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-ink-500 hover:text-emerald-700 hover:bg-emerald-500/10 transition focus:outline-none focus:ring-2 focus:ring-emerald-400" 
                                                 aria-label="Pulihkan Kasus {{ $case->title }}" 
                                                 title="Pulihkan Kasus">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,7 +135,7 @@
                                         </button>
                                         <button wire:click="forceDeleteCase('{{ $case->id }}')" 
                                                 wire:confirm="PERINGATAN: Kasus '{{ addslashes($case->title) }}' akan dihapus secara permanen dari database dan tidak dapat dipulihkan. Apakah Anda yakin?" 
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-ink-500 hover:text-rose-700 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
                                                 aria-label="Hapus Permanen Kasus {{ $case->title }}" 
                                                 title="Hapus Permanen">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,12 +143,12 @@
                                             </svg>
                                         </button>
                                     @else
-                                        <a href="{{ route('cases.show', $case->id) }}" class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-teal-300 hover:bg-teal-500/10 transition focus:outline-none focus:ring-2 focus:ring-teal-400" aria-label="Buka Detail Kasus {{ $case->title }}" title="Buka Detail Kasus">
+                                        <a href="{{ route('cases.show', $case->id) }}" class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-ink-500 hover:text-blush-800 hover:bg-blush-200/80 transition focus:outline-none focus:ring-2 focus:ring-blush-400" aria-label="Buka Detail Kasus {{ $case->title }}" title="Buka Detail Kasus">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                         </a>
                                         <button wire:click="deleteCase('{{ $case->id }}')" 
                                                 wire:confirm="Apakah Anda yakin ingin memindahkan kasus '{{ addslashes($case->title) }}' ke Tong Sampah?" 
-                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
+                                                class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-ink-500 hover:text-rose-700 hover:bg-rose-500/10 transition focus:outline-none focus:ring-2 focus:ring-rose-400" 
                                                 aria-label="Hapus Kasus {{ $case->title }}" 
                                                 title="Hapus Kasus">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,12 +161,12 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="p-8 text-center text-slate-400">
+                            <td colspan="6" class="p-8 text-center text-ink-500">
                                 @if($statusFilter === 'trashed')
                                     <p class="mb-2">Tong Sampah kosong. Tidak ada kasus klinis yang terhapus.</p>
                                 @else
                                     <p class="mb-2">Belum ada kasus klinis yang tercatat.</p>
-                                    <a href="{{ route('cases.create') }}" class="text-teal-400 font-semibold underline hover:text-teal-300">
+                                    <a href="{{ route('cases.create') }}" class="text-blush-600 font-semibold underline hover:text-blush-800">
                                         Buat Kasus Baru Sekarang →
                                     </a>
                                 @endif
@@ -176,7 +176,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="p-4 border-t border-teal-500/10">
+        <div class="p-4 border-t border-blush-200">
             {{ $cases->links() }}
         </div>
     </div>
