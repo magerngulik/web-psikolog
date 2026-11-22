@@ -89,9 +89,9 @@ if %errorlevel% equ 0 (
         echo [INFO] Menjalankan migrasi database (jika ada update struktur)...
         php artisan migrate --force
         echo.
-        echo [INFO] Membersihkan cache template Blade & aplikasi Laravel...
-        php artisan view:clear
+        echo [INFO] Membersihkan cache lama & membangun cache optimasi Laravel...
         php artisan optimize:clear
+        php artisan optimize
     )
 )
 

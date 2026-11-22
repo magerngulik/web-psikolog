@@ -11,8 +11,8 @@ echo   Tekan Ctrl + C di jendela ini untuk mematikan server.
 echo ========================================================
 echo.
 
-rem Menjalankan Chrome setelah jeda 2 detik (agar server siap menerima koneksi)
-start "" /b powershell -WindowStyle Hidden -Command "Start-Sleep -Seconds 2; try { Start-Process 'chrome.exe' 'http://127.0.0.1:8000' } catch { Start-Process 'http://127.0.0.1:8000' }"
+rem Menjalankan Chrome setelah jeda 2 detik tanpa PowerShell (agar ringan di RAM kecil)
+start "" /b cmd /c "timeout /t 2 /nobreak >nul && (start chrome http://127.0.0.1:8000 2>nul || start http://127.0.0.1:8000)"
 
 rem Menjalankan server Laravel di foreground
 php artisan serve

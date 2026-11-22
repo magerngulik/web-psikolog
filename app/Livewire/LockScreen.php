@@ -42,6 +42,15 @@ class LockScreen extends Component
         $this->errorMessage = '';
     }
 
+    public function submitPin(string $pin)
+    {
+        $this->pin = substr(preg_replace('/\D/', '', $pin), 0, 6);
+
+        if (strlen($this->pin) === 6) {
+            return $this->verifyPin();
+        }
+    }
+
     public function verifyPin()
     {
         try {

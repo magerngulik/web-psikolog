@@ -35,7 +35,7 @@
         <!-- Sidebar Navigation Drawer / Pinned Aside -->
         <aside id="sanctuary-sidebar"
                :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-               class="fixed inset-y-0 left-0 z-50 w-72 flex flex-col bg-spruce-950/95 lg:bg-spruce-950/90 backdrop-blur-xl border-r border-teal-500/15 shadow-2xl lg:shadow-none transition-transform duration-300 ease-in-out"
+               class="fixed inset-y-0 left-0 z-50 w-72 flex flex-col bg-spruce-950/98 border-r border-teal-500/15 shadow-2xl lg:shadow-none transition-transform duration-300 ease-in-out"
                aria-label="Navigasi Utama">
             
             <!-- Sidebar Header / Brand Mark -->
@@ -248,8 +248,7 @@
                 <div class="flex items-center justify-between p-2.5 rounded-xl bg-spruce-900/60 border border-teal-500/15">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <span class="relative flex h-2.5 w-2.5 shrink-0">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 ring-2 ring-emerald-400/30"></span>
                         </span>
                         <div class="min-w-0 truncate">
                             <div class="text-xs font-semibold text-slate-200 truncate">Praktik Aktif</div>
@@ -291,7 +290,7 @@
 
                 <div class="flex items-center gap-2">
                     <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-spruce-900/80 border border-teal-500/20 text-[11px] text-slate-300">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                         <span>Aktif</span>
                     </div>
                     <a href="{{ route('lock-screen') }}"

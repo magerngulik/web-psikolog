@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AppLicense;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -12,12 +13,34 @@ class LicenseService
     protected static ?string $cachedMachineId = null;
 
     /**
+     * Get cache key bound to current OS & hostname so copied installs re-verify
+     */
+    protected static function machineIdCacheKey(): string
+    {
+        return 'license.machine_id.' . md5(PHP_OS_FAMILY . '|' . php_uname('n'));
+    }
+
+    /**
      * Get unique hardware-based Machine ID formatted as WP-XXXX-XXXX-XXXX-XXXX
      */
     public function getMachineId(): string
     {
         if (static::$cachedMachineId !== null) {
             return static::$cachedMachineId;
+        }
+
+        $cacheKey = static::machineIdCacheKey();
+
+        // Check persistent cache first to avoid spawning OS shell/PowerShell on every HTTP request
+        try {
+            $persisted = Cache::get($cacheKey);
+            if (is_string($persisted) && preg_match('/^WP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/', $persisted)) {
+                static::$cachedMachineId = $persisted;
+
+                return static::$cachedMachineId;
+            }
+        } catch (\Throwable $e) {
+            // Cache store might not be ready yet; fall back to direct detection
         }
 
         $rawUuid = $this->detectRawHardwareUuid();
@@ -31,6 +54,12 @@ class LicenseService
 
         static::$cachedMachineId = 'WP-' . substr($hash, 0, 4) . '-' . substr($hash, 4, 4) . '-' . substr($hash, 8, 4) . '-' . substr($hash, 12, 4);
 
+        try {
+            Cache::put($cacheKey, static::$cachedMachineId, now()->addHours(24));
+        } catch (\Throwable $e) {
+            // Ignore cache write failures on uninitialized databases
+        }
+
         return static::$cachedMachineId;
     }
 
@@ -40,6 +69,14 @@ class LicenseService
     public static function setFakeMachineId(?string $fakeMachineId): void
     {
         static::$cachedMachineId = $fakeMachineId;
+
+        if ($fakeMachineId === null) {
+            try {
+                Cache::forget(static::machineIdCacheKey());
+            } catch (\Throwable $e) {
+                // Ignore if cache is unavailable
+            }
+        }
     }
 
     /**

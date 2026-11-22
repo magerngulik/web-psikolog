@@ -66,6 +66,15 @@ class LockScreenTest extends TestCase
             ->assertSet('pin', '1');
     }
 
+    public function test_submit_pin_unlocks_in_single_request(): void
+    {
+        Livewire::test('lock-screen')
+            ->call('submitPin', '123456')
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertTrue(session()->get('pin_unlocked'));
+    }
+
     public function test_fresh_database_auto_initializes_default_pin_123456(): void
     {
         // Wipe all security keys to simulate fresh installation / unseeded database

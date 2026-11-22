@@ -1,9 +1,5 @@
 <div class="min-h-screen sanctuary-bg flex flex-col items-center justify-center p-4 sm:p-6 font-sans relative overflow-hidden" 
      x-data="{ copied: false, pasting: false }">
-    
-    <!-- Ambient Atmospheric Glows -->
-    <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl pointer-events-none" aria-hidden="true"></div>
-    <div class="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" aria-hidden="true"></div>
 
     <div class="relative z-10 w-full max-w-2xl sanctuary-glass-card border border-teal-500/20 rounded-3xl p-6 sm:p-8 shadow-2xl shadow-teal-950/80">
         

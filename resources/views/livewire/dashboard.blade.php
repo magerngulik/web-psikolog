@@ -1,14 +1,10 @@
 <div class="space-y-8">
     <!-- Sanctuary Hero Header -->
     <div class="relative overflow-hidden rounded-3xl p-6 sm:p-8 sanctuary-glass-card border border-teal-500/15">
-        <!-- Ambient decorative aura -->
-        <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-gradient-to-br from-teal-500/15 to-emerald-500/5 blur-3xl pointer-events-none" aria-hidden="true"></div>
-        <div class="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-gradient-to-tr from-amber-500/10 to-transparent blur-3xl pointer-events-none" aria-hidden="true"></div>
-
         <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div class="space-y-2 max-w-2xl">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-400/25 text-teal-300 text-xs font-medium">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                     <span class="font-mono uppercase tracking-wider text-[11px]">Dashboard Analytics & Rekam Medis</span>
                     <span class="text-teal-500">•</span>
                     <span class="font-mono text-teal-200/90">{{ now()->translatedFormat('l, d F Y') }}</span>
@@ -415,7 +411,7 @@
                                     </span>
                                 @else
                                     <span class="bg-amber-950/80 text-amber-300 border border-amber-500/30 text-[11px] px-2.5 py-1 rounded-lg font-medium inline-flex items-center gap-1.5">
-                                        <span class="animate-pulse">✏️</span>
+                                        <span>✏️</span>
                                         <span>Draft (Terbuka)</span>
                                     </span>
                                 @endif

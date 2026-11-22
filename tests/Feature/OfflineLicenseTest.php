@@ -38,6 +38,18 @@ class OfflineLicenseTest extends TestCase
         $this->assertMatchesRegularExpression('/^WP-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/', $id1);
     }
 
+    public function test_machine_id_is_persisted_in_cache_across_requests(): void
+    {
+        $id1 = $this->licenseService->getMachineId();
+
+        // Simulate a brand new HTTP request where static property is reset, without clearing Cache
+        $reflection = new \ReflectionProperty(LicenseService::class, 'cachedMachineId');
+        $reflection->setValue(null, null);
+
+        $id2 = (new LicenseService())->getMachineId();
+        $this->assertEquals($id1, $id2);
+    }
+
     public function test_license_generation_and_valid_offline_activation(): void
     {
         $machineId = $this->licenseService->getMachineId();
