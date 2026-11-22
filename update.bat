@@ -81,10 +81,24 @@ echo.
 echo [INFO] Membersihkan file/folder lokal yang tidak terlacak...
 git clean -fd
 
-rem 8. Jalankan migrasi dan bersihkan cache Laravel jika PHP & artisan tersedia
+rem 8. Penjagaan cache: bersihkan cache lama yang berpotensi mengganggu (tanpa menyentuh database, .env, atau file upload)
+echo.
+echo [INFO] Membersihkan cache sistem lama secara aman (data & database tetap aman)...
+if not exist "bootstrap\cache" mkdir "bootstrap\cache" >nul 2>nul
+if not exist "storage\framework\views" mkdir "storage\framework\views" >nul 2>nul
+if not exist "storage\framework\cache\data" mkdir "storage\framework\cache\data" >nul 2>nul
+if not exist "storage\framework\sessions" mkdir "storage\framework\sessions" >nul 2>nul
+if exist "public\hot" del /f /q "public\hot" >nul 2>nul
+del /f /q "bootstrap\cache\*.php" >nul 2>nul
+del /f /q "storage\framework\views\*.php" >nul 2>nul
+
+rem 9. Jalankan migrasi dan bangun ulang cache optimasi Laravel jika PHP & artisan tersedia
 where php >nul 2>nul
 if %errorlevel% equ 0 (
     if exist artisan (
+        echo.
+        echo [INFO] Memperbarui registrasi paket Laravel...
+        php artisan package:discover --ansi
         echo.
         echo [INFO] Menjalankan migrasi database (jika ada update struktur)...
         php artisan migrate --force
