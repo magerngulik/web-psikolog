@@ -303,7 +303,7 @@
                 </div>
 
                 <div class="pt-2 border-t border-blush-100">
-                    <a href="{{ route('sessions.create') }}"
+                    <a href="{{ route('sessions.create', ['date' => $selectedDate]) }}"
                        class="w-full py-2 rounded-2xl border border-dashed border-blush-300 hover:border-blush-500 hover:bg-blush-50 text-blush-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />

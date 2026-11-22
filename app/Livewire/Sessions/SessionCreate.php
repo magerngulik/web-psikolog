@@ -24,11 +24,25 @@ class SessionCreate extends Component
     public function mount()
     {
         $this->medical_case_id = request()->query('case_id', $this->medical_case_id);
-        $this->session_date = date('Y-m-d');
+
+        // Prefill tanggal dari query string (?date=YYYY-MM-DD), misalnya dari kalender Dashboard
+        $requestedDate = request()->query('date');
+        $this->session_date = $this->isValidDate($requestedDate) ? $requestedDate : date('Y-m-d');
         
         if ($this->medical_case_id) {
             $this->calculateSessionNumber();
         }
+    }
+
+    private function isValidDate($value): bool
+    {
+        if (! is_string($value)) {
+            return false;
+        }
+
+        $parsed = \DateTime::createFromFormat('Y-m-d', $value);
+
+        return $parsed !== false && $parsed->format('Y-m-d') === $value;
     }
 
     public function updatedMedicalCaseId()

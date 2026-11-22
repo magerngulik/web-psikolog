@@ -108,6 +108,20 @@ class SessionManagementTest extends TestCase
             ->assertHasErrors(['start_time']);
     }
 
+    public function test_session_create_prefills_date_from_query_string(): void
+    {
+        Livewire::withQueryParams(['date' => '2026-12-05'])
+            ->test('sessions.session-create')
+            ->assertSet('session_date', '2026-12-05');
+    }
+
+    public function test_session_create_ignores_invalid_date_query_string(): void
+    {
+        Livewire::withQueryParams(['date' => 'bukan-tanggal'])
+            ->test('sessions.session-create')
+            ->assertSet('session_date', date('Y-m-d'));
+    }
+
     public function test_can_save_and_re_edit_clinical_notes_and_payment_status(): void
     {
         // Even if a legacy record previously had is_locked = true, it remains editable for typo & payment updates
