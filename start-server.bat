@@ -44,5 +44,11 @@ if %errorlevel% neq 0 (
 rem Menjalankan Chrome setelah jeda 2 detik tanpa PowerShell (agar ringan di RAM kecil)
 start "" /b cmd /c "timeout /t 2 /nobreak >nul && (start chrome http://127.0.0.1:8000 2>nul || start http://127.0.0.1:8000)"
 
+rem Cache config/route/view agar request lebih cepat (dibuat ulang setiap start)
+php artisan optimize >nul 2>nul
+
+rem 2 worker agar request tidak antre (cukup untuk CPU 2 core)
+set PHP_CLI_SERVER_WORKERS=2
+
 rem Menjalankan server Laravel di foreground
 php artisan serve

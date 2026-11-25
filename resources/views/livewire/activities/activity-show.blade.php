@@ -329,7 +329,7 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                         @foreach ($activity->photos as $photo)
                             <div class="relative group rounded-2xl overflow-hidden aspect-video border border-blush-200 bg-blush-50 shadow-md">
-                                <img src="{{ $photo->url }}" alt="{{ $photo->caption }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer" wire:click="openLightbox('{{ $photo->url }}')">
+                                <img loading="lazy" decoding="async" src="{{ $photo->url }}" alt="{{ $photo->caption }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300 cursor-pointer" wire:click="openLightbox('{{ $photo->url }}')">
                                 <!-- Top Action: Quick Delete Button -->
                                 <button wire:click="deleteAttachment('{{ $photo->id }}')" wire:confirm="Apakah Anda yakin ingin menghapus foto dokumentasi ini?" type="button" class="absolute top-2 right-2 p-1.5 rounded-xl bg-blush-50 hover:bg-rose-900 text-rose-700 hover:text-ink-900 border border-rose-200 transition shadow-lg opacity-80 sm:opacity-0 group-hover:opacity-100" title="Hapus foto ini">
                                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -12,6 +12,8 @@ class LicenseService
 {
     protected static ?string $cachedMachineId = null;
 
+    protected static ?array $licensedMemo = null;
+
     /**
      * Get cache key bound to current OS & hostname so copied installs re-verify
      */
@@ -296,6 +298,14 @@ class LicenseService
             ];
         }
 
+        // Reset cache status lisensi
+        static::$licensedMemo = null;
+        try {
+            Cache::store('file')->forget('license.is_valid');
+        } catch (\Throwable $e) {
+            // abaikan
+        }
+
         // Deactivate any old licenses
         AppLicense::query()->update(['is_active' => false]);
 
@@ -331,6 +341,23 @@ class LicenseService
             return true;
         }
 
+        // Memo per-proses + cache file 10 menit agar tidak query DB & verifikasi signature tiap request
+        if (static::$licensedMemo !== null && static::$licensedMemo['until'] > time()) {
+            return static::$licensedMemo['value'];
+        }
+
+        try {
+            $fileCache = Cache::store('file');
+            $cached = $fileCache->get('license.is_valid');
+            if ($cached === true) {
+                static::$licensedMemo = ['value' => true, 'until' => time() + 600];
+
+                return true;
+            }
+        } catch (\Throwable $e) {
+            $fileCache = null;
+        }
+
         try {
             $activeLicense = AppLicense::where('is_active', true)->first();
 
@@ -345,6 +372,15 @@ class LicenseService
 
             // Verify cryptographic signature
             $check = $this->verifyAndParseToken($activeLicense->license_token);
+
+            if ($check['valid']) {
+                static::$licensedMemo = ['value' => true, 'until' => time() + 600];
+                try {
+                    ($fileCache ?? Cache::store('file'))->put('license.is_valid', true, now()->addMinutes(10));
+                } catch (\Throwable $e) {
+                    // abaikan jika cache tidak bisa ditulis
+                }
+            }
 
             return $check['valid'];
         } catch (\Throwable $e) {

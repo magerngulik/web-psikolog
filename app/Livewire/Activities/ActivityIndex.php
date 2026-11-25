@@ -70,20 +70,20 @@ class ActivityIndex extends Component
 
     public function render()
     {
-        $currentMonth = date('m');
-        $currentYear = date('Y');
+        $monthStart = now()->startOfMonth()->toDateString();
+        $monthEnd = now()->startOfMonth()->addMonth()->toDateString();
 
-        // Vitals
-        $eventsThisMonth = Activity::whereMonth('start_date', $currentMonth)
-            ->whereYear('start_date', $currentYear)
+        // Vitals (rentang tanggal agar index terpakai)
+        $eventsThisMonth = Activity::where('start_date', '>=', $monthStart)
+            ->where('start_date', '<', $monthEnd)
             ->count();
 
-        $audienceThisMonth = Activity::whereMonth('start_date', $currentMonth)
-            ->whereYear('start_date', $currentYear)
+        $audienceThisMonth = Activity::where('start_date', '>=', $monthStart)
+            ->where('start_date', '<', $monthEnd)
             ->sum('estimated_audience');
 
-        $paidRevenueThisMonth = Activity::whereMonth('start_date', $currentMonth)
-            ->whereYear('start_date', $currentYear)
+        $paidRevenueThisMonth = Activity::where('start_date', '>=', $monthStart)
+            ->where('start_date', '<', $monthEnd)
             ->where('payment_status', 'paid')
             ->sum('fee');
 

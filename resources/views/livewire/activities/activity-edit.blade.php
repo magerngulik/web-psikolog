@@ -350,7 +350,7 @@
                                 <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
                                     @foreach($activity->photos as $ph)
                                         <div class="relative group rounded-xl overflow-hidden aspect-video border border-blush-200 bg-blush-50 shadow-sm">
-                                            <img src="{{ $ph->url }}" alt="{{ $ph->caption }}" class="w-full h-full object-cover">
+                                            <img loading="lazy" decoding="async" src="{{ $ph->url }}" alt="{{ $ph->caption }}" class="w-full h-full object-cover">
                                             <button wire:click="deleteAttachment('{{ $ph->id }}')" wire:confirm="Hapus foto dokumentasi ini?" type="button" class="absolute top-1 right-1 p-1 rounded-lg bg-rose-600/90 text-white hover:bg-rose-600 shadow transition opacity-90 sm:opacity-0 group-hover:opacity-100" title="Hapus foto ini">
                                                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

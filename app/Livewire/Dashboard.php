@@ -38,12 +38,15 @@ class Dashboard extends Component
         $this->selectedDate = now()->toDateString();
         $this->weekStartDate = now()->startOfWeek()->toDateString();
 
-        $currentMonth = now()->month;
-        $currentYear = now()->year;
+        // Rentang tanggal (sargable) agar index database terpakai, bukan whereMonth/whereYear
+        $monthStart = now()->startOfMonth()->toDateString();
+        $monthEnd = now()->startOfMonth()->addMonth()->toDateString();
+        $yearStart = now()->startOfYear()->toDateString();
+        $yearEnd = now()->startOfYear()->addYear()->toDateString();
 
         // 1. Ringkasan Sesi & Pembayaran Belum Lunas
-        $this->totalSessionsMonth = PatientSession::whereMonth('session_date', $currentMonth)
-            ->whereYear('session_date', $currentYear)
+        $this->totalSessionsMonth = PatientSession::where('session_date', '>=', $monthStart)
+            ->where('session_date', '<', $monthEnd)
             ->count();
 
         $unpaidQuery = PatientSession::where('payment_status', 'unpaid')
@@ -54,18 +57,18 @@ class Dashboard extends Component
         $this->unpaidSessionsTotal = (float) (clone $unpaidQuery)->sum('fee');
 
         // 2. Keuangan (Sum payment or session fee + Activity seminar fee)
-        $paymentSumMonth = Payment::whereMonth('created_at', $currentMonth)
-            ->whereYear('created_at', $currentYear)
+        $paymentSumMonth = Payment::where('created_at', '>=', $monthStart)
+            ->where('created_at', '<', $monthEnd)
             ->where('status', 'Paid')
             ->sum('amount');
 
-        $sessionFeeSumMonth = PatientSession::whereMonth('session_date', $currentMonth)
-            ->whereYear('session_date', $currentYear)
+        $sessionFeeSumMonth = PatientSession::where('session_date', '>=', $monthStart)
+            ->where('session_date', '<', $monthEnd)
             ->where('payment_status', 'paid')
             ->sum('fee');
 
-        $activityFeeSumMonth = Activity::whereMonth('start_date', $currentMonth)
-            ->whereYear('start_date', $currentYear)
+        $activityFeeSumMonth = Activity::where('start_date', '>=', $monthStart)
+            ->where('start_date', '<', $monthEnd)
             ->where('payment_status', 'paid')
             ->sum('fee');
 
@@ -74,15 +77,18 @@ class Dashboard extends Component
         $this->monthlyActivityRevenue = (float)$activityFeeSumMonth;
         $this->monthlyRevenue = $clinicalRevenueMonth + (float)$activityFeeSumMonth;
 
-        $paymentSumYear = Payment::whereYear('created_at', $currentYear)
+        $paymentSumYear = Payment::where('created_at', '>=', $yearStart)
+            ->where('created_at', '<', $yearEnd)
             ->where('status', 'Paid')
             ->sum('amount');
 
-        $sessionFeeSumYear = PatientSession::whereYear('session_date', $currentYear)
+        $sessionFeeSumYear = PatientSession::where('session_date', '>=', $yearStart)
+            ->where('session_date', '<', $yearEnd)
             ->where('payment_status', 'paid')
             ->sum('fee');
 
-        $activityFeeSumYear = Activity::whereYear('start_date', $currentYear)
+        $activityFeeSumYear = Activity::where('start_date', '>=', $yearStart)
+            ->where('start_date', '<', $yearEnd)
             ->where('payment_status', 'paid')
             ->sum('fee');
 
@@ -203,7 +209,8 @@ class Dashboard extends Component
 
         // Load timeline items for the selected date (Sessions + Activities)
         $daySessions = PatientSession::with(['medicalCase.client'])
-            ->whereDate('session_date', $this->selectedDate)
+            ->where('session_date', '>=', $this->selectedDate)
+            ->where('session_date', '<', Carbon::parse($this->selectedDate)->addDay()->toDateString())
             ->orderBy('start_time', 'asc')
             ->get()
             ->map(function ($s) {
@@ -222,7 +229,8 @@ class Dashboard extends Component
                 ];
             });
 
-        $dayActivities = Activity::whereDate('start_date', $this->selectedDate)
+        $dayActivities = Activity::where('start_date', '>=', $this->selectedDate)
+            ->where('start_date', '<', Carbon::parse($this->selectedDate)->addDay()->toDateString())
             ->orderBy('start_time', 'asc')
             ->get()
             ->map(function ($a) {
