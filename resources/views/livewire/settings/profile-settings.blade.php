@@ -48,7 +48,7 @@
                     @if ($signature_photo)
                         <img src="{{ $signature_photo->temporaryUrl() }}" class="max-h-full max-w-full object-contain filter drop-shadow" alt="TTD Sementara">
                     @elseif ($existing_signature_path)
-                        <img src="{{ auth()->user()?->signature_base64 }}" class="max-h-full max-w-full object-contain filter drop-shadow" alt="TTD Aktif">
+                        <img src="{{ \App\Models\User::find($user_id)?->signature_base64 }}" class="max-h-full max-w-full object-contain filter drop-shadow" alt="TTD Aktif">
                     @else
                         <span class="text-xs text-ink-500 font-sans text-center">Kolom TTD Basah</span>
                     @endif
@@ -189,7 +189,7 @@
                                 <img src="{{ $signature_photo->temporaryUrl() }}" class="max-h-full max-w-full object-contain filter drop-shadow-md" alt="Preview TTD Baru">
                                 <span class="absolute bottom-1 right-2 text-[9px] bg-blush-100 text-blush-700 px-1.5 py-0.5 rounded font-mono">File Baru Terpilih</span>
                             @elseif ($existing_signature_path)
-                                <img src="{{ auth()->user()?->signature_base64 }}" class="max-h-full max-w-full object-contain filter drop-shadow-md" alt="Preview TTD Tersimpan">
+                                <img src="{{ \App\Models\User::find($user_id)?->signature_base64 }}" class="max-h-full max-w-full object-contain filter drop-shadow-md" alt="Preview TTD Tersimpan">
                             @else
                                 <div class="text-center p-4">
                                     <span class="text-2xl block mb-1 opacity-40">🖋️</span>
