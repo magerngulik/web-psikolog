@@ -227,13 +227,15 @@
                 <p style="font-size: 8pt; margin-bottom: 4px;">QR Validation Token Security:</p>
                 @php
                     $verifyUrl = config('app.url').'/verify-rpp/'.($note->qr_code_token ?? 'token');
+                    $qrSrc = '';
                     try {
-                        $qrBase64 = base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(70)->generate($verifyUrl));
+                        // SVG: tidak butuh imagick/gd, aman di Windows
+                        $qrSrc = 'data:image/svg+xml;base64,'.base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate($verifyUrl));
                     } catch (\Throwable $e) {
-                        $qrBase64 = base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::size(70)->generate($verifyUrl));
+                        $qrSrc = '';
                     }
                 @endphp
-                <img src="data:image/png;base64,{{ $qrBase64 }}" class="qr-code" alt="QR Code">
+                @if($qrSrc)<img src="{{ $qrSrc }}" class="qr-code" alt="QR Code">@endif
                 <br>
                 <span style="font-size: 7pt; color: #555;">Scan untuk verifikasi dokumen resmi</span>
             </td>

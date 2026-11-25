@@ -13,12 +13,12 @@
         </div>
 
         <div class="flex items-center gap-2 flex-wrap">
-            <button wire:click="downloadDirectSql" 
-                    type="button" 
+            <a href="{{ route('settings.backup.download') }}" download 
+                    
                     class="px-4 py-2.5 bg-gradient-to-r from-blush-500 to-blush-600 hover:from-blush-600 hover:to-blush-700 text-white font-bold rounded-xl text-xs sm:text-sm transition shadow-lg shadow-blush-200/50 flex items-center gap-2 transform hover:-translate-y-0.5">
                 <span>⬇️</span>
                 <span>Download SQL Langsung</span>
-            </button>
+            </a>
             <button wire:click="createServerBackup" 
                     type="button" 
                     class="px-4 py-2.5 bg-white hover:bg-blush-100 text-blush-700 border border-blush-200 hover:border-blush-200 font-semibold rounded-xl text-xs sm:text-sm transition shadow-md flex items-center gap-2">
@@ -294,11 +294,11 @@
                             <td class="py-3 px-4 text-right">
                                 <div class="flex items-center justify-end gap-1.5 flex-wrap">
                                     <!-- Unduh -->
-                                    <button wire:click="downloadBackupFile('{{ $item['filename'] }}')" 
+                                    <a href="{{ route('settings.backup.download', $item['filename']) }}" download
                                             title="Unduh File SQL ini"
                                             class="px-2.5 py-1.5 rounded-lg bg-white hover:bg-blush-200/80 text-blush-700 border border-blush-200 transition text-xs font-semibold flex items-center gap-1">
                                         <span>⬇️</span> <span class="hidden sm:inline">Unduh</span>
-                                    </button>
+                                    </a>
 
                                     <!-- Restore -->
                                     <button wire:click="openRestoreExisting('{{ $item['filename'] }}')" 

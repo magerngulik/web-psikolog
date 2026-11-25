@@ -50,6 +50,7 @@ Route::middleware(['pin.protected'])->group(function () {
     // Modul Sesi Konseling (Modul 5)
     Route::get('/sessions', SessionIndex::class)->name('sessions.index');
     Route::get('/sessions/create', SessionCreate::class)->name('sessions.create');
+    Route::get('/sessions/{id}/rpp-pdf', fn ($id) => SessionShow::buildRppPdfResponse($id))->name('sessions.rpp-pdf');
     Route::get('/sessions/{id}', SessionShow::class)->name('sessions.show');
 
     // Modul Mitra Organisasi
@@ -75,4 +76,11 @@ Route::middleware(['pin.protected'])->group(function () {
     Route::get('/settings/references', ReferenceManager::class)->name('settings.references');
     Route::get('/settings/security', SecuritySettings::class)->name('settings.security');
     Route::get('/settings/backup', BackupManager::class)->name('settings.backup');
+    Route::get('/settings/backup/download/{filename?}', function (?string $filename = null) {
+        $service = app(\App\Services\DatabaseBackupService::class);
+
+        return $filename
+            ? $service->downloadFile(basename($filename))
+            : $service->downloadDirectSql();
+    })->where('filename', '[A-Za-z0-9._-]+')->name('settings.backup.download');
 });

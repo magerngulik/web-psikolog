@@ -63,7 +63,7 @@ class BackupManager extends Component
             $service->cleanOldBackups($this->retention);
             session()->flash('success_message', "Backup baru berhasil dibuat: {$result['filename']} (".round($result['size'] / 1024, 2).' KB)');
         } catch (\Throwable $e) {
-            session()->flash('error_message', 'Gagal membuat backup: '.$e->getMessage());
+            session()->flash('error_message', 'Gagal membuat backup: '.$this->safeMessage($e));
         }
     }
 
@@ -202,7 +202,7 @@ class BackupManager extends Component
 
             session()->flash('success_message', '✓ Database berhasil dipulihkan! Sistem telah otomatis menyimpan snapshot cadangan darurat (safety backup) sesaat sebelum proses berlangsung.');
         } catch (\Throwable $e) {
-            $this->addError('restorePin', 'Gagal memulihkan database: '.$e->getMessage());
+            $this->addError('restorePin', 'Gagal memulihkan database: '.$this->safeMessage($e));
         }
     }
 
@@ -267,6 +267,13 @@ class BackupManager extends Component
             'diagnosticSummary' => $diagnosticSummary,
             'recentLogs' => $recentLogs,
         ])->layout('components.layouts.app');
+    }
+
+    protected function safeMessage(\Throwable $e): string
+    {
+        $msg = mb_convert_encoding($e->getMessage(), 'UTF-8', 'UTF-8');
+
+        return mb_strimwidth($msg, 0, 300, '...', 'UTF-8');
     }
 
     protected function formatBytes(int $bytes, int $precision = 2): string

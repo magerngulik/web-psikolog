@@ -297,30 +297,31 @@ class SessionShow extends Component
             $note = SessionNote::where('appointment_id', $this->session->id)->firstOrFail();
         }
 
-        $session = Session::with(['patient', 'psychologist', 'medicalCase.client'])->findOrFail($this->session->id);
+        // Unduh lewat navigasi GET biasa (lebih andal di Windows dibanding blob Livewire)
+        return $this->redirect(route('sessions.rpp-pdf', $this->session->id));
+    }
+
+    public static function buildRppPdfResponse($id)
+    {
+        $note = SessionNote::where('appointment_id', $id)->firstOrFail();
+        $session = Session::with(['patient', 'psychologist', 'medicalCase.client'])->findOrFail($id);
+
+        $helper = new self();
+        $helper->loadInterventions();
 
         $pdf = Pdf::loadView('pdf.rpp-document', [
             'appointment' => $session,
             'note' => $note,
-            'interventions' => $this->availableInterventions,
+            'interventions' => $helper->availableInterventions,
         ])->setPaper('a4', 'portrait');
 
-        // Nama file aman untuk Windows (tanpa karakter terlarang seperti : / \ " * ? < > |)
-        $patientName = \Illuminate\Support\Str::slug($session->patient?->name ?? 'Klien', '_');
+        $patientName = Str::slug($session->patient?->name ?? 'Klien', '_');
         $rawDate = $session->session_date ?? now();
         $sessionDate = $rawDate instanceof \DateTimeInterface
             ? $rawDate->format('Y-m-d')
-            : \Illuminate\Support\Str::slug((string) $rawDate, '-');
+            : Str::slug((string) $rawDate, '-');
 
-        $output = $pdf->output();
-
-        return response()->streamDownload(
-            function () use ($output) {
-                echo $output;
-            },
-            "RPP_Konseling_{$patientName}_{$sessionDate}.pdf",
-            ['Content-Type' => 'application/pdf']
-        );
+        return $pdf->download("RPP_Konseling_{$patientName}_{$sessionDate}.pdf");
     }
 
     public function deleteSession()

@@ -75,6 +75,10 @@ class DatabaseBackupService
      */
     public function restoreFromSql(string $sqlContent): bool
     {
+        if (! mb_check_encoding($sqlContent, 'UTF-8') || ! str_contains($sqlContent, 'Clinical Sanctuary Database Backup')) {
+            throw new \InvalidArgumentException('File backup rusak atau bukan file backup yang valid (mengandung karakter tidak terbaca). Gunakan file backup lain.');
+        }
+
         // 1. Safety snapshot of current database
         $this->createBackupFile('pre_restore_safety');
 
