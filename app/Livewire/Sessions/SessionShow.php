@@ -305,12 +305,21 @@ class SessionShow extends Component
             'interventions' => $this->availableInterventions,
         ])->setPaper('a4', 'portrait');
 
-        $patientName = $session->patient?->name ?? 'Klien';
-        $sessionDate = $session->session_date ?? date('Y-m-d');
+        // Nama file aman untuk Windows (tanpa karakter terlarang seperti : / \ " * ? < > |)
+        $patientName = \Illuminate\Support\Str::slug($session->patient?->name ?? 'Klien', '_');
+        $rawDate = $session->session_date ?? now();
+        $sessionDate = $rawDate instanceof \DateTimeInterface
+            ? $rawDate->format('Y-m-d')
+            : \Illuminate\Support\Str::slug((string) $rawDate, '-');
+
+        $output = $pdf->output();
 
         return response()->streamDownload(
-            fn () => print($pdf->output()),
-            "RPP_Konseling_{$patientName}_{$sessionDate}.pdf"
+            function () use ($output) {
+                echo $output;
+            },
+            "RPP_Konseling_{$patientName}_{$sessionDate}.pdf",
+            ['Content-Type' => 'application/pdf']
         );
     }
 
