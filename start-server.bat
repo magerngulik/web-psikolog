@@ -50,5 +50,5 @@ php artisan optimize >nul 2>nul
 rem 2 worker agar request tidak antre (cukup untuk CPU 2 core)
 set PHP_CLI_SERVER_WORKERS=2
 
-rem Menjalankan server Laravel di foreground
-php artisan serve
+rem Menjalankan server di foreground. Memakai server-router.php agar font & aset build di-cache browser
+php -S 127.0.0.1:8000 -t public server-router.php

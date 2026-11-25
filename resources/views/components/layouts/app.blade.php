@@ -5,6 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{{ $title ?? 'Web Psikolog' }} — Clinical Practice & Records</title>
         
+        <link rel="preload" href="/fonts/nunito.woff2" as="font" type="font/woff2" crossorigin>
+        <link rel="preload" href="/fonts/quicksand.woff2" as="font" type="font/woff2" crossorigin>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @livewireStyles
     </head>

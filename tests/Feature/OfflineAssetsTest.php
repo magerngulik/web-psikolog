@@ -37,8 +37,8 @@ class OfflineAssetsTest extends TestCase
 
     public function test_local_font_files_exist_in_public_directory(): void
     {
-        $this->assertFileExists(public_path('fonts/plus-jakarta-sans.woff2'));
-        $this->assertFileExists(public_path('fonts/fraunces.woff2'));
+        $this->assertFileExists(public_path('fonts/nunito.woff2'));
+        $this->assertFileExists(public_path('fonts/quicksand.woff2'));
         $this->assertFileExists(public_path('fonts/jetbrains-mono.woff2'));
     }
 
